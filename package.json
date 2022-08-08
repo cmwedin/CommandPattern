@@ -1,11 +1,11 @@
 {
-  "name" : "com.sadsapphicgames.InvalidName",
-  "version" : "0.0.1",
-  "displayName" : "Invalid Name"
-  "description" : "this is a template description that needs to be updated"
+  "name" : "com.sadsapphicgames.commandpattern",
+  "version" : "0.1.0",
+  "displayName" : "Command Pattern",
+  "description" : "This package contains a collection of classes and interfaces to allow for quick implementation of the command pattern across projects.",
   "author" : {
-    "name" : "Chris Wedin"
-    "email" : "cmwedin@gmail.com"
+    "name" : "Chris Wedin",
+    "email" : "cmwedin@gmail.com",
     "url" : "https://github.com/cmwedin"
   }
 }
