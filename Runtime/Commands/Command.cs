@@ -4,7 +4,13 @@ using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern
 {
+    /// <summary>
+    /// The base class of all commands
+    /// </summary>
     public abstract class Command {
+        /// <summary>
+        /// Executes the command
+        /// </summary>
         public abstract void Execute();
     }
 }

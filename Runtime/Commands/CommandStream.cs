@@ -44,22 +44,25 @@ namespace SadSapphicGames.CommandPattern
         /// Creates a new CommandStream
         /// </summary>
         /// <param name="_historyDepth"> 
-        /// The depth to which previously executed commands will be recorded, default 100. Once this depth is reached the oldest commands will be forgotten first. 
+        /// The depth to which previously executed commands will be recorded. Once this depth is reached the oldest commands will be forgotten first. 
         /// <remark> 
-        /// For the best performance in both time and space this should be zero if the command history is not needed.
-        /// If the command history is needed and space complexity is irrelevant (or significantly less important than time complexity) it should be Positive Infinity as dropping the  bottom of the stack can be expensive.
+        /// To not record history, set to zero. To never forget executed commands, set to positive infinity.
         /// </remark> 
         /// </param>
         public CommandStream(float _historyDepth = Single.PositiveInfinity) {
             HistoryDepth = _historyDepth;
         }
         /// <summary>
-        /// This adds a new command to the queue of commands to be executed by the CommandStream
+        /// This adds a Command to the command Queue
         /// </summary>
         /// <param name="command"> The Command to be Queued </param>
         public void QueueCommand(Command command) {
             commandQueue.Enqueue(command);
         }
+        /// <summary>
+        /// Adds multiple Commands to the queue
+        /// </summary>
+        /// <param name="commands"> The commands to be queued </param>
         public void QueueCommands(IEnumerable<Command> commands) {
             var commandEnum = commands.GetEnumerator();
             while(commandEnum.MoveNext()) {
@@ -73,13 +76,14 @@ namespace SadSapphicGames.CommandPattern
                 commandHistory.Take((int)historyDepth);
             }
         }
+
         /// <summary>
-        /// Executes the next command in the CommandStream and records if it the requested history depth is greater than 0
+        /// Attempts to execute the next command in the queue, returns false if it is empty
         /// </summary>
+        /// <returns> False if the command queue is empty. True otherwise. </returns>
         public bool TryExecuteNext() {
             Command nextCommand;
             if(!commandQueue.TryDequeue(out nextCommand)) {
-                Debug.LogWarning("CommandStream queue empty");
                 return false;
             }
             nextCommand.Execute();
