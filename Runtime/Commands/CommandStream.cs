@@ -1,27 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern
 {
-    
-    public static class DropoutStackExtension {
-        /// <summary>
-        ///  An extension method to drop the bottom of a stack such that it is a certain size 
-        /// </summary>
-        /// <param name="desiredSize"> The desired size of the stack after dropping the bottom elements </param>
-        public static void Dropout<T>(this Stack<T> stack, int desiredSize) {
-            if(stack.Count <= desiredSize) {
-                return;
-            } else {
-                stack = new Stack<T>(
-                    stack.ToArray().Take(desiredSize)
-                );
-                return;
-            }
-        }
-    }
     public class CommandStream {
         /// <summary>
         /// This is a Queue of the commands to be executed
@@ -30,7 +14,19 @@ namespace SadSapphicGames.CommandPattern
         /// <summary>
         /// This is a stack of the executed command history
         /// </summary>
-        private Stack<Command> CommandHistory = new Stack<Command>();
+        private List<Command> commandHistory = new List<Command>();
+        /// <summary>
+        ///  Get the CommandStream's history of executed Commands.   
+        /// </summary>
+        /// <returns>The history of executed commands, null if history is not recorded. </returns>
+        public ReadOnlyCollection<Command> GetCommandHistory() {
+            if(HistoryDepth == 0){
+                Debug.LogWarning("This CommandStream does no record its history");
+                return null;
+            } else {
+                return commandHistory.AsReadOnly();
+            }
+        }
 
 
         private float historyDepth = 0;
@@ -64,26 +60,33 @@ namespace SadSapphicGames.CommandPattern
         public void QueueCommand(Command command) {
             commandQueue.Enqueue(command);
         }
-        private void RecordCommand(Command command) {
-            CommandHistory.Push(command);
-            if(CommandHistory.Count > historyDepth) {
-                CommandHistory.Dropout((int)historyDepth);
+        public void QueueCommands(IEnumerable<Command> commands) {
+            var commandEnum = commands.GetEnumerator();
+            while(commandEnum.MoveNext()) {
+                QueueCommand(commandEnum.Current);
             }
-
+        }
+        private void RecordCommand(Command command) {
+            if(historyDepth == 0) return; //? we should never be here if this is true but just in case
+            commandHistory.Add(command);
+            if(commandHistory.Count > historyDepth) {
+                commandHistory.Take((int)historyDepth);
+            }
         }
         /// <summary>
         /// Executes the next command in the CommandStream and records if it the requested history depth is greater than 0
         /// </summary>
-        public void ExecuteNext() {
+        public bool TryExecuteNext() {
             Command nextCommand;
             if(!commandQueue.TryDequeue(out nextCommand)) {
                 Debug.LogWarning("CommandStream queue empty");
-                return;
+                return false;
             }
             nextCommand.Execute();
             if(historyDepth > 0) {
                 RecordCommand(nextCommand);
-            } 
+            }
+            return true;
         }
     }
 }
