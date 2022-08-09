@@ -6,7 +6,7 @@ namespace SadSapphicGames.CommandPattern {
     /// <summary>
     /// Indicates a command can be undone
     /// </summary>
-    interface IUndoable {
+    public interface IUndoable {
         /// <summary>
         /// Creates a command to revert the changes of the implementing command
         /// </summary>
