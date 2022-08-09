@@ -12,7 +12,7 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         private Queue<Command> commandQueue = new Queue<Command>();
         /// <summary>
-        /// This is a stack of the executed command history
+        /// This is a list of the executed command history
         /// </summary>
         private List<Command> commandHistory = new List<Command>();
         /// <summary>
