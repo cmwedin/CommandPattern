@@ -101,7 +101,6 @@ namespace SadSapphicGames.CommandPattern
                 Debug.LogWarning("The command you are trying to undo has never been executed");
             }
             return;
-
         }
 
         /// <summary>
