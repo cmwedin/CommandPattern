@@ -19,4 +19,19 @@ public class CompositeCommandTest
         Assert.AreEqual(expected: testComposite, actual: commandHistory[0]);
         Assert.AreEqual(expected: 20, actual: testComposite.ChildCount);
     }
+    [Test]
+    public void CompositeCommandTickerTest() {
+        CommandStream commandStream = new CommandStream();
+        Ticker ticker = new Ticker();
+        List<Command> subCommands = new List<Command>();
+        int testSize = 20;
+        for (int i = 0; i < testSize; i++) {
+            subCommands.Add(new TickerCommand(ticker));
+        }
+        CompositeCommand testComposite = new CompositeCommand(subCommands);
+        commandStream.QueueCommand(testComposite);
+        commandStream.TryExecuteNext();
+        Assert.AreEqual(expected: 1, actual: commandStream.HistoryCount);
+        Assert.AreEqual(expected: testSize, actual: ticker.count);
+    }
 }

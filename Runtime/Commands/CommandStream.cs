@@ -31,13 +31,19 @@ namespace SadSapphicGames.CommandPattern
 
         private float historyDepth = 0;
         /// <summary>
-        /// this is a limit of the maximum number of commands that will be recorded in the CommandHistory
+        /// this is the maximum number of commands that will be recorded in the CommandHistory
         /// </summary>
         public float HistoryDepth { 
             get => historyDepth; 
             private set { 
                 historyDepth = Mathf.Max(value,0); 
             } 
+        }
+        /// <summary>
+        /// This is the number of Commands currently stored in the CommandStreams history.
+        /// </summary>
+        public int HistoryCount {
+            get => commandHistory.Count;
         }
 
         /// <summary>
