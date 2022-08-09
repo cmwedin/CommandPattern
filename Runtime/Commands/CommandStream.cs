@@ -82,6 +82,26 @@ namespace SadSapphicGames.CommandPattern
                 commandHistory.Take((int)historyDepth);
             }
         }
+        /// <summary>
+        /// Queue's the undo command of a Command object implementing IUndoable
+        /// </summary>
+        /// <param name="commandToUndo">The IUndoable Command to queue the undo-Command of</param>
+        public void QueueUndoCommand(IUndoable commandToUndo) {
+            if(historyDepth == 0) {
+                Debug.LogWarning("This CommandStream does not record its history, undoing commands requires a command history");
+                return;
+            } if(commandHistory.Contains((Command)commandToUndo)) {
+                QueueCommand(commandToUndo.GetUndoCommand());
+                return;
+            } else if(commandQueue.Contains((Command)commandToUndo)) {
+                Debug.LogWarning("The command you are trying to undo has not been executed yet but is in the queue");
+            } else if(HistoryCount >= HistoryDepth) { //? should never be greater but better to catch all cases
+                Debug.LogWarning("The command you are trying to undo is not in the CommandStream's history, but it may have been dropped");
+            } else {
+                Debug.LogWarning("The command you are trying to undo has never been executed");
+            }
+            return;
+        }
 
         /// <summary>
         /// Attempts to execute the next command in the queue, returns false if it is empty

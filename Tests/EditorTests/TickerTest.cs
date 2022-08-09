@@ -10,8 +10,8 @@ public class Ticker {
     }
 }
 
-public class TickerCommand : Command {
-    private Ticker ticker;
+public class TickerCommand : Command, IUndoable {
+    public Ticker ticker;
 
     public TickerCommand(Ticker ticker) {
         this.ticker = ticker;
@@ -19,5 +19,24 @@ public class TickerCommand : Command {
 
     public override void Execute() {
         ticker.count++;
+    }
+
+    public Command GetUndoCommand() {
+        return new UndoTickerCommand(this);
+    }
+}
+public class UndoTickerCommand: Command, IUndoable {
+    public Ticker ticker;
+
+    public UndoTickerCommand(TickerCommand command) {
+        ticker = command.ticker;
+    }
+
+    public override void Execute() {
+        ticker.count--;
+    }
+
+    public Command GetUndoCommand() {
+        return new TickerCommand(ticker);
     }
 }
