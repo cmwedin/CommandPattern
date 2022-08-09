@@ -8,7 +8,13 @@ namespace SadSapphicGames.CommandPattern {
     /// <remark> For more information on this type of object seek external documentation on the composite design pattern </remark>
     /// </summary>
     public class CompositeCommand : Command {
-        private List<Command> subCommands = new List<Command>();
+        protected List<Command> subCommands = new List<Command>();
+
+        /// <summary>
+        /// Creates an empty CompositeCommand
+        /// </summary>
+        public CompositeCommand() {
+        }
 
         /// <summary>
         ///  Creates a CompositeCommand object from a collection of commands. 
@@ -20,6 +26,14 @@ namespace SadSapphicGames.CommandPattern {
             while(subCommandsEnum.MoveNext()) {
                 this.subCommands.Add(subCommandsEnum.Current);
             }
+        }
+
+        /// <summary>
+        /// Adds a Command to this objects children 
+        /// </summary>
+        /// <param name="childCommand"> The Command to be added to the objects children </param>
+        protected virtual void AddChild(Command childCommand) {
+            subCommands.Add(childCommand);
         }
 
         /// <summary>
