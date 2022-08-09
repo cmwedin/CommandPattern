@@ -1,5 +1,5 @@
 # Command Pattern
-This package contains a collection of classes and interfaces to allow for quick implementation of the command pattern across projects. An out-of-the-box implementation is provided through the [SingletonCommandManager](Runtime/Monobehaviours/SingletonCommandManager.cs) component, for more information see
+This package contains a collection of classes and interfaces to allow for quick implementation of the command pattern across projects. An out-of-the-box implementation is provided through the [SingletonCommandManager](Runtime/Monobehaviours/SingletonCommandManager.cs) component, for more information see [Simple Implementation](#simple-implementation).
 
 ## Installation
 To install this package in your Unity project, select the "window/Package Manager" entry in the Unity Inspector toolbar. Then, select the "+" icon in the upper left corner of the opened window, and select "Add package from git url." Paste the following:
@@ -22,7 +22,27 @@ Considering this toy model further we can see an extension of this pattern by ob
 
 Another extension implemented in this library can be arrived at by considering the fact that if the Invoker does not know the details about what any given command is doing, as far as it is concerned there is no difference between executing a single command and executing a group of commands in succession. This is an example of a broader design pattern called [composition](https://en.wikipedia.org/wiki/Composite_pattern), and is reflected in the [CompositeCommand](Runtime/Commands/CompositeCommand.cs) class.   
 
-**--- README a WIP ---**
 ### Simple Implementation
+For the quickest Implementation of this pattern create an empty game object in your scene and attach the "SingletonCommandManager" component to it. You will be able to access this object from anywhere in your project by writing SingletonCommandManager.Instance. Then you need to define what you command objects are. To do this create a class inheriting from the Command class, implementing the abstract method. 
 
+    public override void Execute() {...}
+How exactly this class should work is entirely up to you based on the needs of your project. Once you have defined a commands, whenever you need to execute it you can pass an instance of the command object into the QueueCommand(Command command) method of your command manager instance. You can create a new instance each time you need one or if you want to optimize space you can use a look up table and pass the same object multiple times, but this may not be feasible for all use cases.
+
+Once you have commands Queued in your command manager it will execute them every frame. This can be stopped by calling `ToggleCommandExecution()`, or `ToggleCommandExecution(bool onoff)` to set a specific value (true to start executing, false to stop).
+
+You can access the history of executed command by through the command manager instance's `GetCommandHistory()` method. The entries at the end of the list are the most recently executed commands
+
+Once you have these basics down you can create more advanced commands by implementing the IUndoable interface. This interface requires the
+
+    public Command GetUndoCommand()
+method. Which should return a Command that if executed you negate the changes cause by the Command implementing this interface's `Execute()` method.
+
+Another more advanced type of command you can use is CompositeCommands. This subclass of Commands can be created from any collection of commands through the `new CompositeCommand(IEnumerable subCommands)` constructor, or by directly inheriting from it. This Command contains a collection of children and when its `Execute()` method is called it calls the `Execute()` methods of all its children in turn. When inheriting from CompositeCommand you can also inherit from IUndoable as well. When doing so it is best practice to ensure all of the child commands also implement IUndoable. Adhering to this practice allows the undo command of a composite command to be simply constructed with the following linq query
+    
+    var undoComposite = new CompositeCommand(
+        from com in subCommands.Cast<IUndoable>()
+        select com.GetUndoCommand()
+    )
+
+**--- README a WIP ---**
 ### Advanced Implementation
