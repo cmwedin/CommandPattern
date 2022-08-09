@@ -32,6 +32,20 @@ Once you have commands Queued in your command manager it will execute them every
 
 You can access the history of executed command by through the command manager instance's `GetCommandHistory()` method. The entries at the end of the list are the most recently executed commands
 
+### Advanced Implementation
+
+For more complicated implementation rather than simply using the SingletonCommandManager you should create your own wrapper of the [CommandStream](Runtime/Commands/CommandStream.cs) class. This class can be interacted with in many of the same ways as the SingletonCommandManager instance can, which functions my exposing many of the methods of its private CommandStream object. You can create a CommandStream using the constructor `new CommandStream([historyDepth = PositiveInfinity])` which has an optional argument to limit the depth to which the CommandStream stores is previously executed commands. The default value of this argument is `Single.PositiveInfinity` meaning that no mater how big the HistoryCount (number of recorded commands) is `HistoryCount < HistoryDepth` will always evaluate to false and the commandHistory list will never drop its oldest elements. Note that setting historyDepths to values between Int.MaxValue and Single.PositiveInfinity may cause unexpected behavior. If you want to limit the history depth at all the limit should be below Int.MaxValue, otherwise leave the constructor empty. If you set HistoryDepth to zero the process of recording commands will be skipped entirely for some slight performance enhancements.
+
+Commands queued into the CommandStream can be executed through the CommandStream's `TryExecuteNext()` method. This will return true if there was a command Queued for the CommandStream to execute amd false if the CommandStream's queue was empty. The following code
+
+    While(commandStream.TryExecuteNext()) {}
+can be a useful way to execute all command's a CommandStream has in it's queue. Alternatively if you are wrapped the CommandStream in a monobehaviour the `Update()` can be an excellent place to call `commandStream.TryExecuteNext()`. 
+
+### Example Implemtation
+For an example of an more advanced implementation of this packages lets consider using it for an input manager supporting button remapping. First we need to define a collection of commands we want the user to be able to preform through their inputs. These Commands might be something like, MoveLeft/Right/Up/Down, Shoot, Jump, Reload, ChangeWeapon, anything like that. Once we have them all defined, we create a lookup table in which each button allowed as a valid input is mapped to a desired Command. This table can be changed as needed to support remapping. Then, we are ready to create a InputManager component that has a CommandStream. In the components Update method whenever unity detects a input we get that input's mapped command from the lookup table and queue it into the CommandStream. Then, we execute the next command in the stream. And as simple as that we have designed our input system has been implemented. This system is also resilient to future changes, as none of your input responses have been hardcoded, showcase the power of the command pattern. If at any point we decide we want to say, replace cardinal movement in any direction, it's just a matter of switching out the appropriate commands.     
+
+### Advanced Features
+
 Once you have these basics down you can create more advanced commands by implementing the IUndoable interface. This interface requires the
 
     public Command GetUndoCommand()
@@ -43,6 +57,3 @@ Another more advanced type of command you can use is CompositeCommands. This sub
         from com in subCommands.Cast<IUndoable>()
         select com.GetUndoCommand()
     )
-
-**--- README a WIP ---**
-### Advanced Implementation
