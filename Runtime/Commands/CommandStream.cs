@@ -78,8 +78,8 @@ namespace SadSapphicGames.CommandPattern
         private void RecordCommand(Command command) {
             if(historyDepth == 0) return; //? we should never be here if this is true but just in case
             commandHistory.Add(command);
-            if(commandHistory.Count > historyDepth) {
-                commandHistory.Take((int)historyDepth);
+            if(HistoryCount > historyDepth) {
+                commandHistory.Skip((int)(HistoryCount - HistoryDepth));
             }
         }
         /// <summary>
