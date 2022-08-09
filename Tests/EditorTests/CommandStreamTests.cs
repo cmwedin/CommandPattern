@@ -8,8 +8,7 @@ using SadSapphicGames.CommandPattern;
 public class CommandStreamTests {
     // A Test behaves as an ordinary method
     [Test]
-    public void CommandStreamTrivialTest()
-    {
+    public void CommandStreamTrivialTest() {
         int testDepth = 10;
         CommandStream commandStream = new CommandStream();
         Command[] commands = new Command[testDepth];
@@ -25,6 +24,20 @@ public class CommandStreamTests {
             );
             Assert.IsTrue(j <= testDepth);
             j++;
+        }
+    }
+    [Test]
+    public void CommandStreamTickerTest() {
+        int testDepth = 20;
+        CommandStream commandStream = new CommandStream();
+        Ticker ticker = new Ticker();
+        for (int i = 0; i < testDepth; i++) {
+            commandStream.QueueCommand(new TickerCommand(ticker));
+        }
+        int j = 0;
+        while (commandStream.TryExecuteNext()) {
+            j++;
+            Assert.AreEqual(expected: j, actual: ticker.count);
         }
     }
 }
