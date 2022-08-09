@@ -12,12 +12,12 @@ namespace SadSapphicGames.CommandPattern {
         }
 
         public Command GetUndoCommand() {
-            var undoableCommands = 
-                from com in subCommands 
-                where com is IUndoable //? should be every command
-                select (IUndoable)com;
+            // var undoableCommands = 
+            //     from com in subCommands 
+            //     where com is IUndoable //? should be every command
+            //     select (IUndoable)com;
             var undoCommands =
-                from com in undoableCommands
+                from com in subCommands.Cast<IUndoable>()
                 select com.GetUndoCommand();
             return new CompositeCommand(undoCommands);
         }
