@@ -12,7 +12,7 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         private Queue<Command> commandQueue = new Queue<Command>();
         /// <summary>
-        /// This is a stack of the executed command history
+        /// This is a list of the executed command history
         /// </summary>
         private List<Command> commandHistory = new List<Command>();
         /// <summary>
@@ -78,8 +78,8 @@ namespace SadSapphicGames.CommandPattern
         private void RecordCommand(Command command) {
             if(historyDepth == 0) return; //? we should never be here if this is true but just in case
             commandHistory.Add(command);
-            if(commandHistory.Count > historyDepth) {
-                commandHistory.Take((int)historyDepth);
+            if(HistoryCount > historyDepth) {
+                commandHistory.Skip((int)(HistoryCount - HistoryDepth));
             }
         }
         /// <summary>
