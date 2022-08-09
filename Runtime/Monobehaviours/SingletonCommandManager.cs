@@ -16,6 +16,20 @@ namespace SadSapphicGames.CommandPattern {
         /// </summary>
         public static SingletonCommandManager Instance { get; private set; }
         private CommandStream commandStream = new CommandStream();
+        private bool freezeCommandExecution = false;
+        /// <summary>
+        /// Turns command execution off if its on and on if its off
+        /// </summary>
+        public void ToggleCommandExecution() {
+            freezeCommandExecution = !freezeCommandExecution;
+        }
+        /// <summary>
+        /// Turns command execution off or on
+        /// </summary>
+        /// <param name="onoff">if false stops the execution of commands, if true enables it</param>
+        public void ToggleCommandExecution(bool onoff) {
+            freezeCommandExecution = !onoff;
+        }
         /// <summary>
         /// Get the underlying CommandStream's history
         /// </summary>
@@ -66,7 +80,9 @@ namespace SadSapphicGames.CommandPattern {
 
         // Update is called once per frame
         void Update() {
-            commandStream.TryExecuteNext();
+            if (!freezeCommandExecution) {
+                commandStream.TryExecuteNext();
+            }
         }
     }
 }
