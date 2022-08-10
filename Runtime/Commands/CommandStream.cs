@@ -104,12 +104,18 @@ namespace SadSapphicGames.CommandPattern
         }
 
         /// <summary>
-        /// Attempts to execute the next command in the queue, returns false if it is empty
+        /// Attempts to execute the next command in the queue, returns false if it is empty or the command is IFailable and would fail.
         /// </summary>
-        /// <returns> False if the command queue is empty. True otherwise. </returns>
-        public bool TryExecuteNext() {
-            Command nextCommand;
+        /// <param name="nextCommand"> The command that was next in the queue, null if the queue was empty</param>
+        /// <returns> False if the command queue is empty, or the next command would fail. True otherwise. </returns>
+        public bool TryExecuteNext(out Command nextCommand) {
             if(!commandQueue.TryDequeue(out nextCommand)) {
+                return false;
+            }
+            if(
+                nextCommand is IFailable 
+                && ((IFailable)nextCommand).WouldFail()
+            ) {
                 return false;
             }
             nextCommand.Execute();
@@ -117,6 +123,13 @@ namespace SadSapphicGames.CommandPattern
                 RecordCommand(nextCommand);
             }
             return true;
+        }
+        /// <summary>
+        /// Attempts to execute the next command in the queue, returns false if it is empty or the command is IFailable and would fail.
+        /// </summary>
+        /// <returns> False if the command queue is empty, or the next command would fail. True otherwise. </returns>
+        public bool TryExecuteNext() {
+            return TryExecuteNext(out var empty);
         }
     }
 }
