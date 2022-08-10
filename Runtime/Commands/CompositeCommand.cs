@@ -56,7 +56,7 @@ namespace SadSapphicGames.CommandPattern {
         /// If the CompositeCommand contains IFailable subCommands that would fail to execute
         /// </summary>
         /// <returns> True if any subCommand is IFailable and would fail. False if no subCommand's are IFailable or all IFailable subCommands would succeed </returns>
-        public bool WouldFail() {
+        public virtual bool WouldFail() {
             var results =
                 from com in subCommands
                 where com is IFailable

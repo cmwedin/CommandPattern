@@ -83,7 +83,7 @@ namespace SadSapphicGames.CommandPattern
             }
         }
         /// <summary>
-        /// Queue's the undo command of a Command object implementing IUndoable
+        /// Queue's the undo command of a Command object implementing IUndoable if that command exists in this CommandStream's history
         /// </summary>
         /// <param name="commandToUndo">The IUndoable Command to queue the undo-Command of</param>
         public void QueueUndoCommand(IUndoable commandToUndo) {
@@ -101,6 +101,14 @@ namespace SadSapphicGames.CommandPattern
                 Debug.LogWarning("The command you are trying to undo has never been executed");
             }
             return;
+        }
+        /// <summary>
+        /// Queue's the undo command of a Command object implementing IUndoable regardless of whether the command is recorded in this CommandStream's history
+        /// </summary>
+        /// <remark>This is equivalent to passing the result of IUndoable.GetUndoCommand() into CommandStream.QueueCommand(Command command) directly</remark>
+        /// <param name="commandToUndo">The IUndoable Command to queue the undo-Command of</param>
+        public void ForceQueueUndoCommand(IUndoable commandToUndo) {
+            QueueCommand(commandToUndo.GetUndoCommand());
         }
 
         /// <summary>
