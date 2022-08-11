@@ -5,12 +5,13 @@ using System.Linq;
 
 namespace SadSapphicGames.CommandPattern {
     /// <summary>
-    /// A Command that is composed of multiple child commands, all of which are executed together and leave one record in the CommandStream's history.
-    /// As a CompositeCommand can be created from any collection of Commands and some of these commands may implement IFailable, all composite commands also implement IFailable.
-    /// If any sub-command of a CompositeCommand is IFailable and returns true for WouldFail(), the composite will also return true.  
+    /// A Command that is composed of multiple child commands, all of which are executed together and leave one record in the CommandStream's history. 
     /// <remark> For more information on this type of object seek external documentation on the composite design pattern </remark>
     /// </summary>
     public abstract class CompositeCommand : Command {
+        /// <summary>
+        /// The Commands that will be executed upon executing this object
+        /// </summary>
         protected List<Command> subCommands = new List<Command>();
 
         /// <summary>
