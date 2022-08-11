@@ -28,7 +28,7 @@ public class CompositeCommandTest
         for (int i = 0; i < testSize; i++) {
             subCommands.Add(new TickerCommand(ticker));
         }
-        CompositeCommand testComposite = new CompositeCommand(subCommands);
+        CompositeCommand testComposite = new SimpleComposite(subCommands);
         commandStream.QueueCommand(testComposite);
         commandStream.TryExecuteNext();
         Assert.AreEqual(expected: 1, actual: commandStream.HistoryCount);
