@@ -79,8 +79,11 @@ namespace SadSapphicGames.CommandPattern
             if(historyDepth == 0) return; //? we should never be here if this is true but just in case
             commandHistory.Add(command);
             if(HistoryCount > historyDepth) {
-                commandHistory.Skip((int)(HistoryCount - HistoryDepth));
+                DropOldCommandHistory();
             }
+        }
+        private void DropOldCommandHistory() {
+            commandHistory = commandHistory.Skip((int)(HistoryCount - HistoryDepth)).ToList();
         }
         /// <summary>
         /// Queue's the undo command of a Command object implementing IUndoable if that command exists in this CommandStream's history
