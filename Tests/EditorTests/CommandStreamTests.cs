@@ -42,31 +42,44 @@ public class CommandStreamTests {
     }
     [Test]
     public void CommandStreamHistoryTest(){
-        int testDepth = 5;
-        Command[] testCommands = new Command[testDepth * 2];
-        CommandStream commandStream = new CommandStream(testDepth);
-        Assert.AreEqual(expected: testDepth, actual: commandStream.HistoryDepth);
-        for (int i = 0; i < testDepth*2; i++) {
-            Command command = new NullCommand();
-            commandStream.QueueCommand(command);
-            testCommands[i] = command;
-        }
-        int j = 0;
-        while(commandStream.TryExecuteNext()) {
-            if(j < commandStream.HistoryDepth) {
-                Assert.AreEqual(expected: j + 1, actual: commandStream.HistoryCount);
-            } else {
-                Assert.AreEqual(expected: commandStream.HistoryDepth, actual: commandStream.HistoryCount);
-                Assert.AreEqual(
-                    expected:testCommands[(int)(j + 1 - commandStream.HistoryDepth)],
-                    actual: commandStream.GetCommandHistory()[0]
-                );
+        int maxDepth = 100;
+        for (int testDepth = 0; testDepth <= maxDepth; testDepth++)
+        {
+            Command[] testCommands = new Command[testDepth * 2];
+            CommandStream commandStream = new CommandStream(testDepth);
+            Assert.AreEqual(expected: testDepth, actual: commandStream.HistoryDepth);
+            for (int i = 0; i < testDepth * 2; i++)
+            {
+                Command command = new NullCommand();
+                commandStream.QueueCommand(command);
+                testCommands[i] = command;
             }
-            Assert.AreEqual(
-                expected: testCommands[j],
-                actual: commandStream.GetCommandHistory()[^1]
-            );
-            j++;
+            int j = 0;
+            while (commandStream.TryExecuteNext())
+            {
+                if (j < commandStream.HistoryDepth)
+                {
+                    Assert.AreEqual(expected: j + 1, actual: commandStream.HistoryCount);
+                    Assert.AreEqual(
+                        expected: testCommands[0],
+                        actual: commandStream.GetCommandHistory()[0]
+                    );
+                }
+                else
+                {
+                    Assert.AreEqual(expected: commandStream.HistoryDepth, actual: commandStream.HistoryCount);
+                    Assert.AreEqual(
+                        expected: testCommands[(int)(j + 1 - commandStream.HistoryDepth)],
+                        actual: commandStream.GetCommandHistory()[0]
+                    );
+                }
+                Assert.AreEqual(
+                    expected: testCommands[j],
+                    actual: commandStream.GetCommandHistory()[^1]
+                );
+                j++;
+            }
+            Assert.AreEqual(expected: testDepth * 2, actual: j);
         }
     }
 }
