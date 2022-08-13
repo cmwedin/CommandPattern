@@ -57,6 +57,10 @@ public class CommandStreamTests {
                 Assert.AreEqual(expected: j + 1, actual: commandStream.HistoryCount);
             } else {
                 Assert.AreEqual(expected: commandStream.HistoryDepth, actual: commandStream.HistoryCount);
+                Assert.AreEqual(
+                    expected:testCommands[(int)(j + 1 - commandStream.HistoryDepth)],
+                    actual: commandStream.GetCommandHistory()[0]
+                );
             }
             Assert.AreEqual(
                 expected: testCommands[j],
