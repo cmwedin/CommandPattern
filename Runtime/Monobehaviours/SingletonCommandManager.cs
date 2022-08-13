@@ -62,7 +62,7 @@ namespace SadSapphicGames.CommandPattern {
         /// </summary>
         /// <param name="commandToUndo"> The IUndoable Command to queue an undo-command for </param>
         public void QueueUndoCommand(IUndoable commandToUndo) {
-            commandStream.QueueUndoCommand(commandToUndo);
+            commandStream.TryQueueUndoCommand(commandToUndo);
         }
 
         private void Awake() {

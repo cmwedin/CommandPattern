@@ -86,16 +86,17 @@ namespace SadSapphicGames.CommandPattern
             commandHistory = commandHistory.Skip((int)(HistoryCount - HistoryDepth)).ToList();
         }
         /// <summary>
-        /// Queue's the undo command of a Command object implementing IUndoable if that command exists in this CommandStream's history
+        /// Attempt to queue's the undo command of a Command object implementing IUndoable if that command exists in this CommandStream's history
         /// </summary>
-        /// <param name="commandToUndo">The IUndoable Command to queue the undo-Command of</param>
-        public void QueueUndoCommand(IUndoable commandToUndo) {
+        /// <param name="commandToUndo">The IUndoable Command to try and queue the undo-Command of</param>
+        /// <returns>Wether the undo command was queued</returns>
+        public bool TryQueueUndoCommand(IUndoable commandToUndo) {
             if(historyDepth == 0) {
                 Debug.LogWarning("This CommandStream does not record its history, undoing commands requires a command history");
-                return;
+                return false;
             } if(commandHistory.Contains((Command)commandToUndo)) {
                 QueueCommand(commandToUndo.GetUndoCommand());
-                return;
+                return true;
             } else if(commandQueue.Contains((Command)commandToUndo)) {
                 Debug.LogWarning("The command you are trying to undo has not been executed yet but is in the queue");
             } else if(HistoryCount >= HistoryDepth) { //? should never be greater but better to catch all cases
@@ -103,10 +104,10 @@ namespace SadSapphicGames.CommandPattern
             } else {
                 Debug.LogWarning("The command you are trying to undo has never been executed");
             }
-            return;
+            return false;
         }
         /// <summary>
-        /// Queue's the undo command of a Command object implementing IUndoable regardless of whether the command is recorded in this CommandStream's history
+        /// Force the stream to queue's the undo command of a Command object implementing IUndoable regardless of whether the command is recorded in this CommandStream's history
         /// </summary>
         /// <remark>This is equivalent to passing the result of IUndoable.GetUndoCommand() into CommandStream.QueueCommand(Command command) directly</remark>
         /// <param name="commandToUndo">The IUndoable Command to queue the undo-Command of</param>
