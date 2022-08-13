@@ -17,17 +17,14 @@ public class IFailableTests
         Assert.IsNotNull(nextCommand);
         Assert.AreEqual(expected: 0, actual: commandStream.HistoryCount);
     }
-    // [Test]
-    // public void CompositeFailureTest() {
-    //     CommandStream commandStream = new CommandStream();
-    //     CompositeCommand testComposite = new CompositeCommand(new List<Command> {
-    //         new NullCommand(),
-    //         new AlwaysFailsCommand()
-    //     });
-    //     commandStream.QueueCommand(testComposite);
-        
-    //     Assert.IsFalse(commandStream.TryExecuteNext(out Command nextCommand));
-    //     Assert.IsNotNull(nextCommand);
-    //     Assert.AreEqual(expected: 0, actual: commandStream.HistoryCount);
-    // }
+    [Test]
+    public void SimpleCompositeFailureTest() {
+        CommandStream commandStream = new CommandStream();
+        Assert.Throws<System.ArgumentException>(() => {
+            CompositeCommand testComposite = new SimpleComposite(new List<Command> {
+                new NullCommand(),
+                new AlwaysFailsCommand()
+            });
+        });
+    }
 }
