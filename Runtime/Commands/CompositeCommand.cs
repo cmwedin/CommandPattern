@@ -13,6 +13,10 @@ namespace SadSapphicGames.CommandPattern {
         /// The Commands that will be executed upon executing this object
         /// </summary>
         protected List<Command> subCommands = new List<Command>();
+        /// <summary>
+        /// An internal CommandStream to provide more control of the execution of the subCommands of the Composite
+        /// </summary>
+        protected CommandStream internalStream = new CommandStream();
 
         /// <summary>
         /// Adds a Command to this objects children 
@@ -28,12 +32,28 @@ namespace SadSapphicGames.CommandPattern {
         public int ChildCount { get => subCommands.Count; }
         
         /// <summary>
-        /// Executes each of the commands included in this object
+        /// Executes each of the commands included in this object. 
+        /// <remark> Default implementation queues all subCommands into the internalStream and executes them until it is empty.</remark>
         /// </summary>
+        /// <exception cref="CompositeFailureException"> Indicates one of the commands children failed, If this is possible you should be implementing IFailable to prevent this from happening. </exception>
         public override void Execute() {
-            for (int i = 0; i < ChildCount; i++) {
-                subCommands[i].Execute();
-            }
+            internalStream.QueueCommands(subCommands);
+            Command prevChild;
+            while(internalStream.TryExecuteNext(out prevChild)){}
+            if(prevChild != null) throw new CompositeFailureException(prevChild);
         }
+    }
+    /// <summary>
+    /// An exception that is thrown when a CompositeCommand is executed but one of its children fails
+    /// </summary>
+    [System.Serializable]
+    public class CompositeFailureException : System.Exception
+    {
+        public CompositeFailureException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed. If you are seeing this you probably need to implement IFailable or your implementation of it contains an error.") { }
+        public CompositeFailureException(string message) : base(message) { }
+        public CompositeFailureException(string message, System.Exception inner) : base(message, inner) { }
+        protected CompositeFailureException(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 }
