@@ -49,7 +49,7 @@ namespace SadSapphicGames.CommandPattern {
     [System.Serializable]
     public class CompositeFailureException : System.Exception
     {
-        public CompositeFailureException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed") { }
+        public CompositeFailureException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed. If you are seeing this you probably need to implement IFailable or your implementation of it contains an error.") { }
         public CompositeFailureException(string message) : base(message) { }
         public CompositeFailureException(string message, System.Exception inner) : base(message, inner) { }
         protected CompositeFailureException(

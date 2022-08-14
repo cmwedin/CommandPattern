@@ -34,4 +34,15 @@ public class CompositeCommandTest
         Assert.AreEqual(expected: 1, actual: commandStream.HistoryCount);
         Assert.AreEqual(expected: testSize, actual: ticker.count);
     }
+    [Test]
+    public void CompositeFailureExceptionTest() {
+        CommandStream commandStream = new CommandStream();
+        BadCompositeCommand testComposite = new BadCompositeCommand();
+        commandStream.QueueCommand(testComposite);
+        //? uncomment To test the error readout (will make test fail)
+        // commandStream.TryExecuteNext();
+        Assert.Throws<CompositeFailureException>(() => {
+            commandStream.TryExecuteNext();
+        });
+    }
 }
