@@ -75,6 +75,15 @@ namespace SadSapphicGames.CommandPattern
                 QueueCommand(commandEnum.Current);
             }
         }
+        /// <summary>
+        /// This will remove all commands from the CommandStream's queue and replace it with a new empty queue
+        /// </summary>
+        /// <returns> The commands in the previous queue, in case this information is needed (for example to rearrange an requeue them).</returns>
+        public List<Command> EmptyQueue(){
+            var output = commandQueue.ToList();
+            commandQueue = new Queue<Command>();
+            return output;
+        }
         private void RecordCommand(Command command) {
             if(historyDepth == 0) return; //? we should never be here if this is true but just in case
             commandHistory.Add(command);
