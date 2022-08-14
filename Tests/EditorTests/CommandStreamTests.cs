@@ -82,4 +82,15 @@ public class CommandStreamTests {
             Assert.AreEqual(expected: testDepth * 2, actual: j);
         }
     }
+    [Test]
+    public void EmptyQueueTest() {
+        CommandStream commandStream = new CommandStream();
+        var testCommand = new NullCommand();
+        commandStream.QueueCommand(testCommand);
+        var oldQueue = commandStream.EmptyQueue();
+        Assert.IsFalse(commandStream.TryExecuteNext());
+        Assert.AreEqual(expected: 1, actual: oldQueue.Count);
+        Assert.AreEqual(expected: testCommand, actual: oldQueue[0]);
+
+    }
 }
