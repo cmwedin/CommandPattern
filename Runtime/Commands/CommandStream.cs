@@ -27,6 +27,13 @@ namespace SadSapphicGames.CommandPattern
                 return commandHistory.AsReadOnly();
             }
         }
+        /// <summary>
+        /// Get the queue of commands to be executed by the command stream.
+        /// </summary>
+        /// <returns> The queue of commands the commandStream will execute. </returns>
+        public ReadOnlyCollection<Command> GetCommandQueue() {
+            return commandQueue.ToList().AsReadOnly();
+        }
 
 
         private float historyDepth = 0;
