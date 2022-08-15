@@ -34,6 +34,10 @@ namespace SadSapphicGames.CommandPattern
         public ReadOnlyCollection<Command> GetCommandQueue() {
             return commandQueue.ToList().AsReadOnly();
         }
+        /// <summary>
+        /// Gets commandQueue.Count == 0
+        /// </summary>
+        public bool QueueEmpty { get => commandQueue.Count == 0; }
 
 
         private float historyDepth = 0;
