@@ -83,7 +83,7 @@ namespace SadSapphicGames.CommandPattern
             }
         }
         /// <summary>
-        /// This will remove all commands from the CommandStream's queue and replace it with a new empty queue
+        /// This will remove all commands from the CommandStream's queue and replace it with a new empty queue. THIS DOES NOT EXECUTE COMMANDS.
         /// </summary>
         /// <returns> The commands in the previous queue, in case this information is needed (for example to rearrange an requeue them).</returns>
         public List<Command> EmptyQueue(){

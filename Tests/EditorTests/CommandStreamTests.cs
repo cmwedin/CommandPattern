@@ -93,4 +93,43 @@ public class CommandStreamTests {
         Assert.AreEqual(expected: testCommand, actual: oldQueue[0]);
 
     }
+    [Test]
+    public void ExecuteFullQueueNoFailureTest() {
+        int testLength = 10;
+        CommandStream commandStream = new CommandStream();
+        for (int i = 0; i < testLength; i++) {
+            commandStream.QueueCommand(new NullCommand());
+        }
+        commandStream.ExecuteFullQueue();
+        Assert.AreEqual(expected: 0, actual: commandStream.GetCommandQueue().Count);
+        Assert.IsFalse(commandStream.TryExecuteNext());
+    }
+    [Test]
+    public void ExecuteFullQueueWithFailuresTest() {
+        int testLength = 10;
+        CommandStream commandStream = new CommandStream();
+        Command[] IFailableCommands = new Command[testLength / 2];
+        int j = 0;
+        for (int i = 0; i < testLength; i++) {
+            if(i % 2 == 0) {
+                commandStream.QueueCommand(new NullCommand());
+            } else {
+                Command testFailable = new AlwaysFailsCommand();
+                commandStream.QueueCommand(testFailable);
+                IFailableCommands[j] = testFailable;
+                j++;
+            }
+        }
+        commandStream.ExecuteFullQueue(out var failedCommands);
+        Assert.AreEqual(expected: 0, actual: commandStream.GetCommandQueue().Count);
+        Assert.IsFalse(commandStream.TryExecuteNext());
+
+        Assert.AreEqual(expected: j, actual: failedCommands.Count);
+        for (int i = 0; i < j; i++) {
+            Assert.AreEqual(
+                expected: IFailableCommands[i],
+                actual: failedCommands[i]
+            );
+        }
+    }
 }
