@@ -159,5 +159,28 @@ namespace SadSapphicGames.CommandPattern
         public bool TryExecuteNext() {
             return TryExecuteNext(out var empty);
         }
+        /// <summary>
+        /// Execute's Commands from the CommandStream queue until it is empty. Be warned this will not give any indication of commands failing.
+        /// </summary>
+        public void ExecuteFullQueue() {
+            Command prevCommand = new NullCommand();
+            while (prevCommand != null) {
+                while(TryExecuteNext(out prevCommand)) {}
+            }
+        }
+        /// <summary>
+        /// Executes Commands from the CommandStream's queue until it is empty. Returns the a list of any Commands that failed as an out parameter
+        /// </summary>
+        /// <param name="failedCommands"> A list of any Commands in the Queue that failed to execute </param>
+        public void ExecuteFullQueue(out List<Command> failedCommands) {
+            Command prevCommand = new NullCommand();
+            failedCommands = new List<Command>();
+            while (prevCommand != null) {
+                while(TryExecuteNext(out prevCommand)) {}
+                if(prevCommand != null) {
+                    failedCommands.Add(prevCommand);
+                }
+            }
+        }
     }
 }
