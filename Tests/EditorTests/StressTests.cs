@@ -37,12 +37,12 @@ public class StressTests {
         Assert.IsTrue(commandStream.QueueEmpty);
         //? at one hundred million test takes ~5 seconds
     }
-    [Test, Timeout(300000)]
+    [Test, Timeout(30000)]
     public void VeryLargeNumberOfCommandsCappedHistoryTest() {
-        //? this test has identified significant preformance issues in DropHistory and must be run at a much smaller length
+        //? this test has identified significant performance issues in DropHistory and must be run at a much smaller length
         //? Test will also run out of memory if length somewhere between 2 and 3 hundred million
         int testLength = 100000000;
-        int historyDepth = 100;
+        int historyDepth = testLength / 10;
         CommandStream commandStream = new CommandStream(historyDepth);
         Debug.Log($"current test settings: execute {nameof(testNullCommand)} {testLength} times, history recorded to a depth of {historyDepth}");
         for (int i = 0; i < testLength; i++) {
