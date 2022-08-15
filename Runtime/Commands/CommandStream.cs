@@ -15,6 +15,22 @@ namespace SadSapphicGames.CommandPattern
         /// This is a list of the executed command history
         /// </summary>
         private List<Command> commandHistory = new List<Command>();
+        private int historyStartIndex = 0;
+        private List<Command> UnwrapHistory() {
+            List<Command> output = new List<Command>();
+            int index = historyStartIndex;
+            bool doneUnwrapping = false;
+            while(!doneUnwrapping) {
+                output.Add(commandHistory[index]);
+                index++;
+                if(index == historyStartIndex) {
+                    doneUnwrapping = true;
+                } else if (index == HistoryCount) {
+                    index = 0;
+                }
+            }
+            return output;
+        }
         /// <summary>
         ///  Get the CommandStream's history of executed Commands.   
         /// </summary>
@@ -23,8 +39,11 @@ namespace SadSapphicGames.CommandPattern
             if(HistoryDepth == 0){
                 Debug.LogWarning("This CommandStream does no record its history");
                 return null;
-            } else {
+            }
+            if(historyStartIndex == 0) {
                 return commandHistory.AsReadOnly();
+            } else {
+                return UnwrapHistory().AsReadOnly();
             }
         }
         /// <summary>
@@ -34,6 +53,10 @@ namespace SadSapphicGames.CommandPattern
         public ReadOnlyCollection<Command> GetCommandQueue() {
             return commandQueue.ToList().AsReadOnly();
         }
+        /// <summary>
+        /// Gets commandQueue.Count == 0
+        /// </summary>
+        public bool QueueEmpty { get => commandQueue.Count == 0; }
 
 
         private float historyDepth = 0;
@@ -83,7 +106,7 @@ namespace SadSapphicGames.CommandPattern
             }
         }
         /// <summary>
-        /// This will remove all commands from the CommandStream's queue and replace it with a new empty queue
+        /// This will remove all commands from the CommandStream's queue and replace it with a new empty queue. THIS DOES NOT EXECUTE COMMANDS.
         /// </summary>
         /// <returns> The commands in the previous queue, in case this information is needed (for example to rearrange an requeue them).</returns>
         public List<Command> EmptyQueue(){
@@ -93,14 +116,27 @@ namespace SadSapphicGames.CommandPattern
         }
         private void RecordCommand(Command command) {
             if(historyDepth == 0) return; //? we should never be here if this is true but just in case
-            commandHistory.Add(command);
-            if(HistoryCount > historyDepth) {
-                DropOldCommandHistory();
+            if (HistoryCount < HistoryDepth) {
+                commandHistory.Add(command);
+            } else if(HistoryCount == HistoryDepth) {
+                commandHistory[historyStartIndex] = command;
+                historyStartIndex++;
+                if(historyStartIndex == HistoryCount) {
+                    historyStartIndex = 0;
+                }
+            } else { //? HistoryCount > HistoryDepth
+                throw new Exception("Recorded history has exceeded maximum history depth");
             }
         }
-        private void DropOldCommandHistory() {
-            commandHistory = commandHistory.Skip((int)(HistoryCount - HistoryDepth)).ToList();
-        }
+        // private void DropOldCommandHistory() {
+        //     if (HistoryCount <= HistoryDepth) {
+        //         Debug.LogWarning("attempting to drop history when history count is less or equal to than maximum depth");
+        //         return;
+        //     }
+        //     int commandsToDrop = (int)(HistoryCount - HistoryDepth);
+        //     commandHistory.RemoveRange(0, commandsToDrop);
+        //     //? O(HistoryCount)
+        // }
         /// <summary>
         /// Attempt to queue's the undo command of a Command object implementing IUndoable if that command exists in this CommandStream's history
         /// </summary>
@@ -158,6 +194,29 @@ namespace SadSapphicGames.CommandPattern
         /// <returns> False if the command queue is empty, or the next command would fail. True otherwise. </returns>
         public bool TryExecuteNext() {
             return TryExecuteNext(out var empty);
+        }
+        /// <summary>
+        /// Execute's Commands from the CommandStream queue until it is empty. Be warned this will not give any indication of commands failing.
+        /// </summary>
+        public void ExecuteFullQueue() {
+            Command prevCommand = new NullCommand();
+            while (prevCommand != null) {
+                while(TryExecuteNext(out prevCommand)) {}
+            }
+        }
+        /// <summary>
+        /// Executes Commands from the CommandStream's queue until it is empty. Returns the a list of any Commands that failed as an out parameter
+        /// </summary>
+        /// <param name="failedCommands"> A list of any Commands in the Queue that failed to execute </param>
+        public void ExecuteFullQueue(out List<Command> failedCommands) {
+            Command prevCommand = new NullCommand();
+            failedCommands = new List<Command>();
+            while (prevCommand != null) {
+                while(TryExecuteNext(out prevCommand)) {}
+                if(prevCommand != null) {
+                    failedCommands.Add(prevCommand);
+                }
+            }
         }
     }
 }
