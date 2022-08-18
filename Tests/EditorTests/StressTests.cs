@@ -65,4 +65,18 @@ public class StressTests_MayTakeLongToRun {
         Assert.IsTrue(commandStream.QueueEmpty);
         //? at one hundred million test takes ~10 seconds
     }
+    [Test, Timeout(300000)]
+    public void IntMaxCommandsCappedHistoryInLoopExecutionTest() {
+        //? As expected if the commands are executed as they are added to the queue and a limited number are recorded in history we don't run out of memory and this test will run given enough time  
+        int testLength = int.MaxValue;
+        int historyDepth = 100000000;
+        CommandStream commandStream = new CommandStream(historyDepth);
+        Debug.Log($"current test settings: execute {nameof(testNullCommand)} {testLength} times, history recorded to a depth of {historyDepth}, commands executed as they enter queue.");
+        for (int i = 0; i < testLength; i++) {
+            commandStream.QueueCommand(testNullCommand);
+            commandStream.TryExecuteNext();
+        }
+        Assert.IsTrue(commandStream.QueueEmpty);
+        //? Executes in ~100 seconds (less but that closest order of magnitude)
+    }
 }
