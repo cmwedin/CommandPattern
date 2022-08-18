@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
-/// <summary>
-/// A singleton manager for a single-stream, out of the box implementation of the Command pattern. For more complicated implementations create your own CommandStream wrappers. 
-/// Does not drop Commands from its CommandHistory. Executes the next command in the CommandStream every frame.
-/// </summary>
 
 namespace SadSapphicGames.CommandPattern {
+    
+    /// <summary>
+    /// A singleton manager for a single-stream, out of the box implementation of the Command pattern. For more complicated implementations create your own CommandStream wrappers. 
+    /// Does not drop Commands from its CommandHistory. Executes the next command in the CommandStream every frame.
+    /// </summary>
     public class SingletonCommandManager : MonoBehaviour
     {
         /// <summary>
