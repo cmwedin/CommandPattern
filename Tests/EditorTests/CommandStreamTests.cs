@@ -83,11 +83,11 @@ public class CommandStreamTests {
         }
     }
     [Test]
-    public void EmptyQueueTest() {
+    public void DropQueueTest() {
         CommandStream commandStream = new CommandStream();
         var testCommand = new NullCommand();
         commandStream.QueueCommand(testCommand);
-        var oldQueue = commandStream.EmptyQueue();
+        var oldQueue = commandStream.DropQueue();
         Assert.IsFalse(commandStream.TryExecuteNext());
         Assert.AreEqual(expected: 1, actual: oldQueue.Count);
         Assert.AreEqual(expected: testCommand, actual: oldQueue[0]);
