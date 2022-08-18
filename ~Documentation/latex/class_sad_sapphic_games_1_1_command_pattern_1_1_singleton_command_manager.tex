@@ -1,5 +1,10 @@
 \hypertarget{class_sad_sapphic_games_1_1_command_pattern_1_1_singleton_command_manager}{}\doxysection{Sad\+Sapphic\+Games.\+Command\+Pattern.\+Singleton\+Command\+Manager Class Reference}
 \label{class_sad_sapphic_games_1_1_command_pattern_1_1_singleton_command_manager}\index{SadSapphicGames.CommandPattern.SingletonCommandManager@{SadSapphicGames.CommandPattern.SingletonCommandManager}}
+
+
+A singleton manager for a single-\/stream, out of the box implementation of the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command}{Command}} pattern. For more complicated implementations create your own \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command_stream}{Command\+Stream}} wrappers. Does not drop Commands from its Command\+History. Executes the next command in the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command_stream}{Command\+Stream}} every frame.  
+
+
 Inheritance diagram for Sad\+Sapphic\+Games.\+Command\+Pattern.\+Singleton\+Command\+Manager\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -32,6 +37,9 @@ static \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_singleto
 int {\bfseries History\+Count}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
 \begin{DoxyCompactList}\small\item\em The number of Commands executed by the Command\+Manager \end{DoxyCompactList}\end{DoxyCompactItemize}
 
+
+\doxysubsection{Detailed Description}
+A singleton manager for a single-\/stream, out of the box implementation of the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command}{Command}} pattern. For more complicated implementations create your own \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command_stream}{Command\+Stream}} wrappers. Does not drop Commands from its Command\+History. Executes the next command in the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command_stream}{Command\+Stream}} every frame. 
 
 \doxysubsection{Member Function Documentation}
 \mbox{\Hypertarget{class_sad_sapphic_games_1_1_command_pattern_1_1_singleton_command_manager_ac08f559027453d9a7d457d2c15e3852f}\label{class_sad_sapphic_games_1_1_command_pattern_1_1_singleton_command_manager_ac08f559027453d9a7d457d2c15e3852f}} 
