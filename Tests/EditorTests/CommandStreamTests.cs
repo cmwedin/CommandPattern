@@ -83,14 +83,26 @@ public class CommandStreamTests {
         }
     }
     [Test]
-    public void EmptyQueueTest() {
+    public void DropQueueTest() {
         CommandStream commandStream = new CommandStream();
         var testCommand = new NullCommand();
         commandStream.QueueCommand(testCommand);
-        var oldQueue = commandStream.EmptyQueue();
+        var oldQueue = commandStream.DropQueue();
         Assert.IsFalse(commandStream.TryExecuteNext());
         Assert.AreEqual(expected: 1, actual: oldQueue.Count);
         Assert.AreEqual(expected: testCommand, actual: oldQueue[0]);
+
+    }
+    [Test]
+    public void DropHistoryTest() {
+        CommandStream commandStream = new CommandStream();
+        var testCommand = new NullCommand();
+        commandStream.QueueCommand(testCommand);
+        Assert.IsTrue(commandStream.TryExecuteNext());
+        var oldHistory = commandStream.DropHistory();
+        Assert.AreEqual(expected: 0, actual: commandStream.HistoryCount);
+        Assert.AreEqual(expected: 1, actual: oldHistory.Count);
+        Assert.AreEqual(expected: testCommand, actual: oldHistory[0]);
 
     }
     [Test]

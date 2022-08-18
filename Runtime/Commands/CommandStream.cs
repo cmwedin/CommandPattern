@@ -106,12 +106,24 @@ namespace SadSapphicGames.CommandPattern
             }
         }
         /// <summary>
-        /// This will remove all commands from the CommandStream's queue and replace it with a new empty queue. THIS DOES NOT EXECUTE COMMANDS.
+        /// This will remove all commands from the CommandStream's queue and replace it with a new empty queue.
         /// </summary>
-        /// <returns> The commands in the previous queue, in case this information is needed (for example to rearrange an requeue them).</returns>
-        public List<Command> EmptyQueue(){
+        /// <remark> This can be useful to rearrange the commands in a queue. Simple preform the needed changes on the returned list and re-queue it </remark>
+        /// <returns> The commands in the previous queue, in case this information is needed.</returns>
+        public List<Command> DropQueue() {
             var output = commandQueue.ToList();
             commandQueue = new Queue<Command>();
+            return output;
+        }
+        /// <summary>
+        /// This will remove all commands from the CommandStream's history and replace it with a new empty list.
+        /// </summary>
+        /// <remark> This can be useful if you need the CommandStream to record all of its history but also need it to execute an extremely large number of commands without running out of memory. Even if every command is the same object a CommandStream will run out of memory at 2-3 hundred million commands in its queue or history. </remark>
+        /// <returns> The commands in the previous history, in case this information is needed </returns>
+        public ReadOnlyCollection<Command> DropHistory() {
+            var output = GetCommandHistory();
+            commandHistory = new List<Command>();
+            historyStartIndex = 0;
             return output;
         }
         private void RecordCommand(Command command) {
@@ -128,15 +140,7 @@ namespace SadSapphicGames.CommandPattern
                 throw new Exception("Recorded history has exceeded maximum history depth");
             }
         }
-        // private void DropOldCommandHistory() {
-        //     if (HistoryCount <= HistoryDepth) {
-        //         Debug.LogWarning("attempting to drop history when history count is less or equal to than maximum depth");
-        //         return;
-        //     }
-        //     int commandsToDrop = (int)(HistoryCount - HistoryDepth);
-        //     commandHistory.RemoveRange(0, commandsToDrop);
-        //     //? O(HistoryCount)
-        // }
+
         /// <summary>
         /// Attempt to queue's the undo command of a Command object implementing IUndoable if that command exists in this CommandStream's history
         /// </summary>
