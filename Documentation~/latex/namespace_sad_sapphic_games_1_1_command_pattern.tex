@@ -6,7 +6,7 @@
 class \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command}{Command}}
 \begin{DoxyCompactList}\small\item\em The base class of all commands \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command_stream}{Command\+Stream}}
-\item 
+\begin{DoxyCompactList}\small\item\em This is the object that stores commands to be invoked and executes them when told to by the client. It has no knowledge of the implementation of commands beyond their interfaces. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_composite_command}{Composite\+Command}}
 \begin{DoxyCompactList}\small\item\em A \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command}{Command}} that is composed of multiple child commands, all of which are executed together and leave one record in the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command_stream}{Command\+Stream}}\textquotesingle{}s history. $<$remark$>$ For more information on this type of object seek external documentation on the composite design pattern $<$/remark$>$ \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_composite_failure_exception}{Composite\+Failure\+Exception}}
@@ -18,7 +18,7 @@ interface \mbox{\hyperlink{interface_sad_sapphic_games_1_1_command_pattern_1_1_i
 class \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_command}{Null\+Command}}
 \begin{DoxyCompactList}\small\item\em A \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command}{Command}} that does nothing \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command}{Null\+Composite\+Command}}
-\item 
+\begin{DoxyCompactList}\small\item\em Like the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_command}{Null\+Command}} this is a composite command that does nothing, multiple times. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_simple_composite}{Simple\+Composite}}
 \begin{DoxyCompactList}\small\item\em A \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_composite_command}{Composite\+Command}} created from a collection of \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command}{Command}}\textquotesingle{}s that cannot fail \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_singleton_command_manager}{Singleton\+Command\+Manager}}
