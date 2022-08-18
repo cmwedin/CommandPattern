@@ -2,7 +2,7 @@
   "name" : "com.sadsapphicgames.commandpattern",
   "version" : "0.2.4",
   "displayName" : "Command Pattern",
-  "description" : "This package contains a collection of classes and interfaces to allow for quick and consistent implementation of the command pattern across projects.",
+  "description" : "This package contains a collection of classes and interfaces to allow for quick implementation of the command pattern across projects.",
   "author" : {
     "name" : "Chris Wedin",
     "email" : "cmwedin@gmail.com",
