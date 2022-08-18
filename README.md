@@ -9,6 +9,7 @@ To install this package in your Unity project, select the "window/Package Manage
 Once you see this package show up in the Package Manager window, it has been successfully installed
 
 ## Using this package
+Full documentation of this package can be found [here](https://cmwedin.github.io/CommandPatternDocumentation/annotated.html)
 ### The "Basics"
 If you are already familiar with the command pattern or don't care about the abstract design concepts behind it skip ahead to the implementation sections.
 
