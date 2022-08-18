@@ -94,6 +94,18 @@ public class CommandStreamTests {
 
     }
     [Test]
+    public void DropHistoryTest() {
+        CommandStream commandStream = new CommandStream();
+        var testCommand = new NullCommand();
+        commandStream.QueueCommand(testCommand);
+        Assert.IsTrue(commandStream.TryExecuteNext());
+        var oldHistory = commandStream.DropHistory();
+        Assert.AreEqual(expected: 0, actual: commandStream.HistoryCount);
+        Assert.AreEqual(expected: 1, actual: oldHistory.Count);
+        Assert.AreEqual(expected: testCommand, actual: oldHistory[0]);
+
+    }
+    [Test]
     public void ExecuteFullQueueNoFailureTest() {
         int testLength = 10;
         CommandStream commandStream = new CommandStream();
