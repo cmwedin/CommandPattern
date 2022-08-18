@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern
 {
+    /// <summary>
+    /// This is the object that stores commands to be invoked and executes them when told to by the client. It has no knowledge of the implementation of commands beyond their interfaces.
+    /// </summary>
     public class CommandStream {
         /// <summary>
         /// This is a Queue of the commands to be executed
