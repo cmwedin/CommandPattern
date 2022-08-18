@@ -16,7 +16,7 @@ public class StressTests_MayTakeLongToRun {
         //? Test will run out of memory if length somewhere between 2 and 3 hundred million
         int testLength = 100000000;
         CommandStream commandStream = new CommandStream();
-        Debug.Log($"current test settings: execute {nameof(testNullCommand)} {testLength} times, records full history");
+        Debug.Log($"current test settings: execute {nameof(testNullCommand)} {testLength} times, records full history, commands executed once all are queued.");
         for (int i = 0; i < testLength; i++) {
             commandStream.QueueCommand(testNullCommand);
         }
@@ -29,7 +29,7 @@ public class StressTests_MayTakeLongToRun {
         //? Test will also run out of memory if length somewhere between 2 and 3 hundred million
         int testLength = 100000000;
         CommandStream commandStream = new CommandStream(0);
-        Debug.Log($"current test settings: execute {nameof(testNullCommand)} {testLength} times, no history recorded.");
+        Debug.Log($"current test settings: execute {nameof(testNullCommand)} {testLength} times, no history recorded, commands executed once all are queued.");
         for (int i = 0; i < testLength; i++) {
             commandStream.QueueCommand(testNullCommand);
         }
@@ -57,7 +57,7 @@ public class StressTests_MayTakeLongToRun {
         int testLength = 100000000;
         int historyDepth = testLength / 10;
         CommandStream commandStream = new CommandStream(historyDepth);
-        Debug.Log($"current test settings: execute {nameof(testNullCommand)} {testLength} times, history recorded to a depth of {historyDepth}");
+        Debug.Log($"current test settings: execute {nameof(testNullCommand)} {testLength} times, history recorded to a depth of {historyDepth}, commands executed once all are queued");
         for (int i = 0; i < testLength; i++) {
             commandStream.QueueCommand(testNullCommand);
         }
