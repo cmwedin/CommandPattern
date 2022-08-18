@@ -1,5 +1,10 @@
 \hypertarget{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command}{}\doxysection{Sad\+Sapphic\+Games.\+Command\+Pattern.\+Null\+Composite\+Command Class Reference}
 \label{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command}\index{SadSapphicGames.CommandPattern.NullCompositeCommand@{SadSapphicGames.CommandPattern.NullCompositeCommand}}
+
+
+Like the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_command}{Null\+Command}} this is a composite command that does nothing, multiple times.  
+
+
 Inheritance diagram for Sad\+Sapphic\+Games.\+Command\+Pattern.\+Null\+Composite\+Command\+:\begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -9,12 +14,32 @@ Inheritance diagram for Sad\+Sapphic\+Games.\+Command\+Pattern.\+Null\+Composite
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command_af39199a9ebbed89b1fde0bcb5d6f192f}\label{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command_af39199a9ebbed89b1fde0bcb5d6f192f}} 
-{\bfseries Null\+Composite\+Command} (int size)
-\item 
+\mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command_af39199a9ebbed89b1fde0bcb5d6f192f}{Null\+Composite\+Command}} (int size)
+\begin{DoxyCompactList}\small\item\em Creates a \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command}{Null\+Composite\+Command}} composed of multiple Null\+Commands \end{DoxyCompactList}\item 
 \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_command}{Command}} \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command_a60218acaae9a58d2720ee44078df86c8}{Get\+Undo\+Command}} ()
-\begin{DoxyCompactList}\small\item\em Creates a command to revert the changes of the implementing command \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Like the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_command}{Null\+Command}} it is composed of, a \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command}{Null\+Composite\+Command}} is its own undo-\/command \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Like the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_command}{Null\+Command}} this is a composite command that does nothing, multiple times. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command_af39199a9ebbed89b1fde0bcb5d6f192f}\label{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command_af39199a9ebbed89b1fde0bcb5d6f192f}} 
+\index{SadSapphicGames.CommandPattern.NullCompositeCommand@{SadSapphicGames.CommandPattern.NullCompositeCommand}!NullCompositeCommand@{NullCompositeCommand}}
+\index{NullCompositeCommand@{NullCompositeCommand}!SadSapphicGames.CommandPattern.NullCompositeCommand@{SadSapphicGames.CommandPattern.NullCompositeCommand}}
+\doxysubsubsection{\texorpdfstring{NullCompositeCommand()}{NullCompositeCommand()}}
+{\footnotesize\ttfamily Sad\+Sapphic\+Games.\+Command\+Pattern.\+Null\+Composite\+Command.\+Null\+Composite\+Command (\begin{DoxyParamCaption}\item[{int}]{size }\end{DoxyParamCaption})}
+
+
+
+Creates a \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command}{Null\+Composite\+Command}} composed of multiple Null\+Commands 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & How many Null\+Commands to include in the composite\\
+\hline
+\end{DoxyParams}
 
 
 \doxysubsection{Member Function Documentation}
@@ -26,10 +51,10 @@ Inheritance diagram for Sad\+Sapphic\+Games.\+Command\+Pattern.\+Null\+Composite
 
 
 
-Creates a command to revert the changes of the implementing command 
+Like the \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_command}{Null\+Command}} it is composed of, a \mbox{\hyperlink{class_sad_sapphic_games_1_1_command_pattern_1_1_null_composite_command}{Null\+Composite\+Command}} is its own undo-\/command 
 
 \begin{DoxyReturn}{Returns}
-a command that reverts the implementing command
+This object
 \end{DoxyReturn}
 
 
