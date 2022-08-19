@@ -34,4 +34,21 @@ public class CommandManagerTests
             actual: CommandManagerInstance.HistoryCount
         );
     }
+    [UnityTest]
+    public IEnumerator CommandManagerFreezeExecutionTest()
+    {
+        CommandManagerInstance.ToggleCommandExecution(false);
+        CommandManagerInstance.QueueCommand(new NullCommand());
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        Assert.IsFalse(CommandManagerInstance.QueueEmpty);
+        CommandManagerInstance.ToggleCommandExecution(true);
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        Assert.IsTrue(CommandManagerInstance.QueueEmpty);
+        Assert.AreEqual(
+            expected: 1,
+            actual: CommandManagerInstance.HistoryCount
+        );
+    }
 }

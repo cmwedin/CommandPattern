@@ -16,6 +16,7 @@ public class IFailableTests
         Assert.IsFalse(commandStream.TryExecuteNext(out Command nextCommand));
         Assert.IsNotNull(nextCommand);
         Assert.AreEqual(expected: 0, actual: commandStream.HistoryCount);
+        Assert.AreEqual(expected: 0, actual: commandStream.QueueCount);
     }
     [Test]
     public void SimpleCompositeFailureTest() {

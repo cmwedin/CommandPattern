@@ -20,7 +20,7 @@ public class CompositeCommandTest
         Assert.AreEqual(expected: 20, actual: testComposite.ChildCount);
     }
     [Test]
-    public void CompositeCommandTickerTest() {
+    public void SimpleCompositeCommandTickerTest() {
         CommandStream commandStream = new CommandStream();
         Ticker ticker = new Ticker();
         List<Command> subCommands = new List<Command>();
@@ -35,13 +35,25 @@ public class CompositeCommandTest
         Assert.AreEqual(expected: testSize, actual: ticker.count);
     }
     [Test]
-    public void CompositeFailureExceptionTest() {
+    public void CompositeFailureReversibleTest() {
         CommandStream commandStream = new CommandStream();
-        BadCompositeCommand testComposite = new BadCompositeCommand();
+        BadCompositeCommandReversible testComposite = new BadCompositeCommandReversible();
         commandStream.QueueCommand(testComposite);
         //? uncomment To test the error readout (will make test fail)
         // commandStream.TryExecuteNext();
-        Assert.Throws<CompositeFailureException>(() => {
+        Assert.DoesNotThrow(() => {
+            commandStream.TryExecuteNext();
+        });
+        Assert.AreEqual(expected: 0, actual: commandStream.HistoryCount);
+    }
+    [Test]
+    public void CompositeFailureIrreversibleTest() {
+        CommandStream commandStream = new CommandStream();
+        BadCompositeCommandIrreversible testComposite = new BadCompositeCommandIrreversible();
+        commandStream.QueueCommand(testComposite);
+        //? uncomment To test the error readout (will make test fail)
+        // commandStream.TryExecuteNext();
+        Assert.Throws<IrreversibleCompositeFailureException>(() => {
             commandStream.TryExecuteNext();
         });
     }

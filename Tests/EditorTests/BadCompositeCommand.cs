@@ -4,12 +4,20 @@ using SadSapphicGames.CommandPattern;
 using UnityEngine;
 
 /// <summary>
-/// A CompositeCommand who's children will quietly fail (It does not implement IFailable). This should never be used outside of tests. It will always cause an exception.
+/// A CompositeCommand who's children will quietly fail (It does not implement IFailable) but who can be reverted
 /// </summary>
-public class BadCompositeCommand : CompositeCommand
+public class BadCompositeCommandReversible : CompositeCommand
 {
-    public BadCompositeCommand() {
+    public BadCompositeCommandReversible() {
         AddChild(new NullCommand());
+        AddChild(new AlwaysFailsCommand());
+    }
+}
+
+public class BadCompositeCommandIrreversible : CompositeCommand
+{
+    public BadCompositeCommandIrreversible() {
+        AddChild(new IrreversibleNullCommand());
         AddChild(new AlwaysFailsCommand());
     }
 }
