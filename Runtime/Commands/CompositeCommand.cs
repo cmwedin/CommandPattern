@@ -74,11 +74,11 @@ namespace SadSapphicGames.CommandPattern {
         /// <summary>
         /// The child command that failed
         /// </summary>
-        Command failedCommand;
+        public readonly Command failedCommand;
         /// <summary>
         /// The executed commands that could not be undone
         /// </summary>
-        List<Command> irreversibleCommands;
+        public readonly List<Command> irreversibleCommands;
         public IrreversibleCompositeFailureException(Command failedCommand, List<Command> irreversibleCommands) 
         : base($"A CompositeCommand was executed however its child {failedCommand} failed, {irreversibleCommands.Count} executed children could not be undone") {
             this.failedCommand = failedCommand;
@@ -94,7 +94,7 @@ namespace SadSapphicGames.CommandPattern {
         /// <summary>
         /// The child command that failed
         /// </summary>
-        Command failedCommand;
+        public readonly Command failedCommand;
         public ReversibleCompositeFailureException(Command failedCommand) 
         : base($"A CompositeCommand was executed however its child {failedCommand} failed, all executed children where able to be undone") {
             this.failedCommand = failedCommand;
