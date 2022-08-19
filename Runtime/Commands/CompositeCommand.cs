@@ -35,24 +35,48 @@ namespace SadSapphicGames.CommandPattern {
         /// Executes each of the commands included in this object. 
         /// <remark> Default implementation queues all subCommands into the internalStream and executes them until it is empty.</remark>
         /// </summary>
-        /// <exception cref="CompositeFailureException"> Indicates one of the commands children failed, If this is possible you should be implementing IFailable. </exception>
+        /// <exception cref="IrreversibleCompositeFailureException"> Indicates one of the commands children failed, If this is possible you should be implementing IFailable. </exception>
         public override void Execute() {
             internalStream.QueueCommands(subCommands);
             Command prevChild;
             while(internalStream.TryExecuteNext(out prevChild)){}
-            if(prevChild != null) throw new CompositeFailureException(prevChild);
+            if(prevChild != null) { //? One of the children failed 
+                var canUndo =
+                    from com in internalStream.GetCommandHistory()
+                    select com is IUndoable;
+                if(canUndo.Contains(false)) {
+                    throw new IrreversibleCompositeFailureException(prevChild);
+                } else {
+                    internalStream.DropQueue();
+                    foreach (var command in internalStream.GetCommandHistory()) {
+                        internalStream.ForceQueueUndoCommand((IUndoable)command);
+                    }
+                    internalStream.ExecuteFullQueue();
+                    throw new ReversibleCompositeCommandException(prevChild);
+                }
+            }
         }
     }
     /// <summary>
-    /// An exception that is thrown when a CompositeCommand is executed but one of its children fails
+    /// An exception that is thrown when a CompositeCommand is executed but one of its children fails and the composite cannot undo its executed commands
     /// </summary>
     [System.Serializable]
-    public class CompositeFailureException : System.Exception
+    public class IrreversibleCompositeFailureException : System.Exception
     {
-        public CompositeFailureException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed. If you are seeing this your composite needs to implement IFailable or its implementation of IFailable.WouldFail contains an error.") { }
-        public CompositeFailureException(string message) : base(message) { }
-        public CompositeFailureException(string message, System.Exception inner) : base(message, inner) { }
-        protected CompositeFailureException(
+        public IrreversibleCompositeFailureException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed and the composite could not undo its executed commands") { }
+        public IrreversibleCompositeFailureException(string message) : base(message) { }
+        public IrreversibleCompositeFailureException(string message, System.Exception inner) : base(message, inner) { }
+        protected IrreversibleCompositeFailureException(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+    [System.Serializable]
+    public class ReversibleCompositeCommandException : System.Exception
+    {
+        public ReversibleCompositeCommandException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed, the executed commands where able to be undone") { }
+        public ReversibleCompositeCommandException(string message) : base(message) { }
+        public ReversibleCompositeCommandException(string message, System.Exception inner) : base(message, inner) { }
+        protected ReversibleCompositeCommandException(
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }

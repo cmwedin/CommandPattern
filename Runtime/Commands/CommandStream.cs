@@ -195,7 +195,14 @@ namespace SadSapphicGames.CommandPattern
             ) {
                 return false;
             }
-            nextCommand.Execute();
+            try {
+                nextCommand.Execute();
+            } catch (IrreversibleCompositeFailureException ex) {
+                throw ex;
+            } catch(ReversibleCompositeCommandException ex) {
+                Debug.LogWarning(ex.Message);
+                return false;
+            }
             if(historyDepth > 0) {
                 RecordCommand(nextCommand);
             }
