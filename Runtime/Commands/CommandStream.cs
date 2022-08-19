@@ -40,7 +40,7 @@ namespace SadSapphicGames.CommandPattern
         /// <returns>The history of executed commands, null if history is not recorded. </returns>
         public ReadOnlyCollection<Command> GetCommandHistory() {
             if(HistoryDepth == 0){
-                Debug.LogWarning("This CommandStream does no record its history");
+                Debug.LogWarning("This CommandStream does not record its history, returning null");
                 return null;
             }
             if(historyStartIndex == 0) {
@@ -73,10 +73,16 @@ namespace SadSapphicGames.CommandPattern
             } 
         }
         /// <summary>
-        /// This is the number of Commands currently stored in the CommandStreams history.
+        /// Gets the number of Commands currently recorded in the CommandStream's history.
         /// </summary>
         public int HistoryCount {
             get => commandHistory.Count;
+        }
+        /// <summary>
+        /// Gets the number of Commands currently waiting in the CommandStream's queue.
+        /// </summary>
+        public int QueueCount {
+            get => commandQueue.Count();
         }
 
         /// <summary>

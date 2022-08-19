@@ -16,6 +16,7 @@ public class CommandStreamTests {
             commands[i] = new NullCommand();
         }
         commandStream.QueueCommands(commands);
+        Assert.AreEqual(expected: testDepth, actual: commandStream.QueueCount);
         int j = 0;
         while(commandStream.TryExecuteNext()) {
             Assert.AreEqual(
@@ -25,6 +26,7 @@ public class CommandStreamTests {
             Assert.IsTrue(j <= testDepth);
             j++;
         }
+        Assert.IsTrue(commandStream.QueueEmpty);
     }
     [Test]
     public void CommandStreamTickerTest() {
@@ -81,6 +83,16 @@ public class CommandStreamTests {
             }
             Assert.AreEqual(expected: testDepth * 2, actual: j);
         }
+    }
+    [Test]
+    public void CommandStreamNoHistoryTest() {
+        const int testLength = 10;
+        CommandStream commandStream = new CommandStream(0);
+        for (int i = 0; i < testLength; i++) {
+            commandStream.QueueCommand(new NullCommand());
+            Assert.IsTrue(commandStream.TryExecuteNext());
+        }
+        Assert.IsNull(commandStream.GetCommandHistory());
     }
     [Test]
     public void DropQueueTest() {
