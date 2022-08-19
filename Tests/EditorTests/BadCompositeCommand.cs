@@ -17,7 +17,7 @@ public class BadCompositeCommandReversible : CompositeCommand
 public class BadCompositeCommandIrreversible : CompositeCommand
 {
     public BadCompositeCommandIrreversible() {
-        AddChild(new IrreversibleCommand());
+        AddChild(new IrreversibleNullCommand());
         AddChild(new AlwaysFailsCommand());
     }
 }

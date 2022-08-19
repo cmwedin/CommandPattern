@@ -16,19 +16,26 @@ namespace SadSapphicGames.CommandPattern {
         /// The singleton instance of the CommandManger.
         /// </summary>
         public static SingletonCommandManager Instance { get; private set; }
-        private CommandStream commandStream = new CommandStream();
+        /// <summary>
+        /// The value that will be used in the internal CommandStream's constructor, set to negative to record all history
+        /// </summary>
+        [SerializeField, Tooltip("The value that will be used in the internal CommandStream's constructor for its history depth, set to negative to record all history")]
+        public int maximumHistoryDepth = -1;
+        private CommandStream commandStream;
         private bool freezeCommandExecution = false;
         /// <summary>
         /// Turns command execution off if its on and on if its off
         /// </summary>
-        public void ToggleCommandExecution() {
+        public void ToggleCommandExecution()
+        {
             freezeCommandExecution = !freezeCommandExecution;
         }
         /// <summary>
         /// Turns command execution off or on
         /// </summary>
         /// <param name="onoff">if false stops the execution of commands, if true enables it</param>
-        public void ToggleCommandExecution(bool onoff) {
+        public void ToggleCommandExecution(bool onoff)
+        {
             freezeCommandExecution = !onoff;
         }
         /// <summary>
@@ -39,10 +46,37 @@ namespace SadSapphicGames.CommandPattern {
             return commandStream.GetCommandHistory();
         }
         /// <summary>
-        /// The number of Commands executed by the CommandManager
+        /// Empties the history of the internal CommandStream and replaces it with an empty one.
         /// </summary>
-        public int HistoryCount {
-            get => GetCommandHistory().Count;
+        /// <returns> The old history of the internal CommandStream </returns>
+        public ReadOnlyCollection<Command> DropCommandHistory() {
+            return commandStream.DropHistory();
+        }
+
+        /// <summary>
+        /// The number of Commands recorded by the CommandManager's CommandStream
+        /// </summary>
+        public int HistoryCount
+        {
+            get => commandStream.HistoryCount;
+        }
+        /// <summary>
+        /// The depth to which the CommandManager's CommandStream records its history
+        /// </summary>
+        public float HistoryDepth {
+            get => commandStream.HistoryDepth;
+        }
+        /// <summary>
+        /// The Number of commands queued in the CommandManager's CommandStream 
+        /// </summary>
+        public int QueueCount {
+            get => commandStream.QueueCount;
+        }
+        /// <summary>
+        /// Wether or not the CommandManger's CommandStream has an empty queue
+        /// </summary>
+        public bool QueueEmpty {
+            get => commandStream.QueueEmpty;
         }
         /// <summary>
         /// Queue's a Command into the CommandManager's CommandStream
@@ -62,8 +96,16 @@ namespace SadSapphicGames.CommandPattern {
         /// Queue the undo-command of a Command implementing IUndoable into the CommandStream
         /// </summary>
         /// <param name="commandToUndo"> The IUndoable Command to queue an undo-command for </param>
-        public void QueueUndoCommand(IUndoable commandToUndo) {
-            commandStream.TryQueueUndoCommand(commandToUndo);
+        /// <returns>Wether the undo command was allowed to be queued </returns>
+        public bool TryQueueUndoCommand(IUndoable commandToUndo) {
+            return commandStream.TryQueueUndoCommand(commandToUndo);
+        }
+        /// <summary>
+        /// Forces the internal CommandStream to queue and IUndoable commands undo command
+        /// </summary>
+        /// <param name="commandToUndo">The IUndoable commadn to undo </param>
+        public void ForceQueueUndoCommand(IUndoable commandToUndo) {
+            commandStream.ForceQueueUndoCommand(commandToUndo);
         }
 
         private void Awake() {
@@ -74,9 +116,12 @@ namespace SadSapphicGames.CommandPattern {
             }
         }
         // Start is called before the first frame update
-        void Start()
-        {
-
+        void Start() {
+            if (maximumHistoryDepth >= 0) {
+                commandStream = new CommandStream(maximumHistoryDepth);
+            } else {
+                commandStream = new CommandStream();
+            }
         }
 
         // Update is called once per frame
