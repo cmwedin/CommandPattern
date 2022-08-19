@@ -20,7 +20,7 @@ public class CompositeCommandTest
         Assert.AreEqual(expected: 20, actual: testComposite.ChildCount);
     }
     [Test]
-    public void CompositeCommandTickerTest() {
+    public void SimpleCompositeCommandTickerTest() {
         CommandStream commandStream = new CommandStream();
         Ticker ticker = new Ticker();
         List<Command> subCommands = new List<Command>();

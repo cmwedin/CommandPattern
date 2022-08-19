@@ -10,7 +10,7 @@ namespace SadSapphicGames.CommandPattern {
     /// </summary>
     public abstract class CompositeCommand : Command {
         /// <summary>
-        /// The Commands that will be executed upon executing this object
+        /// The child Commands that will be executed upon executing this object
         /// </summary>
         protected List<Command> subCommands = new List<Command>();
         /// <summary>
@@ -35,7 +35,7 @@ namespace SadSapphicGames.CommandPattern {
         /// Executes each of the commands included in this object. 
         /// <remark> Default implementation queues all subCommands into the internalStream and executes them until it is empty.</remark>
         /// </summary>
-        /// <exception cref="CompositeFailureException"> Indicates one of the commands children failed, If this is possible you should be implementing IFailable to prevent this from happening. </exception>
+        /// <exception cref="CompositeFailureException"> Indicates one of the commands children failed, If this is possible you should be implementing IFailable. </exception>
         public override void Execute() {
             internalStream.QueueCommands(subCommands);
             Command prevChild;
@@ -49,7 +49,7 @@ namespace SadSapphicGames.CommandPattern {
     [System.Serializable]
     public class CompositeFailureException : System.Exception
     {
-        public CompositeFailureException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed. If you are seeing this you probably need to implement IFailable or your implementation of it contains an error.") { }
+        public CompositeFailureException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed. If you are seeing this your composite needs to implement IFailable or its implementation of IFailable.WouldFail contains an error.") { }
         public CompositeFailureException(string message) : base(message) { }
         public CompositeFailureException(string message, System.Exception inner) : base(message, inner) { }
         protected CompositeFailureException(
