@@ -32,14 +32,16 @@ namespace SadSapphicGames.CommandPattern {
         public int ChildCount { get => subCommands.Count; }
         
         /// <summary>
-        /// Executes each of the commands included in this object. 
-        /// <remark> Default implementation queues all subCommands into the internalStream and executes them until it is empty.</remark>
+        /// Queues all of the child commands into the internal CommandStream and attempts to invoke all of them. Will throw an exception if one of its children fails.
+        /// 
+        /// Be aware that if you override this method you will bypass the implemented failsafe's for children of the CompositeCommand failing such as attempting to undo executed commands
         /// </summary>
-        /// <exception cref="IrreversibleCompositeFailureException"> Indicates one of the commands children failed, If this is possible you should be implementing IFailable. </exception>
+        /// <exception cref="IrreversibleCompositeFailureException"> Indicates one of the children of the CompositeCommand failed and its executed commands cannot be undone. TryExecuteNext will catch this exception and throw it upwards </exception>
+        /// <exception cref="ReversibleCompositeCommandException"> Indicates one of the children of the CompositeCommand failed but it was able to undo all of its executed commands. TryExecuteNext will catch this exception and handle it by returning false. </exception>
         public override void Execute() {
             internalStream.QueueCommands(subCommands);
             Command prevChild;
-            while(internalStream.TryExecuteNext(out prevChild)){}
+            while(internalStream.TryExecuteNext(out prevChild)) {}
             if(prevChild != null) { //? One of the children failed 
                 var canUndo =
                     from com in internalStream.GetCommandHistory()
@@ -58,7 +60,7 @@ namespace SadSapphicGames.CommandPattern {
         }
     }
     /// <summary>
-    /// An exception that is thrown when a CompositeCommand is executed but one of its children fails and the composite cannot undo its executed commands
+    /// An exception that indicates a CompositeCommand is executed but one of its children failed and the composite cannot undo its executed commands
     /// </summary>
     [System.Serializable]
     public class IrreversibleCompositeFailureException : System.Exception
@@ -70,6 +72,9 @@ namespace SadSapphicGames.CommandPattern {
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
+    /// <summary>
+    /// An exception that indicates a CompositeCommand is executed but one of its children failed, however the composite was able to undo the commands it had executed
+    /// </summary>
     [System.Serializable]
     public class ReversibleCompositeCommandException : System.Exception
     {
