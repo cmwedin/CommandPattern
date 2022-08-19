@@ -32,29 +32,35 @@ namespace SadSapphicGames.CommandPattern {
         public int ChildCount { get => subCommands.Count; }
         
         /// <summary>
-        /// Queues all of the child commands into the internal CommandStream and attempts to invoke all of them. Will throw an exception if one of its children fails.
+        /// Queues all of the child commands into the internal CommandStream and attempts to invoke all of them. Will throw an exception if one of its children fails after attempting to revert all its executed commands.
         /// 
         /// Be aware that if you override this method you will bypass the implemented failsafe's for children of the CompositeCommand failing such as attempting to undo executed commands
         /// </summary>
-        /// <exception cref="IrreversibleCompositeFailureException"> Indicates one of the children of the CompositeCommand failed and its executed commands cannot be undone. TryExecuteNext will catch this exception and throw it upwards </exception>
-        /// <exception cref="ReversibleCompositeCommandException"> Indicates one of the children of the CompositeCommand failed but it was able to undo all of its executed commands. TryExecuteNext will catch this exception and handle it by returning false. </exception>
+        /// <exception cref="IrreversibleCompositeFailureException"> Indicates one of the children of the CompositeCommand failed and it executed one or more commands that cannot be undone. TryExecuteNext will catch this exception and throw it upwards </exception>
+        /// <exception cref="ReversibleCompositeFailureException"> Indicates one of the children of the CompositeCommand failed but it was able to undo all of its executed commands. TryExecuteNext will catch this exception and handle it by returning false. </exception>
         public override void Execute() {
             internalStream.QueueCommands(subCommands);
             Command prevChild;
             while(internalStream.TryExecuteNext(out prevChild)) {}
             if(prevChild != null) { //? One of the children failed 
-                var canUndo =
+                var reversibleCommands =
                     from com in internalStream.GetCommandHistory()
-                    select com is IUndoable;
-                if(canUndo.Contains(false)) {
-                    throw new IrreversibleCompositeFailureException(prevChild);
+                    where com is IUndoable
+                    select com;
+                var irreversibleCommands = 
+                    from com in internalStream.GetCommandHistory()
+                    where com is not IUndoable
+                    select com;
+                internalStream.DropQueue();
+                foreach (var command in reversibleCommands) {
+                    internalStream.ForceQueueUndoCommand((IUndoable)command);
+                }
+                internalStream.ExecuteFullQueue();
+
+                if(irreversibleCommands.Count() == 0) {
+                    throw new ReversibleCompositeFailureException(prevChild);
                 } else {
-                    internalStream.DropQueue();
-                    foreach (var command in internalStream.GetCommandHistory()) {
-                        internalStream.ForceQueueUndoCommand((IUndoable)command);
-                    }
-                    internalStream.ExecuteFullQueue();
-                    throw new ReversibleCompositeCommandException(prevChild);
+                    throw new IrreversibleCompositeFailureException(prevChild,irreversibleCommands.ToList());
                 }
             }
         }
@@ -65,24 +71,33 @@ namespace SadSapphicGames.CommandPattern {
     [System.Serializable]
     public class IrreversibleCompositeFailureException : System.Exception
     {
-        public IrreversibleCompositeFailureException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed and the composite could not undo its executed commands") { }
-        public IrreversibleCompositeFailureException(string message) : base(message) { }
-        public IrreversibleCompositeFailureException(string message, System.Exception inner) : base(message, inner) { }
-        protected IrreversibleCompositeFailureException(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+        /// <summary>
+        /// The child command that failed
+        /// </summary>
+        Command failedCommand;
+        /// <summary>
+        /// The executed commands that could not be undone
+        /// </summary>
+        List<Command> irreversibleCommands;
+        public IrreversibleCompositeFailureException(Command failedCommand, List<Command> irreversibleCommands) 
+        : base($"A CompositeCommand was executed however its child {failedCommand} failed, {irreversibleCommands.Count} executed children could not be undone") {
+            this.failedCommand = failedCommand;
+            this.irreversibleCommands = irreversibleCommands;
+        }
     }
     /// <summary>
     /// An exception that indicates a CompositeCommand is executed but one of its children failed, however the composite was able to undo the commands it had executed
     /// </summary>
     [System.Serializable]
-    public class ReversibleCompositeCommandException : System.Exception
+    public class ReversibleCompositeFailureException : System.Exception
     {
-        public ReversibleCompositeCommandException(Command failedCommand) : base($"A CompositeCommand was executed however its child {failedCommand} failed, the executed commands where able to be undone") { }
-        public ReversibleCompositeCommandException(string message) : base(message) { }
-        public ReversibleCompositeCommandException(string message, System.Exception inner) : base(message, inner) { }
-        protected ReversibleCompositeCommandException(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+        /// <summary>
+        /// The child command that failed
+        /// </summary>
+        Command failedCommand;
+        public ReversibleCompositeFailureException(Command failedCommand) 
+        : base($"A CompositeCommand was executed however its child {failedCommand} failed, all executed children where able to be undone") {
+            this.failedCommand = failedCommand;
+        }
     }
 }

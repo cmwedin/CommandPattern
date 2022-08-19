@@ -199,7 +199,7 @@ namespace SadSapphicGames.CommandPattern
                 nextCommand.Execute();
             } catch (IrreversibleCompositeFailureException ex) {
                 throw ex;
-            } catch(ReversibleCompositeCommandException ex) {
+            } catch(ReversibleCompositeFailureException ex) {
                 Debug.LogWarning(ex.Message);
                 return false;
             }
