@@ -36,7 +36,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
 
                 if (Input.GetKeyDown(inputCommandStream.fireKeyCode)) {
                     inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, projectileVisuals, 200));
-                } else if (Input.GetKeyDown(inputCommandStream.altfireKeyCode)) {
+                } else if (Input.GetKeyDown(inputCommandStream.altFireKeyCode)) {
                     inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjectileVisuals, 50));
 
                 }
