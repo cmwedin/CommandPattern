@@ -127,7 +127,7 @@ namespace SadSapphicGames.CommandPattern {
         // Update is called once per frame
         void Update() {
             if (!freezeCommandExecution) {
-                commandStream.TryExecuteNext();
+                commandStream?.TryExecuteNext();
             }
         }
     }
