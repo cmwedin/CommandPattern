@@ -24,14 +24,32 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         [HideInInspector] public KeyCode leftKeyCode = KeyCode.A;
         [HideInInspector] public KeyCode rightKeyCode = KeyCode.D;
         [HideInInspector] public KeyCode fireKeyCode = KeyCode.Mouse0;
+        [HideInInspector] public KeyCode altfireKeyCode = KeyCode.Mouse1;
+
+        [HideInInspector] public KeyCode undoKeyCode = KeyCode.Backspace;
+        [HideInInspector] public KeyCode sprintKey = KeyCode.LeftShift;
+
+
 
         private CommandStream internalStream = new CommandStream(100000000);
+        private Stack<IUndoable> undoStack = new Stack<IUndoable>();
+        private IUndoable prevUndo;
         public void QueueCommand(Command command) {
             internalStream.QueueCommand(command);
         }
+        public void Undo() {
+            if(undoStack.TryPop(out var topUndo)) {
+                prevUndo = topUndo;
+                internalStream.TryQueueUndoCommand(topUndo);
+            }
+        }
 
         private void Update() {
-            if(internalStream.TryExecuteNext(out var topCommand)){}
+            if(internalStream.TryExecuteNext(out var topCommand)) {
+                if(topCommand is IUndoable && topCommand != prevUndo?.GetUndoCommand()) {
+                    undoStack.Push((IUndoable)topCommand);
+                }
+            }
         }
 
     }
