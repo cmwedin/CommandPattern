@@ -7,7 +7,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
     public class ModifyHealthCommand : Command, IUndoable, IFailable
     {
         public int Magnitude { get; private set; }
-        private IHealth healthImplementer;
+        public IHealth healthImplementer;
         //? Caching the undo command as a member can be useful so each time we get a Command's undo we are working with the same object
         private Command undoCommand;
 
