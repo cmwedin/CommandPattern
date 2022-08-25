@@ -7,30 +7,30 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
     public class ModifyHealthCommand : Command, IUndoable, IFailable
     {
         public int Magnitude { get; private set; }
-        private HealthBar healthBar;
+        private IHealth healthImplementer;
         //? Caching the undo command as a member can be useful so each time we get a Command's undo we are working with the same object
         private Command undoCommand;
 
-        public ModifyHealthCommand(int magnitude, HealthBar healthBar) {
+        public ModifyHealthCommand(int magnitude, IHealth healthImplementer) {
             this.Magnitude = magnitude;
-            this.healthBar = healthBar;
+            this.healthImplementer = healthImplementer;
         }
 
         public override void Execute() {
-            healthBar.Health += Magnitude;
+            healthImplementer.Health += Magnitude;
         }
 
         public Command GetUndoCommand() {
             if(undoCommand == null) {
-                undoCommand = new ModifyHealthCommand(-Magnitude, healthBar);
+                undoCommand = new ModifyHealthCommand(-Magnitude, healthImplementer);
             }
             return undoCommand;
         }
 
         public bool WouldFail()
         {
-            var futureValue = healthBar.Health + Magnitude;
-            return (futureValue > healthBar.MaxHealth || futureValue < 0);
+            var futureValue = healthImplementer.Health + Magnitude;
+            return (futureValue > healthImplementer.MaxHealth || futureValue < 0);
         }
     }
 }
