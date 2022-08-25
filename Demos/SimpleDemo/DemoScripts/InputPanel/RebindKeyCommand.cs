@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern.SimpleDemo
 {
-    public class RebindKeyCommand : Command, IUndoable
+    public class RebindKeyCommand : AsyncCommand, IUndoable
     {
         protected Dictionary<InputType, KeyCode> keyBinds;
         protected InputType inputToRebind;
@@ -28,7 +28,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             this.inputToRebind = inputToRebind;
             prevBinding = keyBinds[inputToRebind];
         }
-        private async Task ExecuteAsync() {
+        public override async Task ExecuteAsync() {
             InvokeOnRebindStart();
             bool done = false;
             bool prevDemoState = InputCommandStream.Instance.activateDemo.isOn;
