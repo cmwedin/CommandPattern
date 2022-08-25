@@ -28,7 +28,7 @@ public class Projectile : MonoBehaviour
     void Update() {
         if (active)
         {
-            Vector3 target = this.transform.position + new Vector3(0, Time.deltaTime * Speed, 0);
+            Vector3 target = this.transform.position + new Vector3(0, Time.fixedDeltaTime * Speed, 0);
             if (target.y > yMax) {
                 Destroy(gameObject);
             } else {

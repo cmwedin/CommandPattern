@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KeySelector : MonoBehaviour
+public class KeystrokeListener : MonoBehaviour
 {
-    public event Action<KeyCode> KeySelected;
+    public event Action<KeyCode> OnKeystrokeDetected;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +16,7 @@ public class KeySelector : MonoBehaviour
     void Update() {
         foreach(KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode))){
             if(Input.GetKey(keyCode)) {
-                KeySelected?.Invoke(keyCode);
+                OnKeystrokeDetected?.Invoke(keyCode);
             }
         }
     }

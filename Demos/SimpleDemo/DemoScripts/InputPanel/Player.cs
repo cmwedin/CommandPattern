@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SadSapphicGames.CommandPattern.SimpleDemo {
     public class Player : MonoBehaviour
     {
-        public bool DemoActive { get; set; }
+        public bool ReadInputs { get; set; }
         public RectTransform boundingBox;
         [SerializeField] private int baseSpeed = 100;
         [SerializeField] private float sprintFactor = 1.5f;
@@ -23,7 +23,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         // Update is called once per frame
         void Update()
         {
-            if (DemoActive)
+            if (ReadInputs)
             {
                 Vector2 movementVector = ReadMovementInput();
                 if (movementVector != Vector2.zero) {
@@ -35,10 +35,9 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
                 }
 
                 if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.Fire])) {
-                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, projectileVisuals, 200));
+                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, projectileVisuals, 50));
                 } else if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.AltFire])) {
-                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjectileVisuals, 50));
-
+                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjectileVisuals, 7));
                 }
 
                 if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.Undo]))
