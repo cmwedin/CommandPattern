@@ -7,7 +7,7 @@ namespace SadSapphicGames.CommandPattern
     /// <summary>
     /// The base class of all commands
     /// </summary>
-    public abstract class Command {
+    public abstract class Command : ICommand {
         /// <summary>
         /// Executes the command
         /// </summary>
