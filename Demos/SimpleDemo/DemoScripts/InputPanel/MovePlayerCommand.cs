@@ -11,7 +11,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         public MovePlayerCommand(Player player, Vector2 direction, float speed) {
             if (player == null || direction == null) { throw new System.ArgumentNullException(); }
             this.player = player;
-            this.moveBy = direction * speed * Time.deltaTime;
+            this.moveBy = direction.normalized * speed * Time.fixedDeltaTime;
         }
         public MovePlayerCommand(Player player, Vector2 moveBy) {
             if (player == null || moveBy == null) { throw new System.ArgumentNullException(); }

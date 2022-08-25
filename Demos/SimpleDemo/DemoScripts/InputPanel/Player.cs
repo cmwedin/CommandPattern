@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SadSapphicGames.CommandPattern.SimpleDemo {
     public class Player : MonoBehaviour
     {
-        public bool DemoActive { get; set; }
+        public bool ReadInputs { get; set; }
         public RectTransform boundingBox;
         [SerializeField] private int baseSpeed = 100;
         [SerializeField] private float sprintFactor = 1.5f;
@@ -23,25 +23,24 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         // Update is called once per frame
         void Update()
         {
-            if (DemoActive)
+            if (ReadInputs)
             {
                 Vector2 movementVector = ReadMovementInput();
                 if (movementVector != Vector2.zero) {
-                    if (Input.GetKey(inputCommandStream.sprintKey)) {
+                    if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.Sprint])) {
                         inputCommandStream.QueueCommand(new MovePlayerCommand(this, movementVector, sprintFactor * baseSpeed));
                     } else {
                         inputCommandStream.QueueCommand(new MovePlayerCommand(this, movementVector, baseSpeed));
                     }
                 }
 
-                if (Input.GetKeyDown(inputCommandStream.fireKeyCode)) {
-                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, projectileVisuals, 200));
-                } else if (Input.GetKeyDown(inputCommandStream.altFireKeyCode)) {
-                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjectileVisuals, 50));
-
+                if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.Fire])) {
+                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, projectileVisuals, 50));
+                } else if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.AltFire])) {
+                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjectileVisuals, 7));
                 }
 
-                if (Input.GetKey(inputCommandStream.undoKeyCode))
+                if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.Undo]))
                 {
                     inputCommandStream.Undo();
                 }
@@ -49,13 +48,13 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         }
         private Vector2 ReadMovementInput() {
             Vector2 output = Vector2.zero;
-            if (Input.GetKey(inputCommandStream.upKeyCode)) {
+            if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.MoveUp])) {
                 output += Vector2.up;
-            } if (Input.GetKey(inputCommandStream.downKeyCode)) {
+            } if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.MoveDown])) {
                 output += Vector2.down;
-            } if (Input.GetKey(inputCommandStream.leftKeyCode)) {
+            } if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.MoveLeft])) {
                 output += Vector2.left;
-            } if (Input.GetKey(inputCommandStream.rightKeyCode)) {
+            } if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.MoveRight])) {
                 output += Vector2.right;
             }
             return output;
