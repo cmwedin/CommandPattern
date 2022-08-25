@@ -29,14 +29,21 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             prevBinding = keyBinds[inputToRebind];
         }
         private async Task ExecuteAsync() {
+            InvokeOnRebindStart();
             bool done = false;
             bool prevDemoState = InputCommandStream.Instance.activateDemo.isOn;
             InputCommandStream.Instance.activateDemo.isOn = false;
+            InputCommandStream.Instance.activateDemo.gameObject.SetActive(false);
             GameObject tempGO = new GameObject("TempKeystrokeListener");
             var selector = tempGO.AddComponent<KeystrokeListener>();
             selector.OnKeystrokeDetected += (KeyCode) => { 
                 if(keyBinds.ContainsValue(KeyCode)) { 
-                    return;
+                    if(keyBinds[inputToRebind] == KeyCode) {
+                        done = true;
+                        GameObject.Destroy(tempGO);
+                    } else {
+                        return;
+                    }
                 } else {
                     keyBinds[inputToRebind] = KeyCode;
                     done = true;
@@ -47,12 +54,12 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 await Task.Delay(1);
             }
             InputCommandStream.Instance.activateDemo.isOn = prevDemoState;
+            InputCommandStream.Instance.activateDemo.gameObject.SetActive(true);
             Debug.Log("rebind async task completed");
             InvokeOnRebindFinished();
         }
 
         public override void Execute() {
-            InvokeOnRebindStart();
             commandTask = ExecuteAsync();
         }
 
