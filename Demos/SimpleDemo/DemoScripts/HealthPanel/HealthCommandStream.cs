@@ -32,10 +32,12 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                     undoStack.Push((IUndoable)executedCommand);
                 }
             } else if(executedCommand != null) {
+                if (executedCommand is ModifyHealthCommand) {
                 if(((ModifyHealthCommand)executedCommand).Magnitude > 0 && healthBar.Health != healthBar.MaxHealth) {
                     internalStream.QueueCommand(new ModifyHealthCommand(healthBar.MaxHealth - healthBar.Health, healthBar));
                 } else if (((ModifyHealthCommand)executedCommand).Magnitude < 0 && healthBar.Health != 0) {
                     internalStream.QueueCommand(new ModifyHealthCommand(-healthBar.Health, healthBar));
+                }
                 }
             }
         }
