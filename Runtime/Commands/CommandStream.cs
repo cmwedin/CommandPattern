@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern
@@ -18,6 +19,8 @@ namespace SadSapphicGames.CommandPattern
         /// This is a list of the executed command history
         /// </summary>
         private List<Command> commandHistory = new List<Command>();
+        private List<Task> runningCommandTasks = new List<Task>();
+        
         private int historyStartIndex = 0;
         private List<Command> UnwrapHistory() {
             List<Command> output = new List<Command>();
@@ -55,6 +58,9 @@ namespace SadSapphicGames.CommandPattern
         /// <returns> The queue of commands the commandStream will execute. </returns>
         public ReadOnlyCollection<Command> GetCommandQueue() {
             return commandQueue.ToList().AsReadOnly();
+        }
+        public ReadOnlyCollection<Task> GetRunningCommandTasks() { 
+            return runningCommandTasks.AsReadOnly(); 
         }
         /// <summary>
         /// Gets commandQueue.Count == 0
@@ -183,28 +189,36 @@ namespace SadSapphicGames.CommandPattern
         /// <summary>
         /// Attempts to execute the next command in the queue, returns false if it is empty or the command is IFailable and would fail.
         /// </summary>
-        /// <param name="nextCommand"> The command that was next in the queue, null if the queue was empty</param>
+        /// <param name="topCommand"> The command that was next in the queue, null if the queue was empty</param>
         /// <returns> False if the command queue is empty, or the next command would fail. True otherwise. </returns>
-        public bool TryExecuteNext(out Command nextCommand) {
-            if(!commandQueue.TryDequeue(out nextCommand)) {
+        public bool TryExecuteNext(out Command topCommand) {
+            if(!commandQueue.TryDequeue(out topCommand)) {
                 return false;
             }
             if(
-                nextCommand is IFailable 
-                && ((IFailable)nextCommand).WouldFail()
+                topCommand is IFailable 
+                && ((IFailable)topCommand).WouldFail()
             ) {
                 return false;
             }
+
             try {
-                nextCommand.Execute();
+                topCommand.Execute();
             } catch (IrreversibleCompositeFailureException ex) {
                 throw ex;
             } catch(ReversibleCompositeFailureException ex) {
                 Debug.LogWarning(ex.Message);
                 return false;
             }
+
+            //? At this point we should have successfully executed the command 
+            if(topCommand is IAsyncCommand) {
+                Task asyncTask = ((IAsyncCommand)topCommand).CommandTask;
+                runningCommandTasks.Add(asyncTask);
+                ((IAsyncCommand)topCommand).OnTaskCompleted += delegate { runningCommandTasks.Remove(asyncTask); };
+            }
             if(historyDepth > 0) {
-                RecordCommand(nextCommand);
+                RecordCommand(topCommand);
             }
             return true;
         }

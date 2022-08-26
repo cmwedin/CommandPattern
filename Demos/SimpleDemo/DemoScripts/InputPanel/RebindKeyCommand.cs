@@ -30,6 +30,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         }
         public override async Task ExecuteAsync() {
             InvokeOnRebindStart();
+            Debug.Log("async rebind task started");
             bool done = false;
             bool prevDemoState = InputCommandStream.Instance.activateDemo.isOn;
             InputCommandStream.Instance.activateDemo.isOn = false;
@@ -55,7 +56,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             }
             InputCommandStream.Instance.activateDemo.isOn = prevDemoState;
             InputCommandStream.Instance.activateDemo.gameObject.SetActive(true);
-            Debug.Log("rebind async task completed");
+            Debug.Log("async rebind task completed");
             InvokeOnRebindFinished();
         }
 
