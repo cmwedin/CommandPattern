@@ -196,8 +196,8 @@ namespace SadSapphicGames.CommandPattern
                 return false;
             }
             if(
-                topCommand is IFailable 
-                && ((IFailable)topCommand).WouldFail()
+                topCommand is IFailable asFailable
+                && asFailable.WouldFail()
             ) {
                 return false;
             }
@@ -212,10 +212,10 @@ namespace SadSapphicGames.CommandPattern
             }
 
             //? At this point we should have successfully executed the command 
-            if(topCommand is IAsyncCommand) {
-                Task asyncTask = ((IAsyncCommand)topCommand).CommandTask;
+            if(topCommand is IAsyncCommand asAsync) {
+                Task asyncTask = asAsync.CommandTask;
                 runningCommandTasks.Add(asyncTask);
-                ((IAsyncCommand)topCommand).OnTaskCompleted += delegate { runningCommandTasks.Remove(asyncTask); };
+                asAsync.OnTaskCompleted += delegate { runningCommandTasks.Remove(asyncTask); };
             }
             if(historyDepth > 0) {
                 RecordCommand(topCommand);
