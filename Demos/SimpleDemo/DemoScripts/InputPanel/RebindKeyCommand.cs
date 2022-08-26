@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern.SimpleDemo
 {
-    public class RebindKeyCommand : Command, IUndoable
+    public class RebindKeyCommand : AsyncCommand
     {
         protected Dictionary<InputType, KeyCode> keyBinds;
         protected InputType inputToRebind;
@@ -15,21 +15,15 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         protected void InvokeOnRebindStart() {
             OnRebindStart?.Invoke();
         }
-        public event Action OnRebindFinished;
-        protected void InvokeOnRebindFinished() {
-            OnRebindFinished?.Invoke();
-        }
-        public Task commandTask;
-        protected Command undoCommand;
-
 
         public RebindKeyCommand(Dictionary<InputType, KeyCode> keyBinds, InputType inputToRebind) {
             this.keyBinds = keyBinds;
             this.inputToRebind = inputToRebind;
             prevBinding = keyBinds[inputToRebind];
         }
-        private async Task ExecuteAsync() {
+        public override async Task ExecuteAsync() {
             InvokeOnRebindStart();
+            Debug.Log("async rebind task started");
             bool done = false;
             bool prevDemoState = InputCommandStream.Instance.activateDemo.isOn;
             InputCommandStream.Instance.activateDemo.isOn = false;
@@ -55,20 +49,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             }
             InputCommandStream.Instance.activateDemo.isOn = prevDemoState;
             InputCommandStream.Instance.activateDemo.gameObject.SetActive(true);
-            Debug.Log("rebind async task completed");
-            InvokeOnRebindFinished();
-        }
-
-        public override void Execute() {
-            commandTask = ExecuteAsync();
-        }
-
-        public Command GetUndoCommand()
-        {
-            if(undoCommand == null){
-                undoCommand = new SilentRebindCommand(keyBinds, inputToRebind, prevBinding);
-            }
-            return undoCommand;
+            Debug.Log("async rebind task completed");
         }
     }
 }
