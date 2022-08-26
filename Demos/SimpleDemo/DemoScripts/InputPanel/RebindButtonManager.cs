@@ -114,7 +114,6 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             if (!rebindTaskRunning) {
                 if (rebindStream.TryExecuteNext(out var topRebind)) {
                     Debug.Log($"RebindButtonManager.TryExecuteNext has executed {topRebind}");
-                    // prevRebind = (RebindKeyCommand)topRebind;
                 }
             }
         }
