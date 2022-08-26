@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SadSapphicGames.CommandPattern;
 
-public class AlwaysFailsCommand : Command, IFailable
+namespace SadSapphicGames.CommandPattern.EditorTesting
 {
-    public override void Execute()
+    public class AlwaysFailsCommand : Command, IFailable
     {
-        throw new System.Exception("This command will fail");
-    }
+        public override void Execute()
+        {
+            throw new System.Exception("This command will fail");
+        }
 
-    public bool WouldFail()
-    {
-        return true;
+        public bool WouldFail()
+        {
+            return true;
+        }
     }
 }

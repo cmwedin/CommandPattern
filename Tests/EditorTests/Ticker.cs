@@ -1,42 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SadSapphicGames.CommandPattern;
 
-public class Ticker {
-    public int count = 0;
+namespace SadSapphicGames.CommandPattern.EditorTesting
+{
+    public class Ticker
+    {
+        public int count = 0;
 
-    public Ticker() {
-    }
-}
-
-public class TickerCommand : Command, IUndoable {
-    public Ticker ticker;
-
-    public TickerCommand(Ticker ticker) {
-        this.ticker = ticker;
+        public Ticker()
+        {
+        }
     }
 
-    public override void Execute() {
-        ticker.count++;
-    }
+    public class TickerCommand : Command, IUndoable
+    {
+        public Ticker ticker;
 
-    public Command GetUndoCommand() {
-        return new UndoTickerCommand(this);
-    }
-}
-public class UndoTickerCommand: Command, IUndoable {
-    public Ticker ticker;
+        public TickerCommand(Ticker ticker)
+        {
+            this.ticker = ticker;
+        }
 
-    public UndoTickerCommand(TickerCommand command) {
-        ticker = command.ticker;
-    }
+        public override void Execute()
+        {
+            ticker.count++;
+        }
 
-    public override void Execute() {
-        ticker.count--;
+        public Command GetUndoCommand()
+        {
+            return new UndoTickerCommand(this);
+        }
     }
+    public class UndoTickerCommand : Command, IUndoable
+    {
+        public Ticker ticker;
 
-    public Command GetUndoCommand() {
-        return new TickerCommand(ticker);
+        public UndoTickerCommand(TickerCommand command)
+        {
+            ticker = command.ticker;
+        }
+
+        public override void Execute()
+        {
+            ticker.count--;
+        }
+
+        public Command GetUndoCommand()
+        {
+            return new TickerCommand(ticker);
+        }
     }
 }
