@@ -18,8 +18,8 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         [SerializeField] private Button altFireButton;
         [SerializeField] private Button undoButton;
         CommandStream rebindStream = new CommandStream();
-        RebindKeyCommand prevRebind;
-        bool rebindTaskRunning { get => !(prevRebind?.commandTask.IsCompleted ?? true); }
+        // RebindKeyCommand prevRebind;
+        bool rebindTaskRunning { get => rebindStream.GetRunningCommandTasks().Count != 0; }
         Dictionary<InputType,KeyCode> CurrentBindings { get => InputCommandStream.Instance.InputKeybinds; }
 
         void Start()
@@ -29,7 +29,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 if(rebindTaskRunning) return;
                 RebindKeyCommand rebindCommand = new RebindKeyCommand(CurrentBindings, InputType.MoveUp);
                 rebindCommand.OnRebindStart += delegate { upButton.GetComponentInChildren<TextMeshProUGUI>().text = ""; };
-                rebindCommand.OnRebindFinished += delegate { UpdateButtonText(upButton); };
+                rebindCommand.OnTaskCompleted += delegate { UpdateButtonText(upButton); };
                 rebindStream.QueueCommand(rebindCommand);
             });
             UpdateButtonText(downButton);
@@ -37,7 +37,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 if(rebindTaskRunning) return;
                 RebindKeyCommand rebindCommand = new RebindKeyCommand(CurrentBindings, InputType.MoveDown);
                 rebindCommand.OnRebindStart += delegate { downButton.GetComponentInChildren<TextMeshProUGUI>().text = ""; };
-                rebindCommand.OnRebindFinished += delegate { UpdateButtonText(downButton); };
+                rebindCommand.OnTaskCompleted += delegate { UpdateButtonText(downButton); };
                 rebindStream.QueueCommand(rebindCommand);
             });
             UpdateButtonText(leftButton);
@@ -45,7 +45,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 if(rebindTaskRunning) return;
                 RebindKeyCommand rebindCommand = new RebindKeyCommand(CurrentBindings, InputType.MoveLeft);
                 rebindCommand.OnRebindStart += delegate {leftButton.GetComponentInChildren<TextMeshProUGUI>().text = ""; };
-                rebindCommand.OnRebindFinished += delegate { UpdateButtonText(leftButton); };
+                rebindCommand.OnTaskCompleted += delegate { UpdateButtonText(leftButton); };
                 rebindStream.QueueCommand(rebindCommand);
             });
             UpdateButtonText(rightButton);
@@ -53,7 +53,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 if(rebindTaskRunning) return;
                 RebindKeyCommand rebindCommand = new RebindKeyCommand(CurrentBindings, InputType.MoveRight);
                 rebindCommand.OnRebindStart += delegate {rightButton.GetComponentInChildren<TextMeshProUGUI>().text = ""; };
-                rebindCommand.OnRebindFinished += delegate { UpdateButtonText(rightButton); };
+                rebindCommand.OnTaskCompleted += delegate { UpdateButtonText(rightButton); };
                 rebindStream.QueueCommand(rebindCommand);
             });
             UpdateButtonText(sprintButton);
@@ -61,7 +61,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 if(rebindTaskRunning) return;
                 RebindKeyCommand rebindCommand = new RebindKeyCommand(CurrentBindings, InputType.Sprint);
                 rebindCommand.OnRebindStart += delegate { sprintButton.GetComponentInChildren<TextMeshProUGUI>().text = "";};
-                rebindCommand.OnRebindFinished += delegate { UpdateButtonText(sprintButton); };
+                rebindCommand.OnTaskCompleted += delegate { UpdateButtonText(sprintButton); };
                 rebindStream.QueueCommand(rebindCommand);
             });
             UpdateButtonText(fireButton);
@@ -69,7 +69,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 if(rebindTaskRunning) return;
                 RebindKeyCommand rebindCommand = new RebindKeyCommand(CurrentBindings, InputType.Fire);
                 rebindCommand.OnRebindStart += delegate { fireButton.GetComponentInChildren<TextMeshProUGUI>().text = "";};
-                rebindCommand.OnRebindFinished += delegate { UpdateButtonText(fireButton); };
+                rebindCommand.OnTaskCompleted += delegate { UpdateButtonText(fireButton); };
                 rebindStream.QueueCommand(rebindCommand);
             });
             UpdateButtonText(altFireButton);
@@ -77,7 +77,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 if(rebindTaskRunning) return;
                 RebindKeyCommand rebindCommand = new RebindKeyCommand(CurrentBindings, InputType.AltFire);
                 rebindCommand.OnRebindStart += delegate {altFireButton.GetComponentInChildren<TextMeshProUGUI>().text = ""; };
-                rebindCommand.OnRebindFinished += delegate { UpdateButtonText(altFireButton); };
+                rebindCommand.OnTaskCompleted += delegate { UpdateButtonText(altFireButton); };
                 rebindStream.QueueCommand(rebindCommand);
             });
             UpdateButtonText(undoButton);
@@ -85,7 +85,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 if(rebindTaskRunning) return;
                 RebindKeyCommand rebindCommand = new RebindKeyCommand(CurrentBindings, InputType.Undo);
                 rebindCommand.OnRebindStart += delegate {undoButton.GetComponentInChildren<TextMeshProUGUI>().text = ""; };
-                rebindCommand.OnRebindFinished += delegate { UpdateButtonText(undoButton); };
+                rebindCommand.OnTaskCompleted += delegate { UpdateButtonText(undoButton); };
                 rebindStream.QueueCommand(rebindCommand);
             });
         }
@@ -94,10 +94,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 upButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Up : {CurrentBindings[InputType.MoveUp].ToString()}";
             } else if(button == downButton) {
                 downButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Down : {CurrentBindings[InputType.MoveDown].ToString()}";
-            } else if(button == rightButton) {
-                rightButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Right : {CurrentBindings[InputType.MoveLeft].ToString()}";
             } else if(button == leftButton) {
-                leftButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Left : {CurrentBindings[InputType.MoveRight].ToString()}";
+                leftButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Left : {CurrentBindings[InputType.MoveLeft].ToString()}";
+            } else if(button == rightButton) {
+                rightButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Right : {CurrentBindings[InputType.MoveRight].ToString()}";
             } else if(button == sprintButton) {
                 sprintButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Sprint : {CurrentBindings[InputType.Sprint].ToString()}";
             } else if(button == fireButton) {
@@ -114,7 +114,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             if (!rebindTaskRunning) {
                 if (rebindStream.TryExecuteNext(out var topRebind)) {
                     Debug.Log($"RebindButtonManager.TryExecuteNext has executed {topRebind}");
-                    prevRebind = (RebindKeyCommand)topRebind;
+                    // prevRebind = (RebindKeyCommand)topRebind;
                 }
             }
         }

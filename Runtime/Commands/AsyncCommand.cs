@@ -7,6 +7,7 @@ namespace SadSapphicGames.CommandPattern
     {
         private Task commandTask;
         private Task invokeTask;
+        
         public Task CommandTask { get => commandTask; private set => commandTask = value; }
 
         public event Action OnTaskCompleted;
