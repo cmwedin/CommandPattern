@@ -19,6 +19,9 @@ namespace SadSapphicGames.CommandPattern
         /// This is a list of the executed command history
         /// </summary>
         private List<Command> commandHistory = new List<Command>();
+        /// <summary>
+        /// This is a list of the asynchronous tasks currently being run by AsyncCommands this CommandStream has executed.
+        /// </summary>
         private List<Task> runningCommandTasks = new List<Task>();
         
         private int historyStartIndex = 0;
@@ -59,6 +62,10 @@ namespace SadSapphicGames.CommandPattern
         public ReadOnlyCollection<Command> GetCommandQueue() {
             return commandQueue.ToList().AsReadOnly();
         }
+        /// <summary>
+        /// Get the Tasks being being run by AsyncCommands executed by this CommandStream
+        /// </summary>
+        /// <returns>The tasks that are currently being run</returns>
         public ReadOnlyCollection<Task> GetRunningCommandTasks() { 
             return runningCommandTasks.AsReadOnly(); 
         }
