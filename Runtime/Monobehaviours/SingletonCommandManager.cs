@@ -47,7 +47,7 @@ namespace SadSapphicGames.CommandPattern {
             return commandStream.GetCommandHistory();
         }
         /// <summary>
-        /// Get the currently uncompleted tasks from executed AsyncCoommands
+        /// Get the currently uncompleted tasks from executed AsyncCommands
         /// </summary>
         /// <returns>A ReadOnlyCollection of uncompleted tasks from executed AsyncCommands </returns>
         public ReadOnlyCollection<Task> GetRunningCommandTasks() {
