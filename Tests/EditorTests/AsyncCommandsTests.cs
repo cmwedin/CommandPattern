@@ -16,7 +16,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             TestAsyncCommand asyncCommand = new TestAsyncCommand();
             CommandStream commandStream = new CommandStream();
             commandStream.QueueCommand(asyncCommand);
-            Assert.IsTrue(commandStream.TryExecuteNext());
+            Assert.IsTrue(commandStream.TryExecuteNext() == ExecuteCode.AwaitingCompletion);
             Assert.AreEqual(expected: 1, actual: commandStream.HistoryCount);
             Assert.AreEqual(expected: asyncCommand, actual: commandStream.GetCommandHistory()[0]);
             Assert.AreEqual(expected: 1, actual: commandStream.GetRunningCommandTasks().Count);

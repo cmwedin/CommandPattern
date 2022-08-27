@@ -32,7 +32,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             internalStream.QueueCommand(modifyHealthCommand);
         }
         private void Update() {
-            if(internalStream.TryExecuteNext(out var executedCommand)) {
+            if(internalStream.TryExecuteNext(out var executedCommand) == ExecuteCode.Success) {
                 if(executedCommand is IUndoable && executedCommand != lastUndo?.GetUndoCommand()) {
                     undoStack.Push((IUndoable)executedCommand);
                 }

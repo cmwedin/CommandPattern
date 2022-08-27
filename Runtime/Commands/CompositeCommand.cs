@@ -41,26 +41,31 @@ namespace SadSapphicGames.CommandPattern {
         public override void Execute() {
             internalStream.QueueCommands(subCommands);
             ICommand prevChild;
-            while(internalStream.TryExecuteNext(out prevChild)) {}
-            if(prevChild != null) { //? One of the children failed 
-                var reversibleCommands =
-                    from com in internalStream.GetCommandHistory()
-                    where com is IUndoable
-                    select com;
-                var irreversibleCommands = 
-                    from com in internalStream.GetCommandHistory()
-                    where com is not IUndoable
-                    select com;
-                internalStream.DropQueue();
-                foreach (var command in reversibleCommands) {
-                    internalStream.ForceQueueUndoCommand((IUndoable)command);
-                }
-                internalStream.ExecuteFullQueue();
+            ExecuteCode executeCode = internalStream.TryExecuteNext(out prevChild);
+            while (executeCode != ExecuteCode.QueueEmpty) {
+                if (executeCode == ExecuteCode.Failure) { //? One of the children failed 
+                    var reversibleCommands =
+                        from com in internalStream.GetCommandHistory()
+                        where com is IUndoable
+                        select com;
+                    var irreversibleCommands =
+                        from com in internalStream.GetCommandHistory()
+                        where com is not IUndoable
+                        select com;
+                    
+                    internalStream.DropQueue();
+                    foreach (var command in reversibleCommands) {
+                        internalStream.ForceQueueUndoCommand((IUndoable)command);
+                    }
+                    internalStream.ExecuteFullQueue(out var failedUndos);
 
-                if(irreversibleCommands.Count() == 0) {
-                    throw new ReversibleCompositeFailureException(prevChild);
+                    if (irreversibleCommands.Count() == 0 && failedUndos.Count == 0) {
+                        throw new ReversibleCompositeFailureException(prevChild);
+                    } else {
+                        throw new IrreversibleCompositeFailureException(prevChild, irreversibleCommands.ToList());
+                    }
                 } else {
-                    throw new IrreversibleCompositeFailureException(prevChild,irreversibleCommands.ToList());
+                    executeCode = internalStream.TryExecuteNext(out prevChild);
                 }
             }
         }

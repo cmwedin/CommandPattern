@@ -68,7 +68,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         }
 
         private void Update() {
-            if(internalStream.TryExecuteNext(out var topCommand)) {
+            if(internalStream.TryExecuteNext(out var topCommand) == ExecuteCode.Success) {
                 if(topCommand is IUndoable && topCommand != prevUndo?.GetUndoCommand()) {
                     undoStack.Push((IUndoable)topCommand);
                 }
