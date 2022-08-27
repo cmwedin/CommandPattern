@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -44,6 +45,13 @@ namespace SadSapphicGames.CommandPattern {
         /// <returns> A ReadOnlyCollection of all the commands executed by the CommandManager's CommandStream </returns>
         public ReadOnlyCollection<ICommand> GetCommandHistory() {
             return commandStream.GetCommandHistory();
+        }
+        /// <summary>
+        /// Get the currently uncompleted tasks from executed AsyncCoommands
+        /// </summary>
+        /// <returns>A ReadOnlyCollection of uncompleted tasks from executed AsyncCommands </returns>
+        public ReadOnlyCollection<Task> GetRunningCommandTasks() {
+            return commandStream.GetRunningCommandTasks();
         }
         /// <summary>
         /// Empties the history of the internal CommandStream and replaces it with an empty one.

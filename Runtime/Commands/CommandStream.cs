@@ -220,10 +220,10 @@ namespace SadSapphicGames.CommandPattern
         }
 
         /// <summary>
-        /// Attempts to execute the next command in the queue, returns false if it is empty or the command is IFailable and would fail.
+        /// Attempts to execute the next command in the queue, returns an enum indicating if it was able to or not or if the queue was empty or the command is async and awaiting completion.
         /// </summary>
         /// <param name="topCommand"> The command that was next in the queue, null if the queue was empty</param>
-        /// <returns> False if the command queue is empty, or the next command would fail. True otherwise. </returns>
+        /// <returns> An ExecuteCode enum value indicating what happened when attempting to execute the next command </returns>
         public ExecuteCode TryExecuteNext(out ICommand topCommand) {
             if(!commandQueue.TryDequeue(out topCommand)) {
                 return ExecuteCode.QueueEmpty;
