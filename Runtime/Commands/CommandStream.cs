@@ -212,14 +212,22 @@ namespace SadSapphicGames.CommandPattern
             try {
                 topCommand.Execute();
             } catch (IrreversibleCompositeFailureException ex) {
+                //? A composite failed halfway through execution and can't be reversed - let the wrapper attempt to handle it
                 throw ex;
             } catch(ReversibleCompositeFailureException ex) {
+                //? A composite failed halfway through execution and could be reversed - we can handle it (and already did in the composite)
                 Debug.LogWarning(ex.Message);
                 return false;
+            } catch(SystemException ex) {
+                //? Some other exception happened that the invoker can't know how to handle - let the wrapper attempt to handle it
+                throw ex;
             }
 
             //? At this point we should have successfully executed the command 
-            if(topCommand is IAsyncCommand asAsync) {
+            if(
+                topCommand is IAsyncCommand asAsync
+                && !asAsync.CommandTask.IsCompleted
+            ) {
                 Task asyncTask = asAsync.CommandTask;
                 runningCommandTasks.Add(asyncTask);
                 asAsync.OnTaskCompleted += delegate { runningCommandTasks.Remove(asyncTask); };

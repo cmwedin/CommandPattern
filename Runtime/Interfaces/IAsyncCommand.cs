@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace SadSapphicGames.CommandPattern
 {
     /// <summary>
-    /// This Interface of the AsyncCommand abstract class, Similar to ICommand you probably don't need to worry about this unless you want to define your own base class for async commands without inheriting AsyncCommand
+    /// This Interface of the AsyncCommand abstract class, Similar to ICommand you shouldn't inherit this unless you want to implement your own base class for asynchronous commands, which you should only do if you know what your doing re-asynchronous programming. 
     /// </summary>
     public interface IAsyncCommand : ICommand
     {
