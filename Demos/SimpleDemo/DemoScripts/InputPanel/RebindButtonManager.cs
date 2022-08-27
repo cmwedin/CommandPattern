@@ -112,8 +112,9 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         // Update is called once per frame
         void Update() {
             if (!rebindTaskRunning) {
-                if (rebindStream.TryExecuteNext(out var topRebind)) {
-                    Debug.Log($"RebindButtonManager.TryExecuteNext has executed {topRebind}");
+                ExecuteCode executeCode = rebindStream.TryExecuteNext();
+                if (executeCode != ExecuteCode.QueueEmpty) {
+                    Debug.Log($"RebindButtonManager.TryExecuteNext has finished with return code {executeCode}");
                 }
             }
         }

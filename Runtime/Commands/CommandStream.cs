@@ -8,6 +8,32 @@ using UnityEngine;
 namespace SadSapphicGames.CommandPattern
 {
     /// <summary>
+    /// The possible return values of CommandStream.TryExecuteNext()
+    /// </summary>
+    public enum ExecuteCode
+    {
+        /// <summary>
+        /// Top Command executed successfully
+        /// </summary>
+        Success,
+        /// <summary>
+        /// Top Command would fail
+        /// </summary>
+        Failure,
+        /// <summary>
+        /// Command queue was empty
+        /// </summary>
+        QueueEmpty,
+        /// <summary>
+        /// Top Command was a CompositeCommand that did not indicate it would fail but failed partway through execution - was reversible
+        /// </summary>
+        CompositeFailure,
+        /// <summary>
+        /// Top command was an AsyncCommand that is awaiting completion
+        /// </summary>
+        AwaitingCompletion
+    }
+    /// <summary>
     /// This is the object that stores commands to be invoked and executes them when told to by the client. It has no knowledge of the implementation of commands beyond their interfaces.
     /// </summary>
     public class CommandStream {
@@ -198,15 +224,15 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         /// <param name="topCommand"> The command that was next in the queue, null if the queue was empty</param>
         /// <returns> False if the command queue is empty, or the next command would fail. True otherwise. </returns>
-        public bool TryExecuteNext(out ICommand topCommand) {
+        public ExecuteCode TryExecuteNext(out ICommand topCommand) {
             if(!commandQueue.TryDequeue(out topCommand)) {
-                return false;
+                return ExecuteCode.QueueEmpty;
             }
             if(
                 topCommand is IFailable asFailable
                 && asFailable.WouldFail()
             ) {
-                return false;
+                return ExecuteCode.Failure;
             }
 
             try {
@@ -217,10 +243,14 @@ namespace SadSapphicGames.CommandPattern
             } catch(ReversibleCompositeFailureException ex) {
                 //? A composite failed halfway through execution and could be reversed - we can handle it (and already did in the composite)
                 Debug.LogWarning(ex.Message);
-                return false;
+                return ExecuteCode.CompositeFailure;
             } catch(SystemException ex) {
                 //? Some other exception happened that the invoker can't know how to handle - let the wrapper attempt to handle it
                 throw ex;
+            }
+            
+            if(historyDepth > 0) {
+                RecordCommand(topCommand);
             }
 
             //? At this point we should have successfully executed the command 
@@ -231,17 +261,17 @@ namespace SadSapphicGames.CommandPattern
                 Task asyncTask = asAsync.CommandTask;
                 runningCommandTasks.Add(asyncTask);
                 asAsync.OnTaskCompleted += delegate { runningCommandTasks.Remove(asyncTask); };
+                //TODO add event for async command failure 
+                return ExecuteCode.AwaitingCompletion;
+            } else {
+                return ExecuteCode.Success;
             }
-            if(historyDepth > 0) {
-                RecordCommand(topCommand);
-            }
-            return true;
         }
         /// <summary>
         /// Attempts to execute the next command in the queue, returns false if it is empty or the command is IFailable and would fail.
         /// </summary>
         /// <returns> False if the command queue is empty, or the next command would fail. True otherwise. </returns>
-        public bool TryExecuteNext() {
+        public ExecuteCode TryExecuteNext() {
             return TryExecuteNext(out var empty);
         }
         /// <summary>
@@ -250,7 +280,7 @@ namespace SadSapphicGames.CommandPattern
         public void ExecuteFullQueue() {
             ICommand prevCommand = new NullCommand();
             while (prevCommand != null) {
-                while(TryExecuteNext(out prevCommand)) {}
+                while(TryExecuteNext(out prevCommand) != ExecuteCode.QueueEmpty) {}
             }
         }
         /// <summary>
@@ -258,13 +288,16 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         /// <param name="failedCommands"> A list of any Commands in the Queue that failed to execute </param>
         public void ExecuteFullQueue(out List<ICommand> failedCommands) {
-            ICommand prevCommand = new NullCommand();
+            ICommand topCommand;
             failedCommands = new List<ICommand>();
-            while (prevCommand != null) {
-                while(TryExecuteNext(out prevCommand)) {}
-                if(prevCommand != null) {
-                    failedCommands.Add(prevCommand);
+            ExecuteCode executeCode = TryExecuteNext(out topCommand);
+            while(executeCode != ExecuteCode.QueueEmpty) {
+                if(executeCode == ExecuteCode.Failure || executeCode == ExecuteCode.CompositeFailure) {
+                    failedCommands.Add(topCommand);
+                } else if(executeCode == ExecuteCode.AwaitingCompletion) {
+                    //TODO add event for async command failure 
                 }
+                executeCode = TryExecuteNext(out topCommand);
             }
         }
     }

@@ -22,7 +22,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             commandStream.QueueCommands(commands);
             Assert.AreEqual(expected: testDepth, actual: commandStream.QueueCount);
             int j = 0;
-            while (commandStream.TryExecuteNext())
+            while (commandStream.TryExecuteNext() == ExecuteCode.Success)
             {
                 Assert.AreEqual(
                     expected: commands[j],
@@ -44,7 +44,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
                 commandStream.QueueCommand(new TickerCommand(ticker));
             }
             int j = 0;
-            while (commandStream.TryExecuteNext())
+            while (commandStream.TryExecuteNext() == ExecuteCode.Success)
             {
                 j++;
                 Assert.AreEqual(expected: j, actual: ticker.count);
@@ -66,7 +66,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
                     testCommands[i] = command;
                 }
                 int j = 0;
-                while (commandStream.TryExecuteNext())
+                while (commandStream.TryExecuteNext() == ExecuteCode.Success)
                 {
                     if (j < commandStream.HistoryDepth)
                     {
@@ -101,7 +101,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             for (int i = 0; i < testLength; i++)
             {
                 commandStream.QueueCommand(new NullCommand());
-                Assert.IsTrue(commandStream.TryExecuteNext());
+                Assert.IsTrue(commandStream.TryExecuteNext() == ExecuteCode.Success);
             }
             Assert.IsNull(commandStream.GetCommandHistory());
         }
@@ -112,7 +112,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             var testCommand = new NullCommand();
             commandStream.QueueCommand(testCommand);
             var oldQueue = commandStream.DropQueue();
-            Assert.IsFalse(commandStream.TryExecuteNext());
+            Assert.IsTrue(commandStream.TryExecuteNext() == ExecuteCode.QueueEmpty);
             Assert.AreEqual(expected: 1, actual: oldQueue.Count);
             Assert.AreEqual(expected: testCommand, actual: oldQueue[0]);
 
@@ -123,7 +123,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             CommandStream commandStream = new CommandStream();
             var testCommand = new NullCommand();
             commandStream.QueueCommand(testCommand);
-            Assert.IsTrue(commandStream.TryExecuteNext());
+            Assert.IsTrue(commandStream.TryExecuteNext() == ExecuteCode.Success);
             var oldHistory = commandStream.DropHistory();
             Assert.AreEqual(expected: 0, actual: commandStream.HistoryCount);
             Assert.AreEqual(expected: 1, actual: oldHistory.Count);
@@ -141,7 +141,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             }
             commandStream.ExecuteFullQueue();
             Assert.AreEqual(expected: 0, actual: commandStream.GetCommandQueue().Count);
-            Assert.IsFalse(commandStream.TryExecuteNext());
+            Assert.IsTrue(commandStream.TryExecuteNext() == ExecuteCode.QueueEmpty);
         }
         [Test]
         public void ExecuteFullQueueWithFailuresTest()
@@ -166,7 +166,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             }
             commandStream.ExecuteFullQueue(out var failedCommands);
             Assert.AreEqual(expected: 0, actual: commandStream.GetCommandQueue().Count);
-            Assert.IsFalse(commandStream.TryExecuteNext());
+            Assert.IsTrue(commandStream.TryExecuteNext() == ExecuteCode.QueueEmpty);
 
             Assert.AreEqual(expected: j, actual: failedCommands.Count);
             for (int i = 0; i < j; i++)
