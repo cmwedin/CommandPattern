@@ -11,6 +11,6 @@ namespace SadSapphicGames.CommandPattern {
         /// Creates a command to revert the changes of the implementing command
         /// </summary>
         /// <returns> a command that reverts the implementing command</returns>
-        public Command GetUndoCommand();
+        public ICommand GetUndoCommand();
     }
 }

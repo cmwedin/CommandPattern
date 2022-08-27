@@ -15,7 +15,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             CommandStream commandStream = new CommandStream();
             commandStream.QueueCommand(new AlwaysFailsCommand());
 
-            Assert.IsFalse(commandStream.TryExecuteNext(out Command nextCommand));
+            Assert.IsFalse(commandStream.TryExecuteNext(out var nextCommand));
             Assert.IsNotNull(nextCommand);
             Assert.AreEqual(expected: 0, actual: commandStream.HistoryCount);
             Assert.AreEqual(expected: 0, actual: commandStream.QueueCount);

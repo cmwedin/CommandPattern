@@ -11,7 +11,7 @@ namespace SadSapphicGames.CommandPattern {
         /// </summary>
         /// <param name="size">How many NullCommands to include in the composite</param>
         public NullCompositeCommand(int size) : base(){
-            List<Command> subCommands = new List<Command>();
+            List<ICommand> subCommands = new List<ICommand>();
             for (int i = 0; i < size; i++) {
                 subCommands.Add(new NullCommand());
             }
@@ -21,7 +21,7 @@ namespace SadSapphicGames.CommandPattern {
         /// Like the NullCommand it is composed of, a NullCompositeCommand is its own undo-command
         /// </summary>
         /// <returns>This object</returns>
-        public Command GetUndoCommand() {
+        public ICommand GetUndoCommand() {
             return this;
         }
     }

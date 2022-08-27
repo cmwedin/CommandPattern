@@ -12,7 +12,7 @@ namespace SadSapphicGames.CommandPattern {
         /// <summary>
         /// The child Commands that will be executed upon executing this object
         /// </summary>
-        protected List<Command> subCommands = new List<Command>();
+        protected List<ICommand> subCommands = new List<ICommand>();
         /// <summary>
         /// An internal CommandStream to provide more control of the execution of the subCommands of the Composite
         /// </summary>
@@ -22,7 +22,7 @@ namespace SadSapphicGames.CommandPattern {
         /// Adds a Command to this objects children 
         /// </summary>
         /// <param name="childCommand"> The Command to be added to the objects children </param>
-        protected virtual void AddChild(Command childCommand) {
+        protected virtual void AddChild(ICommand childCommand) {
             subCommands.Add(childCommand);
         }
 
@@ -40,7 +40,7 @@ namespace SadSapphicGames.CommandPattern {
         /// <exception cref="ReversibleCompositeFailureException"> Indicates one of the children of the CompositeCommand failed but it was able to undo all of its executed commands. TryExecuteNext will catch this exception and handle it by returning false. </exception>
         public override void Execute() {
             internalStream.QueueCommands(subCommands);
-            Command prevChild;
+            ICommand prevChild;
             while(internalStream.TryExecuteNext(out prevChild)) {}
             if(prevChild != null) { //? One of the children failed 
                 var reversibleCommands =
@@ -74,12 +74,12 @@ namespace SadSapphicGames.CommandPattern {
         /// <summary>
         /// The child command that failed
         /// </summary>
-        public readonly Command failedCommand;
+        public readonly ICommand failedCommand;
         /// <summary>
         /// The executed commands that could not be undone
         /// </summary>
-        public readonly List<Command> irreversibleCommands;
-        public IrreversibleCompositeFailureException(Command failedCommand, List<Command> irreversibleCommands) 
+        public readonly List<ICommand> irreversibleCommands;
+        public IrreversibleCompositeFailureException(ICommand failedCommand, List<ICommand> irreversibleCommands) 
         : base($"A CompositeCommand was executed however its child {failedCommand} failed, {irreversibleCommands.Count} executed children could not be undone") {
             this.failedCommand = failedCommand;
             this.irreversibleCommands = irreversibleCommands;
@@ -94,8 +94,8 @@ namespace SadSapphicGames.CommandPattern {
         /// <summary>
         /// The child command that failed
         /// </summary>
-        public readonly Command failedCommand;
-        public ReversibleCompositeFailureException(Command failedCommand) 
+        public readonly ICommand failedCommand;
+        public ReversibleCompositeFailureException(ICommand failedCommand) 
         : base($"A CompositeCommand was executed however its child {failedCommand} failed, all executed children where able to be undone") {
             this.failedCommand = failedCommand;
         }

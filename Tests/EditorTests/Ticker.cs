@@ -27,7 +27,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             ticker.count++;
         }
 
-        public Command GetUndoCommand()
+        public ICommand GetUndoCommand()
         {
             return new UndoTickerCommand(this);
         }
@@ -46,7 +46,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             ticker.count--;
         }
 
-        public Command GetUndoCommand()
+        public ICommand GetUndoCommand()
         {
             return new TickerCommand(ticker);
         }

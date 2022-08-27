@@ -42,14 +42,14 @@ namespace SadSapphicGames.CommandPattern {
         /// Get the underlying CommandStream's history
         /// </summary>
         /// <returns> A ReadOnlyCollection of all the commands executed by the CommandManager's CommandStream </returns>
-        public ReadOnlyCollection<Command> GetCommandHistory() {
+        public ReadOnlyCollection<ICommand> GetCommandHistory() {
             return commandStream.GetCommandHistory();
         }
         /// <summary>
         /// Empties the history of the internal CommandStream and replaces it with an empty one.
         /// </summary>
         /// <returns> The old history of the internal CommandStream </returns>
-        public ReadOnlyCollection<Command> DropCommandHistory() {
+        public ReadOnlyCollection<ICommand> DropCommandHistory() {
             return commandStream.DropHistory();
         }
 
@@ -82,14 +82,14 @@ namespace SadSapphicGames.CommandPattern {
         /// Queue's a Command into the CommandManager's CommandStream
         /// </summary>
         /// <param name="command"> The Command to be Queued </param>
-        public void QueueCommand(Command command) {
+        public void QueueCommand(ICommand command) {
             commandStream.QueueCommand(command);
         }
         /// <summary>
         /// Queue's multiple commands into the CommandManager's CommandStream
         /// </summary>
         /// <param name="commands"> The collection of commands to be Queued </param>
-        public void QueueCommands(IEnumerable<Command> commands) {
+        public void QueueCommands(IEnumerable<ICommand> commands) {
             commandStream.QueueCommands(commands);
         }
         /// <summary>
@@ -103,7 +103,7 @@ namespace SadSapphicGames.CommandPattern {
         /// <summary>
         /// Forces the internal CommandStream to queue and IUndoable commands undo command
         /// </summary>
-        /// <param name="commandToUndo">The IUndoable commadn to undo </param>
+        /// <param name="commandToUndo">The IUndoable command to undo </param>
         public void ForceQueueUndoCommand(IUndoable commandToUndo) {
             commandStream.ForceQueueUndoCommand(commandToUndo);
         }
