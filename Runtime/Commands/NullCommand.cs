@@ -15,7 +15,7 @@ namespace SadSapphicGames.CommandPattern {
         ///  Since the command doesn't do anything it returns itself
         /// </summary>
         /// <returns> The same null command object </returns>
-        public Command GetUndoCommand() {
+        public ICommand GetUndoCommand() {
             return this;
         }
     }

@@ -14,19 +14,19 @@ namespace SadSapphicGames.CommandPattern
         /// <summary>
         /// This is a Queue of the commands to be executed
         /// </summary>
-        private Queue<Command> commandQueue = new Queue<Command>();
+        private Queue<ICommand> commandQueue = new Queue<ICommand>();
         /// <summary>
         /// This is a list of the executed command history
         /// </summary>
-        private List<Command> commandHistory = new List<Command>();
+        private List<ICommand> commandHistory = new List<ICommand>();
         /// <summary>
         /// This is a list of the asynchronous tasks currently being run by AsyncCommands this CommandStream has executed.
         /// </summary>
         private List<Task> runningCommandTasks = new List<Task>();
         
         private int historyStartIndex = 0;
-        private List<Command> UnwrapHistory() {
-            List<Command> output = new List<Command>();
+        private List<ICommand> UnwrapHistory() {
+            List<ICommand> output = new List<ICommand>();
             int index = historyStartIndex;
             bool doneUnwrapping = false;
             while(!doneUnwrapping) {
@@ -44,7 +44,7 @@ namespace SadSapphicGames.CommandPattern
         ///  Get the CommandStream's history of executed Commands.   
         /// </summary>
         /// <returns>The history of executed commands, null if history is not recorded. </returns>
-        public ReadOnlyCollection<Command> GetCommandHistory() {
+        public ReadOnlyCollection<ICommand> GetCommandHistory() {
             if(HistoryDepth == 0){
                 Debug.LogWarning("This CommandStream does not record its history, returning null");
                 return null;
@@ -59,7 +59,7 @@ namespace SadSapphicGames.CommandPattern
         /// Get the queue of commands to be executed by the command stream.
         /// </summary>
         /// <returns> The queue of commands the commandStream will execute. </returns>
-        public ReadOnlyCollection<Command> GetCommandQueue() {
+        public ReadOnlyCollection<ICommand> GetCommandQueue() {
             return commandQueue.ToList().AsReadOnly();
         }
         /// <summary>
@@ -114,14 +114,14 @@ namespace SadSapphicGames.CommandPattern
         /// This adds a Command to the command Queue
         /// </summary>
         /// <param name="command"> The Command to be Queued </param>
-        public void QueueCommand(Command command) {
+        public void QueueCommand(ICommand command) {
             commandQueue.Enqueue(command);
         }
         /// <summary>
         /// Adds multiple Commands to the queue
         /// </summary>
         /// <param name="commands"> The commands to be queued </param>
-        public void QueueCommands(IEnumerable<Command> commands) {
+        public void QueueCommands(IEnumerable<ICommand> commands) {
             var commandEnum = commands.GetEnumerator();
             while(commandEnum.MoveNext()) {
                 QueueCommand(commandEnum.Current);
@@ -132,9 +132,9 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         /// <remark> This can be useful to rearrange the commands in a queue. Simple preform the needed changes on the returned list and re-queue it </remark>
         /// <returns> The commands in the previous queue, in case this information is needed.</returns>
-        public List<Command> DropQueue() {
+        public List<ICommand> DropQueue() {
             var output = commandQueue.ToList();
-            commandQueue = new Queue<Command>();
+            commandQueue = new Queue<ICommand>();
             return output;
         }
         /// <summary>
@@ -142,13 +142,13 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         /// <remark> This can be useful if you need the CommandStream to record all of its history but also need it to execute an extremely large number of commands without running out of memory. Even if every command is the same object a CommandStream will run out of memory at 2-3 hundred million commands in its queue or history. </remark>
         /// <returns> The commands in the previous history, in case this information is needed </returns>
-        public ReadOnlyCollection<Command> DropHistory() {
+        public ReadOnlyCollection<ICommand> DropHistory() {
             var output = GetCommandHistory();
-            commandHistory = new List<Command>();
+            commandHistory = new List<ICommand>();
             historyStartIndex = 0;
             return output;
         }
-        private void RecordCommand(Command command) {
+        private void RecordCommand(ICommand command) {
             if(historyDepth == 0) return; //? we should never be here if this is true but just in case
             if (HistoryCount < HistoryDepth) {
                 commandHistory.Add(command);
@@ -172,10 +172,10 @@ namespace SadSapphicGames.CommandPattern
             if(historyDepth == 0) {
                 Debug.LogWarning("This CommandStream does not record its history, undoing commands requires a command history");
                 return false;
-            } if(commandHistory.Contains((Command)commandToUndo)) {
+            } if(commandHistory.Contains((ICommand)commandToUndo)) {
                 QueueCommand(commandToUndo.GetUndoCommand());
                 return true;
-            } else if(commandQueue.Contains((Command)commandToUndo)) {
+            } else if(commandQueue.Contains((ICommand)commandToUndo)) {
                 Debug.LogWarning("The command you are trying to undo has not been executed yet but is in the queue");
             } else if(HistoryCount >= HistoryDepth) { //? should never be greater but better to catch all cases
                 Debug.LogWarning("The command you are trying to undo is not in the CommandStream's history, but it may have been dropped");
@@ -198,7 +198,7 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         /// <param name="topCommand"> The command that was next in the queue, null if the queue was empty</param>
         /// <returns> False if the command queue is empty, or the next command would fail. True otherwise. </returns>
-        public bool TryExecuteNext(out Command topCommand) {
+        public bool TryExecuteNext(out ICommand topCommand) {
             if(!commandQueue.TryDequeue(out topCommand)) {
                 return false;
             }
@@ -240,7 +240,7 @@ namespace SadSapphicGames.CommandPattern
         /// Execute's Commands from the CommandStream queue until it is empty. Be warned this will not give any indication of commands failing.
         /// </summary>
         public void ExecuteFullQueue() {
-            Command prevCommand = new NullCommand();
+            ICommand prevCommand = new NullCommand();
             while (prevCommand != null) {
                 while(TryExecuteNext(out prevCommand)) {}
             }
@@ -249,9 +249,9 @@ namespace SadSapphicGames.CommandPattern
         /// Executes Commands from the CommandStream's queue until it is empty. Returns the a list of any Commands that failed as an out parameter
         /// </summary>
         /// <param name="failedCommands"> A list of any Commands in the Queue that failed to execute </param>
-        public void ExecuteFullQueue(out List<Command> failedCommands) {
-            Command prevCommand = new NullCommand();
-            failedCommands = new List<Command>();
+        public void ExecuteFullQueue(out List<ICommand> failedCommands) {
+            ICommand prevCommand = new NullCommand();
+            failedCommands = new List<ICommand>();
             while (prevCommand != null) {
                 while(TryExecuteNext(out prevCommand)) {}
                 if(prevCommand != null) {

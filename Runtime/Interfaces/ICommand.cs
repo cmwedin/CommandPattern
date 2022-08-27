@@ -1,7 +1,7 @@
 namespace SadSapphicGames.CommandPattern
 {
     /// <summary>
-    /// This is the Interface of the Command abstract class, probably not needed unless you want to introduce your own base class for your commands that doesn't inherit from the packages abstract Command
+    /// This is the Interface of the Command abstract class, unless you are defining your own base type for commands you should probably inherit from Command over this
     /// </summary>
     public interface ICommand {
         /// <summary>

@@ -20,7 +20,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             healthImplementer.Health += Magnitude;
         }
 
-        public Command GetUndoCommand() {
+        public ICommand GetUndoCommand() {
             if(undoCommand == null) {
                 undoCommand = new ModifyHealthCommand(-Magnitude, healthImplementer);
             }

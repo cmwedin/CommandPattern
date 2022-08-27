@@ -24,7 +24,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
             player.transform.position += (Vector3)moveBy;
         }
 
-        public Command GetUndoCommand() {
+        public ICommand GetUndoCommand() {
             if(undoCommand == null) {
                 undoCommand = new MovePlayerCommand(player, -1*moveBy);
             }
