@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 588bdc2e99086f24e9b47597088a9036, type: 3}
+  m_Name: FastProjectile
+  m_EditorClassIdentifier: 
+  visuals: {fileID: 2614105418487445210, guid: 8fd5f7df5698c294ea813a4957e296d6, type: 3}
+  speed: 50

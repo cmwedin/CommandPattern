@@ -9,9 +9,19 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         public RectTransform boundingBox;
         [SerializeField] private int baseSpeed = 100;
         [SerializeField] private float sprintFactor = 1.5f;
-        [SerializeField] private GameObject projectileVisuals;
-        [SerializeField] private GameObject altProjectileVisuals;
+        private ProjSO primaryProjType;
+        public void SetPrimaryProj(ProjSO projSO) {
+            primaryProjType = projSO;
+        }
 
+        private ProjSO altProjType;
+        public void SetAltProj(ProjSO projSO) {
+            altProjType = projSO;
+        }
+
+        [SerializeField,Tooltip("The maximum length of time a projectile should exist in seconds")] private int projMaxLifespan = 100;
+
+        
 
         InputCommandStream inputCommandStream;
         // Start is called before the first frame update
@@ -34,10 +44,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
                     }
                 }
 
-                if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.Fire])) {
-                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, projectileVisuals, 50));
-                } else if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.AltFire])) {
-                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjectileVisuals, 7));
+                if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.Fire]) && primaryProjType != null) {
+                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, primaryProjType,projMaxLifespan));
+                } else if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.AltFire]) && altProjType != null) {
+                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjType,projMaxLifespan));
                 }
 
                 if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.Undo]))
