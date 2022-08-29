@@ -9,8 +9,8 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         public RectTransform boundingBox;
         [SerializeField] private int baseSpeed = 100;
         [SerializeField] private float sprintFactor = 1.5f;
-        [SerializeField] private GameObject projectileVisuals;
-        [SerializeField] private GameObject altProjectileVisuals;
+        [SerializeField] private ProjSO primaryProjType;
+        [SerializeField] private ProjSO altProjType;
 
 
         InputCommandStream inputCommandStream;
@@ -35,9 +35,9 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
                 }
 
                 if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.Fire])) {
-                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, projectileVisuals, 50));
+                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, primaryProjType));
                 } else if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.AltFire])) {
-                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjectileVisuals, 7));
+                    inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjType));
                 }
 
                 if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.Undo]))

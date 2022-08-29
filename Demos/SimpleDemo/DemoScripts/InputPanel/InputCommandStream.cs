@@ -11,8 +11,8 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
 
     public class InputCommandStream : MonoBehaviour {
         private static InputCommandStream instance;
-        public Toggle activateDemo;
-        public Player player;
+        [HideInInspector] public Toggle activateDemoSwitch;
+        [HideInInspector] public Player player;
         public static InputCommandStream Instance { 
             get => instance; 
             private set {
@@ -29,7 +29,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
             InitializeKeys();
         }
         private void Start() {
-            activateDemo = GetComponentInChildren<Toggle>();
+            activateDemoSwitch = GetComponentInChildren<Toggle>();
         }
 
         public Dictionary<InputType, KeyCode> InputKeybinds = new Dictionary<InputType, KeyCode> {

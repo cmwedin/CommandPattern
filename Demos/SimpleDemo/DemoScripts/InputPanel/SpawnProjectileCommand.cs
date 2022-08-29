@@ -5,21 +5,19 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
     public class SpawnProjectileCommand : Command
     {
         private Player player;
-        private GameObject visuals;
-        private int speed;
-        public SpawnProjectileCommand(Player player, GameObject visuals, int speed) {
+        private ProjSO data;
+        public SpawnProjectileCommand(Player player, ProjSO data) {
             this.player = player;
-            this.visuals = visuals;
-            this.speed = speed;
+            this.data = data;
+            data.BoundingBox = player.boundingBox;
 
         }
 
         public override void Execute() {
-            GameObject projGO = GameObject.Instantiate(visuals,player.boundingBox.transform);
+            GameObject projGO = GameObject.Instantiate(data.Visuals,player.boundingBox.transform);
             projGO.transform.position = player.transform.position;
             Projectile proj = projGO.AddComponent<Projectile>();
-            proj.Speed = speed;
-            proj.BoundingBox = player.boundingBox;
+            proj.LoadData(data);
             proj.Activate();
         }
     }

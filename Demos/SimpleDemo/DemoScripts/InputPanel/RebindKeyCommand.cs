@@ -12,6 +12,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         protected InputType inputToRebind;
         protected KeyCode prevBinding;
         public event Action OnRebindStart;
+        private bool prevDemoState;
         protected void InvokeOnRebindStart() {
             OnRebindStart?.Invoke();
         }
@@ -20,14 +21,22 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             this.keyBinds = keyBinds;
             this.inputToRebind = inputToRebind;
             prevBinding = keyBinds[inputToRebind];
+
+            this.OnRebindStart += () => { 
+                prevDemoState = InputCommandStream.Instance.activateDemoSwitch.isOn;
+                InputCommandStream.Instance.activateDemoSwitch.isOn = false;
+                InputCommandStream.Instance.activateDemoSwitch.gameObject.SetActive(false);
+            };
+
+            this.OnTaskCompleted += () => {
+                InputCommandStream.Instance.activateDemoSwitch.isOn = prevDemoState;
+                InputCommandStream.Instance.activateDemoSwitch.gameObject.SetActive(true);
+            };
         }
         public override async Task ExecuteAsync() {
             InvokeOnRebindStart();
             Debug.Log("async rebind task started");
             bool done = false;
-            bool prevDemoState = InputCommandStream.Instance.activateDemo.isOn;
-            InputCommandStream.Instance.activateDemo.isOn = false;
-            InputCommandStream.Instance.activateDemo.gameObject.SetActive(false);
             GameObject tempGO = new GameObject("TempKeystrokeListener");
             var selector = tempGO.AddComponent<KeystrokeListener>();
             selector.OnKeystrokeDetected += (KeyCode) => { 
@@ -47,8 +56,6 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             while(!done) {
                 await Task.Delay(1);
             }
-            InputCommandStream.Instance.activateDemo.isOn = prevDemoState;
-            InputCommandStream.Instance.activateDemo.gameObject.SetActive(true);
             Debug.Log("async rebind task completed");
         }
     }
