@@ -14,8 +14,9 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 yMax = corners[1].y;
             }}
 
-        public override Vector3 UpdatePosition(Vector3 currentPos) {
+        public override Vector3 UpdatePosition(Vector3 currentPos, Vector3 origin,  Vector3 prevDirection, out Vector3 nextDirection) {
             float targetY = currentPos.y + speed * Time.fixedDeltaTime;
+            nextDirection = Vector3.up;
             if (targetY <= yMax) {
                 return new Vector3(currentPos.x, targetY, currentPos.z);
             } else {

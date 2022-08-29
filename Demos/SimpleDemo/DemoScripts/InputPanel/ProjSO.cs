@@ -16,7 +16,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         /// <summary>
         /// Called in the projectile monobehavior's update method
         /// </summary>
-        public abstract Vector3 UpdatePosition(Vector3 currentPos);
+        public abstract Vector3 UpdatePosition(Vector3 currentPos, Vector3 origin, Vector3 prevDirection, out Vector3 newDirection);
 
     }
 }

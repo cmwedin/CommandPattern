@@ -8,6 +8,8 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
     {
         private bool active = false;
         private ProjSO data;
+        public Vector3 origin { get; set; }
+        private Vector3 prevDirection;
 
         public void Activate()
         {
@@ -29,7 +31,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         {
             if (active)
             {
-                Vector3 target = data.UpdatePosition(transform.position);
+                Vector3 target = data.UpdatePosition(transform.position, origin, prevDirection, out prevDirection);
                 if (target == Vector3.zero)
                 {
                     Destroy(gameObject);
