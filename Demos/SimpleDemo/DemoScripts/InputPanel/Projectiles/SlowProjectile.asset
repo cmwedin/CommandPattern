@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 588bdc2e99086f24e9b47597088a9036, type: 3}
   m_Name: SlowProjectile
   m_EditorClassIdentifier: 
-  visuals: {fileID: 0}
-  speed: 0
+  visuals: {fileID: 7729906225518722738, guid: 562399027b428364c90202b74086b912, type: 3}
+  speed: 7

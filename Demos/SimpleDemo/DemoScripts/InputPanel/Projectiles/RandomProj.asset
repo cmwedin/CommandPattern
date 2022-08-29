@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb830faee21c4a74a83c4e9b8369a105, type: 3}
   m_Name: RandomProj
   m_EditorClassIdentifier: 
-  visuals: {fileID: 0}
-  speed: 0
+  visuals: {fileID: 1432526883082081879, guid: afc4b74d58f060a46a50658178a5cc4d, type: 3}
+  speed: 10

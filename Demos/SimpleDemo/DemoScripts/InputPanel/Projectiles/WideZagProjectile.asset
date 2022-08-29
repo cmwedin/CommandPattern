@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92847b7d6e1883d41bce9b6f86a2827a, type: 3}
   m_Name: WideZagProjectile
   m_EditorClassIdentifier: 
-  visuals: {fileID: 0}
-  speed: 0
-  angle: 0
-  width: 0
+  visuals: {fileID: 8922328127612282401, guid: 8ecce784af944974abd3a366274184ff, type: 3}
+  speed: 20
+  angle: 10
+  width: 100
