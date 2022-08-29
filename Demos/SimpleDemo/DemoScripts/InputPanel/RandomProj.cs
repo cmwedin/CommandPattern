@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SadSapphicGames.CommandPattern.SimpleDemo
 {
     [CreateAssetMenu]
-    public class RandomProjSO : ProjSO
+    public class RandomProj : ProjSO
     {
         private enum ReflectAxis {
             vertical,horizontal,both,none

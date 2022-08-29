@@ -6,9 +6,11 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
     {
         private Player player;
         private ProjSO data;
-        public SpawnProjectileCommand(Player player, ProjSO data) {
+        private float Lifespan;
+        public SpawnProjectileCommand(Player player, ProjSO data, float Lifespan) {
             this.player = player;
             this.data = data;
+            this.Lifespan = Lifespan;
             data.BoundingBox = player.boundingBox;
 
         }
@@ -17,7 +19,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             GameObject projGO = GameObject.Instantiate(data.Visuals,player.boundingBox.transform);
             Projectile proj = projGO.AddComponent<Projectile>();
             proj.Origin = projGO.transform.position = player.transform.position;
-            proj.Lifespan = 30;
+            proj.Lifespan = Lifespan;
             proj.LoadData(data);
             proj.Activate();
         }
