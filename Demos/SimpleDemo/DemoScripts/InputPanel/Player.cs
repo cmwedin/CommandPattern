@@ -11,6 +11,8 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         [SerializeField] private float sprintFactor = 1.5f;
         [SerializeField] private ProjSO primaryProjType;
         [SerializeField] private ProjSO altProjType;
+        [SerializeField,Tooltip("The maximum length of time a projectile should exist in seconds")] private int projMaxLifespan = 100;
+
 
 
         InputCommandStream inputCommandStream;

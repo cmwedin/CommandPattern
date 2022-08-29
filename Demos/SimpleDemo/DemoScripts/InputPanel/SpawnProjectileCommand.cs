@@ -16,7 +16,8 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         public override void Execute() {
             GameObject projGO = GameObject.Instantiate(data.Visuals,player.boundingBox.transform);
             Projectile proj = projGO.AddComponent<Projectile>();
-            proj.origin = projGO.transform.position = player.transform.position;
+            proj.Origin = projGO.transform.position = player.transform.position;
+            proj.Lifespan = 30;
             proj.LoadData(data);
             proj.Activate();
         }

@@ -11,9 +11,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         [SerializeField] private float width;
         private float yMax;
         private float xMin;
-        private float innerXMin;
         private float xMax;
-        private float innerXMax;
 
         public override RectTransform BoundingBox { set {
                 Vector3[] corners = new Vector3[4];
