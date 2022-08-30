@@ -9079,7 +9079,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   demoObject: {fileID: 89424551}
   tweenLength: 1
-  scaleFactor: 2
+  scaleFactor: 1.1
+  rotateAngle: 45
 --- !u!1 &1560027584
 GameObject:
   m_ObjectHideFlags: 0

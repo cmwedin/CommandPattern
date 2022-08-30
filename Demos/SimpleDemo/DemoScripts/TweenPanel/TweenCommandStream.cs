@@ -42,6 +42,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         public void QueueCommand(ScaleTweenCommand scaleTweenCommand) {
             scaleStream.QueueCommand(scaleTweenCommand);
         }
+        CommandStream rotateStream = new CommandStream();
+        public void QueueCommand(RotateTweenCommand rotateTweenCommand) {
+            rotateStream.QueueCommand(rotateTweenCommand);
+        }
 
         // Update is called once per frame
         void Update()
@@ -51,6 +55,9 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             }
             if(scaleStream.QueueCount > 0 && !RunningTweens[TweenType.scale]) {
                 scaleStream.TryExecuteNext();
+            }
+            if(rotateStream.QueueCount > 0 && !RunningTweens[TweenType.rotate]) {
+                rotateStream.TryExecuteNext();
             }
         }
     }

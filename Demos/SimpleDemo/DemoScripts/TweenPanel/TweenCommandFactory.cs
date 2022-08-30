@@ -14,6 +14,8 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         [SerializeField] private GameObject demoObject;
         [SerializeField] private float tweenLength;
         [SerializeField] private float scaleFactor;
+        [SerializeField,Range(0,360)] private float rotateAngle;
+
 
 
         // Start is called before the first frame update
@@ -45,8 +47,9 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                     TweenCommandStream.Instance.QueueCommand(new MoveTweenCommand(demoObject, target, tweenLength));
                 }
             } if(Input.GetMouseButtonDown(1)) {
-                    TweenCommandStream.Instance.QueueCommand(new ScaleTweenCommand(demoObject, scaleFactor * demoObject.transform.localScale, tweenLength));
-
+                    TweenCommandStream.Instance.QueueCommand(new ScaleTweenCommand(demoObject, scaleFactor, tweenLength));
+            } if(Input.GetMouseButtonDown(2)) {
+                    TweenCommandStream.Instance.QueueCommand(new RotateTweenCommand(demoObject, rotateAngle, tweenLength));
             }
         }
     }
