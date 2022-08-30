@@ -15,14 +15,6 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             this.target = target;
         }
 
-        
-        public override void Execute()
-        {
-            TweenCommandStream.Instance.StartCoroutine(TweenCoroutine());
-            Debug.Log("tween finished");
-
-        }
-
         protected override IEnumerator TweenCoroutine()
         {
             TweenCommandStream.Instance.RunningTweens[TweenType.move] = true;
@@ -30,8 +22,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             start = gameObject.transform.position;
 
             while(deltaTime <= timeSpan) {
-                Vector3 delta = Vector3.Lerp(start, target, deltaTime / timeSpan) - gameObject.transform.position;
-                gameObject.transform.position += delta;
+                gameObject.transform.position = Vector3.Lerp(start, target, deltaTime / timeSpan);
                 yield return null;
             }
             TweenCommandStream.Instance.RunningTweens[TweenType.move] = false;

@@ -13,12 +13,17 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         protected float deltaTime { get => Time.time - startTime; }
         protected GameObject gameObject;
 
-        protected AbstractTweenCommand(float timeSpan, GameObject tweenerObj)
+        protected AbstractTweenCommand(float timeSpan, GameObject gameObject)
         {
             this.timeSpan = timeSpan;
-            this.gameObject = tweenerObj;
+            this.gameObject = gameObject;
         }
 
         protected abstract IEnumerator TweenCoroutine();
+        public override void Execute() {
+            TweenCommandStream.Instance.StartCoroutine(TweenCoroutine());
+            UnityEngine.Debug.Log("tween coroutine started");
+
+        }
     }
 }

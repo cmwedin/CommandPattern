@@ -38,12 +38,19 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         public void QueueCommand(MoveTweenCommand moveTweenCommand) {
             moveStream.QueueCommand(moveTweenCommand);
         }
+        CommandStream scaleStream = new CommandStream();
+        public void QueueCommand(ScaleTweenCommand scaleTweenCommand) {
+            scaleStream.QueueCommand(scaleTweenCommand);
+        }
 
         // Update is called once per frame
         void Update()
         {
             if(moveStream.QueueCount > 0 && !RunningTweens[TweenType.move]) {
                 moveStream.TryExecuteNext();
+            }
+            if(scaleStream.QueueCount > 0 && !RunningTweens[TweenType.scale]) {
+                scaleStream.TryExecuteNext();
             }
         }
     }

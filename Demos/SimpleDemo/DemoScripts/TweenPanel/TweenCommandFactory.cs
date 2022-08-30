@@ -13,6 +13,8 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         private float yMax;
         [SerializeField] private GameObject demoObject;
         [SerializeField] private float tweenLength;
+        [SerializeField] private float scaleFactor;
+
 
         // Start is called before the first frame update
         void Start()
@@ -42,6 +44,9 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                     Debug.Log("queueing move tween");
                     TweenCommandStream.Instance.QueueCommand(new MoveTweenCommand(demoObject, target, tweenLength));
                 }
+            } if(Input.GetMouseButtonDown(1)) {
+                    TweenCommandStream.Instance.QueueCommand(new ScaleTweenCommand(demoObject, scaleFactor * demoObject.transform.localScale, tweenLength));
+
             }
         }
     }
