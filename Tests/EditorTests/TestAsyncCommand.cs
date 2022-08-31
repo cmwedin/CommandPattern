@@ -10,17 +10,11 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
     {
         private bool isComplete;
 
-        public TestAsyncCommand()
-        {
-            OnTaskCompleted += () => { Debug.Log("Completion event invoked"); };
-        }
-
         public override async Task ExecuteAsync() {
             while(!isComplete) {
-                await Task.Delay(1);
+                await Task.Yield();
                 CancellationToken.ThrowIfCancellationRequested();
             }
-            Debug.Log("Async test done");
         }
 
         public void Complete() {

@@ -9,7 +9,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
 
         public override async Task ExecuteAsync() {
             while(!isComplete) {
-                await Task.Delay(1);
+                await Task.Yield();
                 CancellationToken.ThrowIfCancellationRequested();
             }
             throw new System.Exception("This is a test exception");

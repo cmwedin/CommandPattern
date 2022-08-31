@@ -16,6 +16,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
         [UnityTest]
         public IEnumerator AsyncCommandsCompletionTest() {
             TestAsyncCommand asyncCommand = new TestAsyncCommand();
+            var cts = asyncCommand.CancellationTokenSource;
             CommandStream commandStream = new CommandStream();
             commandStream.QueueCommand(asyncCommand);
             Assert.IsTrue(commandStream.TryExecuteNext() == ExecuteCode.AwaitingCompletion);
@@ -30,7 +31,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             }
             Assert.IsTrue(asyncCommand.CommandTask.IsCompletedSuccessfully);
             Assert.AreEqual(expected: 0, actual: commandStream.GetRunningCommandTasks().Count);
-            // Debug.Log("End of test");
+            Assert.Throws<ObjectDisposedException>(() => { cts.Cancel(); });
         }
         [UnityTest]
         public IEnumerator AsyncCommandCancellationTest() {
@@ -50,6 +51,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
             }
             Assert.IsTrue(asyncCommand.CommandTask.IsCanceled);
             Assert.AreEqual(expected: 0, actual: commandStream.GetRunningCommandTasks().Count);
+            Assert.AreEqual(expected: 0, actual: commandStream.GetFaultedCommandTasks().Count);
             Assert.Throws<ObjectDisposedException>(() => { cts.Cancel(); });
         }
         [UnityTest]
