@@ -9,6 +9,9 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         public RectTransform boundingBox;
         [SerializeField] private int baseSpeed = 100;
         [SerializeField] private float sprintFactor = 1.5f;
+        private List<KeyCode> mouseButtons = new List<KeyCode> {
+            KeyCode.Mouse0, KeyCode.Mouse1, KeyCode.Mouse2
+        };
         private ProjSO primaryProjType;
         public void SetPrimaryProj(ProjSO projSO) {
             primaryProjType = projSO;
@@ -44,9 +47,17 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
                     }
                 }
 
-                if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.Fire]) && primaryProjType != null) {
+                if (
+                    Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.Fire]) 
+                    && primaryProjType != null
+                    && (boundingBox.Contains(Input.mousePosition) || !mouseButtons.Contains(inputCommandStream.InputKeybinds[InputType.Fire]))
+                ) {
                     inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, primaryProjType,projMaxLifespan));
-                } else if (Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.AltFire]) && altProjType != null) {
+                } else if (
+                    Input.GetKeyDown(inputCommandStream.InputKeybinds[InputType.AltFire]) 
+                    && altProjType != null
+                    && (boundingBox.Contains(Input.mousePosition) || !mouseButtons.Contains(inputCommandStream.InputKeybinds[InputType.Fire]))
+                ) {
                     inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjType,projMaxLifespan));
                 }
 
