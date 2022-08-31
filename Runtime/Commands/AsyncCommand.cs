@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SadSapphicGames.CommandPattern
@@ -22,6 +23,23 @@ namespace SadSapphicGames.CommandPattern
         /// The task for the completion of the ExecuteAsync method after it reaches its first await and returns control back to the calling method (CommandStream.TryExecuteNext())
         /// </summary>
         public Task CommandTask { get => commandTask; private set => commandTask = value; }
+
+        private CancellationTokenSource cancellationTokenSource;
+
+        protected AsyncCommand() {
+            cancellationTokenSource = new CancellationTokenSource();
+            OnTaskCompleted += () => {
+                cancellationTokenSource.Dispose();
+            };
+        }
+        /// <summary>
+        /// This can be used to signal to CommandTask that it should be canceled. This is best done from the 
+        /// </summary>
+        public CancellationTokenSource CancellationTokenSource { get => cancellationTokenSource; }
+        /// <summary>
+        /// This can be used in ExecuteAsync to determine if the CommandTask has been canceled.
+        /// </summary>
+        protected CancellationToken CancellationToken { get => CancellationTokenSource.Token; }
 
         /// <summary>
         /// This event is invoked when CommandTask is completed. I.E. - when we reach the end of ExecuteAsync(). Subscribe to it to preform an action at after the command has fully completed.

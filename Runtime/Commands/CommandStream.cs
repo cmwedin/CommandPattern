@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -48,7 +49,7 @@ namespace SadSapphicGames.CommandPattern
         /// <summary>
         /// This is a list of the asynchronous tasks currently being run by AsyncCommands this CommandStream has executed.
         /// </summary>
-        private List<Task> runningCommandTasks = new List<Task>();
+        private Dictionary<Task,CancellationTokenSource> runningCommandTasks = new Dictionary<Task, CancellationTokenSource>();
         
         private int historyStartIndex = 0;
         private List<ICommand> UnwrapHistory() {
@@ -93,7 +94,18 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         /// <returns>The tasks that are currently being run</returns>
         public ReadOnlyCollection<Task> GetRunningCommandTasks() { 
-            return runningCommandTasks.AsReadOnly(); 
+            return runningCommandTasks.Keys.ToList().AsReadOnly(); 
+        }
+        public void CancelRunningCommandTask(Task task){
+            runningCommandTasks[task].Cancel();
+        }
+        public void CancelRunningCommandTask(IAsyncCommand asyncCommand){
+            foreach (var task in runningCommandTasks.Keys)
+            {
+                if(runningCommandTasks[task] == asyncCommand.CancellationTokenSource) {
+                    runningCommandTasks[task].Cancel();
+                }
+            };
         }
         /// <summary>
         /// Gets commandQueue.Count == 0
@@ -259,7 +271,7 @@ namespace SadSapphicGames.CommandPattern
                 && !asAsync.CommandTask.IsCompleted
             ) {
                 Task asyncTask = asAsync.CommandTask;
-                runningCommandTasks.Add(asyncTask);
+                runningCommandTasks.Add(asyncTask,asAsync.CancellationTokenSource);
                 asAsync.OnTaskCompleted += delegate { runningCommandTasks.Remove(asyncTask); };
                 //TODO add event for async command failure 
                 return ExecuteCode.AwaitingCompletion;
