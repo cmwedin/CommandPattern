@@ -11,6 +11,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         private Vector3 startScale;
         public ScaleTweenCommand(GameObject gameObject, float scaleFactor, float timeSpan ) : base(timeSpan, gameObject) {
             this.scaleFactor = scaleFactor;
+            tweenType = TweenType.scale;
         }
 
         protected override IEnumerator TweenCoroutine()
@@ -25,6 +26,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 yield return null;
             }
             TweenCommandStream.Instance.RunningTweens[TweenType.scale] = false;
+            Debug.Log($"{tweenType} tween coroutine finished");
         }
 
         // Start is called before the first frame update

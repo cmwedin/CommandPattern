@@ -11,6 +11,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         private float angle;
         public RotateTweenCommand(GameObject gameObject, float angle, float timeSpan) : base(timeSpan, gameObject) {
             this.angle = angle;
+            tweenType = TweenType.rotate;
         }
 
         protected override IEnumerator TweenCoroutine()
