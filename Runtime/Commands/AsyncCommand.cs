@@ -27,6 +27,9 @@ namespace SadSapphicGames.CommandPattern
 
         private CancellationTokenSource cancellationTokenSource;
 
+        /// <summary>
+        /// Created the cancellation token of the async command and sets up its disposal once the task completes (wether that is from success, cancellation, or faulting)
+        /// </summary>
         protected AsyncCommand() {
             cancellationTokenSource = new CancellationTokenSource();
             OnTaskCompleted += () => {
@@ -82,11 +85,14 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         public sealed override void Execute() {
             CommandTask = ExecuteAsync();
+            if (CommandTask.Status == TaskStatus.Faulted) { throw CommandTask.Exception; }
             invokeCompletionEventTask = InvokeWhenTaskCompleted();
         }
 
         /// <summary>
         /// Executes the command asynchronously. Remember to add the async keyword as that is not considered part of the method signature and cannot be added to abstract methods. 
+        /// <br/>
+        /// IMPORTANT: if you want to be able to cancel the AsyncCommand's task you must invoke CancellationToken.ThrowIfCancellationRequested() within this method somewhere after the first await. If you do not do so attempting to cancel it will do nothing.
         /// </summary>
         /// <returns> The task for the completion of this method after it reaches its first await and returns control to the calling method. </returns>
         public abstract Task ExecuteAsync();
