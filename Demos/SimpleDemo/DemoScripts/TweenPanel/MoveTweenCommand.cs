@@ -9,10 +9,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
     {
         private Vector3 target;
         private Vector3 start;
-
         public MoveTweenCommand(GameObject gameObject, Vector3 target, float timeSpan) : base(timeSpan,gameObject)
         {
             this.target = target;
+            tweenType = TweenType.move;
         }
 
         protected override IEnumerator TweenCoroutine()
@@ -26,6 +26,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 yield return null;
             }
             TweenCommandStream.Instance.RunningTweens[TweenType.move] = false;
+            Debug.Log($"{tweenType} tween coroutine finished");
         }
     }
 }

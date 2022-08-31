@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern.EditorTesting
 {
-    public class TestAsyncCommand : AsyncCommand
+    public class FaultsAsyncCommand : AsyncCommand
     {
         private bool isComplete;
 
@@ -15,6 +12,7 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
                 await Task.Yield();
                 CancellationToken.ThrowIfCancellationRequested();
             }
+            throw new System.Exception("This is a test exception");
         }
 
         public void Complete() {

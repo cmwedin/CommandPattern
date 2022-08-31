@@ -1,6 +1,6 @@
 {
   "name" : "com.sadsapphicgames.commandpattern",
-  "version" : "0.3.2",
+  "version" : "0.3.3",
   "displayName" : "Command Pattern",
   "description" : "This package contains a collection of classes and interfaces to allow for quick implementation of the command pattern across projects.",
   "author" : {

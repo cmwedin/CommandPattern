@@ -1,10 +1,11 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SadSapphicGames.CommandPattern
 {
     /// <summary>
-    /// This Interface of the AsyncCommand abstract class, Similar to ICommand you shouldn't inherit this unless you want to implement your own base class for asynchronous commands, which you should only do if you know what your doing re-asynchronous programming. 
+    /// This Interface of the AsyncCommand abstract class, It is strongly recommended you use that class rather than implement this yourself unless you are very familiar with asynchronous programming  
     /// </summary>
     public interface IAsyncCommand : ICommand
     {
@@ -13,9 +14,22 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         public Task CommandTask { get; }
         /// <summary>
-        /// This event should be invoked when CommandTask is completed so the CommandStream that executed this object can remove the task from its runningCommandTasks list 
+        /// This can be used to Cancel the task after it has been started.
+        /// </summary>
+        public CancellationTokenSource CancellationTokenSource { get; }
+
+        /// <summary>
+        /// This event should be invoked when CommandTask is successfully completed.
         /// </summary>
         public event Action OnTaskCompleted;
+        /// <summary>
+        /// This event should be invoked when CommandTask is cancelled.
+        /// </summary>
+        public event Action OnTaskCanceled;
+        /// <summary>
+        /// This event should be invoked when CommandTask throws an exception
+        /// </summary>
+        public event Action<Exception> OnTaskFaulted;
 
         /// <summary>
         /// This is where the logic of executing the command should be placed for an AsyncCommand, Execute should just store the return in CommandTask and setup the OnTaskCompleted method. Remember to make this method async as that isn't considered part of its signature.

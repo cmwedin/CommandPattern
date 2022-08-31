@@ -9,6 +9,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
     public abstract class AbstractTweenCommand : Command
     {
         protected float timeSpan;
+        protected TweenType tweenType;
         protected float startTime;
         protected float deltaTime { get => Time.time - startTime; }
         protected GameObject gameObject;
@@ -22,7 +23,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         protected abstract IEnumerator TweenCoroutine();
         public override void Execute() {
             TweenCommandStream.Instance.StartCoroutine(TweenCoroutine());
-            UnityEngine.Debug.Log("tween coroutine started");
+            UnityEngine.Debug.Log($"{tweenType}-tween coroutine started");
 
         }
     }

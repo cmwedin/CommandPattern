@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -48,8 +49,13 @@ namespace SadSapphicGames.CommandPattern
         /// <summary>
         /// This is a list of the asynchronous tasks currently being run by AsyncCommands this CommandStream has executed.
         /// </summary>
-        private List<Task> runningCommandTasks = new List<Task>();
-        
+        private Dictionary<Task,CancellationTokenSource> runningCommandTasks = new Dictionary<Task, CancellationTokenSource>();
+        private Dictionary<Task,Exception> faultedCommandTasks = new Dictionary<Task, Exception>();
+        /// <summary>
+        /// This event will be invoked if one of the tasks from an IAsyncCommand executed by this stream faults. Can be used to throw any exception's caused by tasks rather than storing them on the task object
+        /// </summary>
+        public event Action<Exception> OnTaskFaulted;
+
         private int historyStartIndex = 0;
         private List<ICommand> UnwrapHistory() {
             List<ICommand> output = new List<ICommand>();
@@ -93,7 +99,32 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         /// <returns>The tasks that are currently being run</returns>
         public ReadOnlyCollection<Task> GetRunningCommandTasks() { 
-            return runningCommandTasks.AsReadOnly(); 
+            return runningCommandTasks.Keys.ToList().AsReadOnly(); 
+        }
+        /// <summary>
+        /// Cancels a task if that task is currently running
+        /// </summary>
+        /// <param name="task">The task to cancel</param>
+        public void CancelRunningCommandTask(Task task){
+                try {
+                    runningCommandTasks[task].Cancel();
+                } catch (KeyNotFoundException) {
+                    Debug.Log($"The task {task.ToString()} is not running");
+                }
+        }
+        /// <summary>
+        /// Cancels the task of an IAsyncCommand if that task is currently running.
+        /// </summary>
+        /// <param name="asyncCommand">The IAsyncCommand to cancel the task off</param>
+        public void CancelRunningCommandTask(IAsyncCommand asyncCommand){
+            CancelRunningCommandTask(asyncCommand.CommandTask);
+        }
+        /// <summary>
+        /// Get a dictionary of any faulted tasks and the exceptions that they threw
+        /// </summary>
+        /// <returns> A read only copy of the dictionary of faulted tasks and their exceptions </returns>
+        public ReadOnlyDictionary<Task,Exception> GetFaultedCommandTasks() {
+            return new ReadOnlyDictionary<Task,Exception>(faultedCommandTasks);
         }
         /// <summary>
         /// Gets commandQueue.Count == 0
@@ -259,8 +290,19 @@ namespace SadSapphicGames.CommandPattern
                 && !asAsync.CommandTask.IsCompleted
             ) {
                 Task asyncTask = asAsync.CommandTask;
-                runningCommandTasks.Add(asyncTask);
-                asAsync.OnTaskCompleted += delegate { runningCommandTasks.Remove(asyncTask); };
+                runningCommandTasks.Add(asyncTask,asAsync.CancellationTokenSource);
+                asAsync.OnTaskCompleted += () => { runningCommandTasks.Remove(asyncTask); };
+                asAsync.OnTaskCanceled += () => { runningCommandTasks.Remove(asyncTask); };
+                asAsync.OnTaskFaulted += (ex) => {
+                    //? bubbles the exception up to the wrapper if it wishes to subscribe to this and throw
+                    this.OnTaskFaulted?.Invoke(ex);
+                    //? otherwise warns the user a fault occurred and stores the fault data somewhere they can access
+                    runningCommandTasks.Remove(asyncTask);
+                    faultedCommandTasks.Add(asyncTask, ex);
+                    Debug.LogWarning($"task of Command {asAsync.ToString()} faulted with the following exception");
+                    Debug.LogWarning(ex);
+                };
+
                 //TODO add event for async command failure 
                 return ExecuteCode.AwaitingCompletion;
             } else {
