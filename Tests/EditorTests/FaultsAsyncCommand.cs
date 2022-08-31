@@ -1,26 +1,18 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern.EditorTesting
 {
-    public class TestAsyncCommand : AsyncCommand
+    public class FaultsAsyncCommand : AsyncCommand
     {
         private bool isComplete;
-
-        public TestAsyncCommand()
-        {
-            OnTaskCompleted += () => { Debug.Log("Completion event invoked"); };
-        }
 
         public override async Task ExecuteAsync() {
             while(!isComplete) {
                 await Task.Delay(1);
                 CancellationToken.ThrowIfCancellationRequested();
             }
-            Debug.Log("Async test done");
+            throw new System.Exception("This is a test exception");
         }
 
         public void Complete() {

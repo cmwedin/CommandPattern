@@ -50,7 +50,9 @@ namespace SadSapphicGames.CommandPattern
         /// This is a list of the asynchronous tasks currently being run by AsyncCommands this CommandStream has executed.
         /// </summary>
         private Dictionary<Task,CancellationTokenSource> runningCommandTasks = new Dictionary<Task, CancellationTokenSource>();
-        
+        private Dictionary<Task,Exception> faultedCommandTasks = new Dictionary<Task, Exception>();
+        public event Action<Exception> OnTaskFaulted;
+
         private int historyStartIndex = 0;
         private List<ICommand> UnwrapHistory() {
             List<ICommand> output = new List<ICommand>();
@@ -106,6 +108,10 @@ namespace SadSapphicGames.CommandPattern
                     runningCommandTasks[task].Cancel();
                 }
             };
+        }
+
+        public ReadOnlyDictionary<Task,Exception> GetFaultedCommandTasks() {
+            return new ReadOnlyDictionary<Task,Exception>(faultedCommandTasks);
         }
         /// <summary>
         /// Gets commandQueue.Count == 0
@@ -272,7 +278,16 @@ namespace SadSapphicGames.CommandPattern
             ) {
                 Task asyncTask = asAsync.CommandTask;
                 runningCommandTasks.Add(asyncTask,asAsync.CancellationTokenSource);
-                asAsync.OnTaskCompleted += delegate { runningCommandTasks.Remove(asyncTask); };
+                asAsync.OnTaskCompleted += () => { runningCommandTasks.Remove(asyncTask); };
+                asAsync.OnTaskCanceled += () => { runningCommandTasks.Remove(asyncTask); };
+                asAsync.OnTaskFaulted += (ex) => {
+                    this.OnTaskFaulted?.Invoke(ex);
+                    runningCommandTasks.Remove(asyncTask);
+                    faultedCommandTasks.Add(asyncTask, ex);
+                    Debug.LogWarning($"task of Command {asAsync.ToString()} faulted with the following exception");
+                    Debug.LogWarning(ex);
+                };
+
                 //TODO add event for async command failure 
                 return ExecuteCode.AwaitingCompletion;
             } else {

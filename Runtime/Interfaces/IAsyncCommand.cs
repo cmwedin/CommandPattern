@@ -19,9 +19,17 @@ namespace SadSapphicGames.CommandPattern
         public CancellationTokenSource CancellationTokenSource { get; }
 
         /// <summary>
-        /// This event should be invoked when CommandTask is completed so the CommandStream that executed this object can remove the task from its runningCommandTasks list 
+        /// This event should be invoked when CommandTask is successfully completed.
         /// </summary>
         public event Action OnTaskCompleted;
+        /// <summary>
+        /// This event should be invoked when CommandTask is cancelled.
+        /// </summary>
+        public event Action OnTaskCanceled;
+        /// <summary>
+        /// This event should be invoked when CommandTask throws an exception
+        /// </summary>
+        public event Action<Exception> OnTaskFaulted;
 
         /// <summary>
         /// This is where the logic of executing the command should be placed for an AsyncCommand, Execute should just store the return in CommandTask and setup the OnTaskCompleted method. Remember to make this method async as that isn't considered part of its signature.
