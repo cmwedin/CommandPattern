@@ -73,10 +73,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                     Debug.Log("queueing move tween");
                     TweenCommandStream.Instance.QueueCommand(new MoveTweenCommand(demoObject, target, tweenLength));
                 }
-            } if (Input.GetMouseButtonDown(1)) {
+            } if (Input.GetMouseButtonDown(1) && tweenArea.Contains(Input.mousePosition)) {
                     TweenCommandStream.Instance.QueueCommand(new ScaleTweenCommand(demoObject, scaleFactor, tweenLength));
 
-            } if (Input.GetMouseButtonDown(2)) {
+            } if (Input.GetMouseButtonDown(2) && tweenArea.Contains(Input.mousePosition)) {
                     TweenCommandStream.Instance.QueueCommand(new RotateTweenCommand(demoObject, rotateAngle, tweenLength));
             }
         }
