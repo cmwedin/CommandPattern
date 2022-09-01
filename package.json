@@ -8,9 +8,9 @@
     "email" : "cmwedin@gmail.com",
     "url" : "https://github.com/cmwedin"
   },
-  "samples" : {
+  "samples" : [{
     "displayName" : "Simple Demo",
     "description" : "This demo contains a scene with various ui elements that showcase different systems that can be implemented using this package as well as showcasing some of the packages more advanced features such as async commands",
-    "path" : "Demos/SimpleDemo"
-  }
+    "path" : "Samples/SimpleDemo"
+  }]
 }
