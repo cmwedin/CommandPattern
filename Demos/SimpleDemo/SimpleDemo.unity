@@ -1582,6 +1582,8 @@ GameObject:
   - component: {fileID: 125989375}
   - component: {fileID: 125989374}
   - component: {fileID: 125989373}
+  - component: {fileID: 125989377}
+  - component: {fileID: 125989376}
   m_Layer: 5
   m_Name: SimpleAsyncPanel
   m_TagString: Untagged
@@ -1679,6 +1681,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 125989371}
   m_CullTransparentMesh: 1
+--- !u!114 &125989376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125989371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5fbb26c83e9fb34dbf9b00f116092c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bar1: {fileID: 1527112458}
+  startBar1: {fileID: 362947436}
+  cancelBar1: {fileID: 901166528}
+  runtimeBar1: 0
+  bar2: {fileID: 275771500}
+  startBar2: {fileID: 1778722764}
+  cancelBar2: {fileID: 389965162}
+  runtimeBar2: 0
+  bar3: {fileID: 349667264}
+  startBar3: {fileID: 1333006835}
+  cancelBar3: {fileID: 389965162}
+  runtimeBar3: 0
+  bar4: {fileID: 1874973628}
+  startBar4: {fileID: 151667834}
+  cancelBar4: {fileID: 408544915}
+  runtimeBar4: 0
+--- !u!114 &125989377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125989371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c24cf83e25f1d743b62e12ac4c44f03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &133605926
 GameObject:
   m_ObjectHideFlags: 0
@@ -3142,6 +3184,7 @@ GameObject:
   - component: {fileID: 275771499}
   - component: {fileID: 275771498}
   - component: {fileID: 275771497}
+  - component: {fileID: 275771500}
   m_Layer: 5
   m_Name: ProgressBar
   m_TagString: Untagged
@@ -3228,6 +3271,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 275771495}
   m_CullTransparentMesh: 1
+--- !u!114 &275771500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275771495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4aacb184dcff944396b44f65f80862b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  filledBar: {fileID: 1948169951}
 --- !u!1 &292493828
 GameObject:
   m_ObjectHideFlags: 0
@@ -3752,6 +3808,7 @@ GameObject:
   - component: {fileID: 349667263}
   - component: {fileID: 349667262}
   - component: {fileID: 349667261}
+  - component: {fileID: 349667264}
   m_Layer: 5
   m_Name: ProgressBar
   m_TagString: Untagged
@@ -3838,6 +3895,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 349667259}
   m_CullTransparentMesh: 1
+--- !u!114 &349667264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349667259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4aacb184dcff944396b44f65f80862b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  filledBar: {fileID: 643702696}
 --- !u!1 &359976819
 GameObject:
   m_ObjectHideFlags: 0
@@ -6476,8 +6546,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -100, y: 0}
+  m_SizeDelta: {x: -200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &643702697
 MonoBehaviour:
@@ -9171,8 +9241,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -100, y: 0}
+  m_SizeDelta: {x: -200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &956026720
 MonoBehaviour:
@@ -12867,6 +12937,7 @@ GameObject:
   - component: {fileID: 1527112457}
   - component: {fileID: 1527112456}
   - component: {fileID: 1527112455}
+  - component: {fileID: 1527112458}
   m_Layer: 5
   m_Name: ProgressBar
   m_TagString: Untagged
@@ -12953,6 +13024,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1527112453}
   m_CullTransparentMesh: 1
+--- !u!114 &1527112458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1527112453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4aacb184dcff944396b44f65f80862b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  filledBar: {fileID: 1528737415}
 --- !u!1 &1528047730
 GameObject:
   m_ObjectHideFlags: 0
@@ -13064,8 +13148,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -100, y: 0}
+  m_SizeDelta: {x: -200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1528737416
 MonoBehaviour:
@@ -16365,6 +16449,7 @@ GameObject:
   - component: {fileID: 1874973627}
   - component: {fileID: 1874973626}
   - component: {fileID: 1874973625}
+  - component: {fileID: 1874973628}
   m_Layer: 5
   m_Name: ProgressBar
   m_TagString: Untagged
@@ -16451,6 +16536,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874973623}
   m_CullTransparentMesh: 1
+--- !u!114 &1874973628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874973623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4aacb184dcff944396b44f65f80862b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  filledBar: {fileID: 956026719}
 --- !u!1 &1877998729
 GameObject:
   m_ObjectHideFlags: 0
@@ -17368,8 +17466,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -100, y: 0}
+  m_SizeDelta: {x: -200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1948169952
 MonoBehaviour:

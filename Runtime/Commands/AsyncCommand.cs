@@ -31,19 +31,22 @@ namespace SadSapphicGames.CommandPattern
         /// Created the cancellation token of the async command and sets up its disposal once the task completes (wether that is from success, cancellation, or faulting)
         /// </summary>
         protected AsyncCommand() {
-            cancellationTokenSource = new CancellationTokenSource();
             OnTaskCompleted += () => {
                 cancellationTokenSource.Dispose();
+                OnAnyTaskEnd?.Invoke();
             };
             OnTaskCanceled += () => {
                 cancellationTokenSource.Dispose();
+                OnAnyTaskEnd?.Invoke();
+
             };
             OnTaskFaulted += (ex) => {
                 cancellationTokenSource.Dispose();
+                OnAnyTaskEnd?.Invoke();
             };
         }
         /// <summary>
-        /// This can be used to signal to CommandTask that it should be canceled, provided that you respond to CancellationToken indicating it has been canceled from ExecuteAsync
+        /// This can be used to signal to CommandTask that it should be canceled, null until the execute method is invoked
         /// </summary>
         public CancellationTokenSource CancellationTokenSource { get => cancellationTokenSource; }
         /// <summary>
@@ -63,6 +66,10 @@ namespace SadSapphicGames.CommandPattern
         /// This event is invoked if the command task throws an exception.  
         /// </summary>
         public event Action<Exception> OnTaskFaulted;
+        /// <summary>
+        /// This event is invoked when any of the OnTask[blank] events are to avoid needed to subscribe the same delegate to multiple events when logic needs to run regardless of how the task finished
+        /// </summary>
+        public event Action OnAnyTaskEnd;
         /// <summary>
         /// This method invokes the OnTaskCompleted when CommandTask is completed 
         /// </summary>
@@ -84,6 +91,7 @@ namespace SadSapphicGames.CommandPattern
         /// This method may not be overridden in asynchronous commands. Use ExecuteAsync for your command's logic instead. 
         /// </summary>
         public sealed override void Execute() {
+            cancellationTokenSource = new CancellationTokenSource();
             CommandTask = ExecuteAsync();
             if (CommandTask.Status == TaskStatus.Faulted) { throw CommandTask.Exception; }
             invokeCompletionEventTask = InvokeWhenTaskCompleted();

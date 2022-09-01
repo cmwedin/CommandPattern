@@ -30,6 +30,10 @@ namespace SadSapphicGames.CommandPattern
         /// This event should be invoked when CommandTask throws an exception
         /// </summary>
         public event Action<Exception> OnTaskFaulted;
+        /// <summary>
+        /// This event should be invoked when any of the above three are
+        /// </summary>
+        public event Action OnAnyTaskEnd;
 
         /// <summary>
         /// This is where the logic of executing the command should be placed for an AsyncCommand, Execute should just store the return in CommandTask and setup the OnTaskCompleted method. Remember to make this method async as that isn't considered part of its signature.
