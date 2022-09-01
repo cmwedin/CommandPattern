@@ -38,7 +38,8 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         void Update()
         {
             if(commandStream.QueueCount > 0) {
-                commandStream.TryExecuteNext();
+                var execCode = commandStream.TryExecuteNext();
+                Debug.Log($"TryExecuteNest returned with code {execCode}");
             }
         }
     }

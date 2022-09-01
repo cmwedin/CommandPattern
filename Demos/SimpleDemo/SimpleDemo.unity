@@ -10874,6 +10874,7 @@ GameObject:
   - component: {fileID: 934679666}
   - component: {fileID: 934679665}
   - component: {fileID: 934679664}
+  - component: {fileID: 934679668}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -10991,6 +10992,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934679662}
   m_CullTransparentMesh: 1
+--- !u!114 &934679668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934679662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df7a20d8092faee44af9d5d56d77f478, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waitCommandFactory: {fileID: 0}
+  minRuntime: 1
+  maxRuntime: 10
+  minTimeStep: 1
+  maxTimeStep: 1000
+  bar1Slider: {fileID: 634802959}
+  bar1MinValue: {fileID: 91482091}
+  bar1MaxValue: {fileID: 1878069884}
+  bar1CurrentValue: {fileID: 1893668643}
+  bar2Slider: {fileID: 892074111}
+  bar2MinValue: {fileID: 432827092}
+  bar2MaxValue: {fileID: 257992299}
+  bar2CurrentValue: {fileID: 2044844719}
+  bar3Slider: {fileID: 159639346}
+  bar3MinValue: {fileID: 2122170650}
+  bar3MaxValue: {fileID: 1291869209}
+  bar3CurrentValue: {fileID: 1566844420}
+  bar4Slider: {fileID: 2086269687}
+  bar4MinValue: {fileID: 2086073129}
+  bar4MaxValue: {fileID: 1286070516}
+  bar4CurrentValue: {fileID: 945566023}
+  timeStepSlider: {fileID: 2023299852}
+  timeStepMinValue: {fileID: 1018481478}
+  timeStepMaxValue: {fileID: 618505146}
+  timeStepCurrentValue: {fileID: 1387658464}
 --- !u!1 &936537884
 GameObject:
   m_ObjectHideFlags: 0

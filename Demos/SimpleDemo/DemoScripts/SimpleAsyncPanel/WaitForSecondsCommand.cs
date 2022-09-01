@@ -29,6 +29,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 waitProgress.Report((float)i / (float)millisecondsToWait);
                 CancellationToken.ThrowIfCancellationRequested();
             }
+            waitProgress.Report(1);
             Debug.Log("Wait done");
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,25 +27,81 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
         [SerializeField] Button startAll;
         [SerializeField] Button cancelAll;
 
+        private WaitForSecondsCommand bar1Command;
+        private WaitForSecondsCommand bar2Command;
+        private WaitForSecondsCommand bar3Command;
+        private WaitForSecondsCommand bar4Command;
+
+
         Dictionary<ProgressBar, bool> runningBars;
+
+        public void ChangeBarRuntime(int bar, float newRuntime) {
+            switch (bar)
+            {
+                case 1:
+                    runtimeBar1 = newRuntime;
+                    SetBarCommand(1);
+                    break;
+                case 2:
+                    runtimeBar2 = newRuntime;
+                    SetBarCommand(2);
+                    break;
+                case 3:
+                    runtimeBar3 = newRuntime;
+                    SetBarCommand(3);
+                    break;
+                case 4:
+                    runtimeBar4 = newRuntime;
+                    SetBarCommand(4);
+                    break;
+                default:
+                    return;
+            }
+        }
+        
+        public void ChangeTimeStep(int value)
+        {
+            timeStep = value;
+            for (int i = 1; i <= 4; i++)
+            {
+                SetBarCommand(i);
+            };
+        }
+        private void SetBarCommand(int bar) {
+            switch (bar)
+            {
+                case 1:
+                    bar1Command = new WaitForSecondsCommand(runtimeBar1,timeStep);
+                    bar1Command.ProgressChanged += (value) => { bar1.SetFilledPortion(value); };
+                    bar1Command.OnAnyTaskEnd += () => runningBars[bar1] = false;
+                    break;
+                case 2:
+                    bar2Command = new WaitForSecondsCommand(runtimeBar2,timeStep);
+                    bar2Command.ProgressChanged += (value) => { bar2.SetFilledPortion(value); };
+                    bar2Command.OnAnyTaskEnd += () => runningBars[bar2] = false;
+                    break;
+                case 3:
+                    bar3Command = new WaitForSecondsCommand(runtimeBar3,timeStep);
+                    bar3Command.ProgressChanged += (value) => { bar3.SetFilledPortion(value); };
+                    bar3Command.OnAnyTaskEnd += () => runningBars[bar3] = false;
+                    break;
+                case 4:
+                    bar4Command = new WaitForSecondsCommand(runtimeBar4,timeStep);
+                    bar4Command.ProgressChanged += (value) => { bar4.SetFilledPortion(value); };
+                    bar4Command.OnAnyTaskEnd += () => runningBars[bar4] = false;
+                    break;
+                default:
+                    return;
+            }
+        }
 
         // Start is called before the first frame update
         void Start()
         {
-            WaitForSecondsCommand bar1Command = new WaitForSecondsCommand(runtimeBar1,timeStep);
-            bar1Command.ProgressChanged += (value) => { bar1.SetFilledPortion(value); };
-            bar1Command.OnAnyTaskEnd += () => runningBars[bar1] = false;
-            WaitForSecondsCommand bar2Command = new WaitForSecondsCommand(runtimeBar2,timeStep);
-            bar2Command.ProgressChanged += (value) => { bar2.SetFilledPortion(value); };
-            bar2Command.OnAnyTaskEnd += () => runningBars[bar2] = false;
-            WaitForSecondsCommand bar3Command = new WaitForSecondsCommand(runtimeBar3,timeStep);
-            bar3Command.ProgressChanged += (value) => { bar3.SetFilledPortion(value); };
-            bar3Command.OnAnyTaskEnd += () => runningBars[bar3] = false;
-            WaitForSecondsCommand bar4Command = new WaitForSecondsCommand(runtimeBar4,timeStep);
-            bar4Command.ProgressChanged += (value) => { bar4.SetFilledPortion(value); };
-            bar4Command.OnAnyTaskEnd += () => runningBars[bar4] = false;
-
-
+            for (int i = 1; i <= 4; i++)
+            {
+                SetBarCommand(i);
+            }
             runningBars = new Dictionary<ProgressBar, bool>{
                 {bar1,false},
                 {bar2,false},
