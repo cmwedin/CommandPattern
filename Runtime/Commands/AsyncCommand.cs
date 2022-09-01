@@ -91,6 +91,7 @@ namespace SadSapphicGames.CommandPattern
         /// This method may not be overridden in asynchronous commands. Use ExecuteAsync for your command's logic instead. 
         /// </summary>
         public sealed override void Execute() {
+            if(CommandTask != null && !CommandTask.IsCompleted) {throw new AlreadyRunningException(this);}
             cancellationTokenSource = new CancellationTokenSource();
             CommandTask = ExecuteAsync();
             if (CommandTask.Status == TaskStatus.Faulted) { throw CommandTask.Exception; }
@@ -104,5 +105,18 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         /// <returns> The task for the completion of this method after it reaches its first await and returns control to the calling method. </returns>
         public abstract Task ExecuteAsync();
+    }
+    /// <summary>
+    /// This exception indicates an AsyncCommand was executed but its task had yet to complete. Only one CommandTask per instance can be running at a time. Handled by CommandStream.
+    /// </summary>
+    [System.Serializable]
+    public class AlreadyRunningException : System.Exception
+    {
+        public AlreadyRunningException(AsyncCommand command) : base($"This AsyncCommand object has already been executed and its CommandTask is hasn't been completed yet. The task from its previous execution must complete before it can be executed again. Did you mean to create a new object of type {command.GetType()}?") { }
+        public AlreadyRunningException(string message) : base(message) { }
+        public AlreadyRunningException(string message, System.Exception inner) : base(message, inner) { }
+        protected AlreadyRunningException(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 }

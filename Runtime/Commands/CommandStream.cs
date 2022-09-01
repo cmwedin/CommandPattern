@@ -32,7 +32,12 @@ namespace SadSapphicGames.CommandPattern
         /// <summary>
         /// Top command was an AsyncCommand that is awaiting completion
         /// </summary>
-        AwaitingCompletion
+        AwaitingCompletion,
+        /// <summary>
+        /// Top command was an AsyncCommand but its task had already been started and hasn't been completed
+        /// </summary>
+        AlreadyRunning
+        
     }
     /// <summary>
     /// This is the object that stores commands to be invoked and executes them when told to by the client. It has no knowledge of the implementation of commands beyond their interfaces.
@@ -275,7 +280,11 @@ namespace SadSapphicGames.CommandPattern
                 //? A composite failed halfway through execution and could be reversed - we can handle it (and already did in the composite)
                 Debug.LogWarning(ex.Message);
                 return ExecuteCode.CompositeFailure;
-            } catch(SystemException ex) {
+            } catch(AlreadyRunningException ex) {
+                Debug.LogWarning(ex.Message);
+                return ExecuteCode.AlreadyRunning;
+            }
+                catch(SystemException ex) {
                 //? Some other exception happened that the invoker can't know how to handle - let the wrapper attempt to handle it
                 throw ex;
             }
