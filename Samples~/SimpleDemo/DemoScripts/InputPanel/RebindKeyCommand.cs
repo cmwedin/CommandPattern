@@ -6,21 +6,42 @@ using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern.SimpleDemo
 {
+    /// <summary>
+    /// The AsyncCommand for rebinding an input key
+    /// </summary>
     public class RebindKeyCommand : AsyncCommand
     {
+        /// <summary>
+        /// A QoL reference to the InputCommandStream instance's binding dictionary, not needed as this is a public field of a singleton, 
+        /// but using this reference significantly shortens what would otherwise be very long lines of code
+        /// </summary>
         protected Dictionary<InputType, KeyCode> keyBinds;
+        /// <summary>
+        /// The input that is being rebound
+        /// </summary>
         protected InputType inputToRebind;
-        protected KeyCode prevBinding;
+        /// <summary>
+        /// An event that is invoked when the rebinding begins, used to update the binding ui element to blank while waiting for the new binding 
+        /// </summary>
         public event Action OnRebindStart;
+        /// <summary>
+        /// wether or note the demo was active before this command started, as it will be set to inactive during its while it is running
+        /// </summary>
         private bool prevDemoState;
-        protected void InvokeOnRebindStart() {
-            OnRebindStart?.Invoke();
-        }
+        /// <summary>
+        /// The KeystrokeListener component the command uses to determine if a key has been pressed
+        /// </summary>
+        private KeystrokeListener keystrokeListener;
 
-        public RebindKeyCommand(Dictionary<InputType, KeyCode> keyBinds, InputType inputToRebind) {
-            this.keyBinds = keyBinds;
+        /// <summary>
+        /// Creates a RebindKeyCommand for a given input add subscribes delegates to switch the input demo off on the command is started 
+        /// and to switch it back to its previous state and destroy the KeystrokeListener game object once it has finished
+        /// </summary>
+        /// <param name="inputToRebind">The input to be rebound</param>
+        public RebindKeyCommand(InputType inputToRebind) {
+            this.keyBinds = InputCommandStream.Instance.InputKeybinds;
             this.inputToRebind = inputToRebind;
-            prevBinding = keyBinds[inputToRebind];
+        
 
             this.OnRebindStart += () => { 
                 prevDemoState = InputCommandStream.Instance.activateDemoSwitch.isOn;
@@ -28,33 +49,40 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 InputCommandStream.Instance.activateDemoSwitch.gameObject.SetActive(false);
             };
 
-            this.OnTaskCompleted += () => {
+            this.OnAnyTaskEnd += () => {
+                if(keystrokeListener != null) {GameObject.Destroy(keystrokeListener.gameObject);}
                 InputCommandStream.Instance.activateDemoSwitch.isOn = prevDemoState;
                 InputCommandStream.Instance.activateDemoSwitch.gameObject.SetActive(true);
             };
         }
+        /// <summary>
+        /// Executes the command asynchronously
+        /// creates an object with the KeystrokeListener component
+        /// when that component detects a keystroke verifies the entered key was a valid and if it is sets it to be the new key for the input
+        /// cancelled if the KeystrokeListener is prematurely destroyed;
+        /// </summary>
         public override async Task ExecuteAsync() {
-            InvokeOnRebindStart();
+            OnRebindStart?.Invoke();
             Debug.Log("async rebind task started");
             bool done = false;
             GameObject tempGO = new GameObject("TempKeystrokeListener");
-            var selector = tempGO.AddComponent<KeystrokeListener>();
-            selector.OnKeystrokeDetected += (KeyCode) => { 
+            keystrokeListener = tempGO.AddComponent<KeystrokeListener>();
+            keystrokeListener.rebindKeyCommand = this;
+            keystrokeListener.OnKeystrokeDetected += (KeyCode) => { 
                 if(keyBinds.ContainsValue(KeyCode)) { 
                     if(keyBinds[inputToRebind] == KeyCode) {
                         done = true;
-                        GameObject.Destroy(tempGO);
                     } else {
                         return;
                     }
                 } else {
                     keyBinds[inputToRebind] = KeyCode;
                     done = true;
-                    GameObject.Destroy(tempGO);
                 }
             };
             while(!done) {
                 await Task.Delay(1);
+                CancellationToken.ThrowIfCancellationRequested();
             }
             Debug.Log("async rebind task completed");
         }

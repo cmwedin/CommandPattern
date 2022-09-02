@@ -7,34 +7,109 @@ using UnityEngine.UI;
 namespace SadSapphicGames.CommandPattern.SimpleDemo {
     public class WaitCommandFactory : MonoBehaviour
     {
-        [SerializeField, Tooltip("the increment in which the async commands will run in milliseconds"), Range(1, 1000)] int timeStep;
+        /// <summary>
+        /// the timeStep which the wait for seconds commands will await before checking for cancellation and reporting progress
+        /// </summary>
+        int timeStep = 10;
+        /// <summary>
+        /// The progress bar to display the progress of the first WaitForSecondsCommand
+        /// </summary>
         [SerializeField] ProgressBar bar1;
+        /// <summary>
+        /// The button to start the first WaitForSecondsCommand
+        /// </summary>
         [SerializeField] Button startBar1;
+        /// <summary>
+        /// The button to cancel the first WaitForSecondsCommand
+        /// </summary>
         [SerializeField] Button cancelBar1;
-        [SerializeField, Tooltip("runtime in seconds")] float runtimeBar1;
+        /// <summary>
+        /// The runtime of the first WaitForSecondsCommand
+        /// </summary>
+        float runtimeBar1 = 1;
+        /// <summary>
+        /// The progress bar to display the progress of the second WaitForSecondsCommand
+        /// </summary>
         [SerializeField] ProgressBar bar2;
+        /// <summary>
+        /// The button to start the second WaitForSecondsCommand
+        /// </summary>
         [SerializeField] Button startBar2;
+        /// <summary>
+        /// The button to cancel the second WaitForSecondsCommand
+        /// </summary>
         [SerializeField] Button cancelBar2;
-        [SerializeField, Tooltip("runtime in seconds")] float runtimeBar2;
+        /// <summary>
+        /// The runtime of the second WaitForSecondsCommand
+        /// </summary>
+        float runtimeBar2 = 2;
+        /// <summary>
+        /// The progress bar to display the progress of the third WaitForSecondsCommand
+        /// </summary>
         [SerializeField] ProgressBar bar3;
+        /// <summary>
+        /// The button to start the third WaitForSecondsCommand
+        /// </summary>
         [SerializeField] Button startBar3;  
+        /// <summary>
+        /// The button to cancel the third WaitForSecondsCommand
+        /// </summary>
         [SerializeField] Button cancelBar3;
-        [SerializeField, Tooltip("runtime in seconds")] float runtimeBar3;
+        /// <summary>
+        /// The runtime of the third WaitForSecondsCommand
+        /// </summary>
+        float runtimeBar3 = 3;
+        /// <summary>
+        /// The progress bar to display the progress of the fourth WaitForSecondsCommand
+        /// </summary>
         [SerializeField] ProgressBar bar4;
+        /// <summary>
+        /// The button to start the fourth WaitForSecondsCommand
+        /// </summary>
         [SerializeField] Button startBar4;
+        /// <summary>
+        /// The button to cancel the fourth WaitForSecondsCommand
+        /// </summary>
         [SerializeField] Button cancelBar4;
-        [SerializeField, Tooltip("runtime in seconds")] float runtimeBar4;
+        /// <summary>
+        /// The runtime of the fourth WaitForSecondsCommand
+        /// </summary>
+        float runtimeBar4 = 4;
+        /// <summary>
+        /// The button to start all of the WaitForSecondsCommands
+        /// </summary>
         [SerializeField] Button startAll;
+        /// <summary>
+        /// The button to cancel all of the WaitForSecondsCommands
+        /// </summary>
         [SerializeField] Button cancelAll;
-
+        /// <summary>
+        /// the first WaitForSecondsCommand
+        /// </summary>
         private WaitForSecondsCommand bar1Command;
+        /// <summary>
+        /// the second WaitForSecondsCommand
+        /// </summary>
         private WaitForSecondsCommand bar2Command;
+        /// <summary>
+        /// the third WaitForSecondsCommand
+        /// </summary>
         private WaitForSecondsCommand bar3Command;
+        /// <summary>
+        /// the fourth WaitForSecondsCommand
+        /// </summary>
         private WaitForSecondsCommand bar4Command;
 
-
+        /// <summary>
+        /// A dictionary of which WaitForSecondsCommands are running
+        /// </summary>
         Dictionary<ProgressBar, bool> runningBars;
 
+        /// <summary>
+        /// Changes the runtime of one of the WaitForSecondsCommands
+        /// </summary>
+        /// <param name="bar">which of the command to change the runtime of</param>
+        /// <param name="newRuntime">what the new runtime should be</param>
         public void ChangeBarRuntime(int bar, float newRuntime) {
             switch (bar)
             {
@@ -58,7 +133,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
                     return;
             }
         }
-        
+        /// <summary>
+        /// Changes the time-step of the WaitForSecondsCommands
+        /// </summary>
+        /// <param name="value"></param>
         public void ChangeTimeStep(int value)
         {
             timeStep = value;
@@ -67,6 +145,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
                 SetBarCommand(i);
             };
         }
+        /// <summary>
+        /// Creates or re-creates one of the WaitForSecondsCommands and sets up its ProgressChanged and OnAnyTaskEnd events
+        /// </summary>
+        /// <param name="bar">which command to recreate</param>
         private void SetBarCommand(int bar) {
             switch (bar)
             {
@@ -95,7 +177,11 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
             }
         }
 
-        // Start is called before the first frame update
+        /// <summary>
+        /// Creates each of the WaitForSecondsCommands
+        /// Sets all of the entries in the runningBars dictionaries to false
+        /// Sets up the events of each buttons to start/cancel WaitForSecondsCommands
+        /// </summary>
         void Start()
         {
             for (int i = 1; i <= 4; i++)
@@ -187,12 +273,6 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
                     WaitCommandStream.Instance.CancelCommand(bar4Command);
                 }
             });
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            
         }
     }
 }

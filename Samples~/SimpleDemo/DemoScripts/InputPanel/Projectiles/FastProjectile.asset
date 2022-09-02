@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: FastProjectile
   m_EditorClassIdentifier: 
   visuals: {fileID: 2614105418487445210, guid: 8fd5f7df5698c294ea813a4957e296d6, type: 3}
-  speed: 50
+  speed: 200

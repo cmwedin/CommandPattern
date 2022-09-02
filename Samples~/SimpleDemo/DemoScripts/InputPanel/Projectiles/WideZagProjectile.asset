@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: WideZagProjectile
   m_EditorClassIdentifier: 
   visuals: {fileID: 8922328127612282401, guid: 8ecce784af944974abd3a366274184ff, type: 3}
-  speed: 20
+  speed: 150
   angle: 10
   width: 100
