@@ -3,20 +3,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KeystrokeListener : MonoBehaviour
+namespace SadSapphicGames.CommandPattern.SimpleDemo
 {
-    public event Action<KeyCode> OnKeystrokeDetected;
-    // Start is called before the first frame update
-    void Start()
+    /// <summary>
+    /// This component is used to listen for keystrokes
+    /// </summary>
+    public class KeystrokeListener : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update() {
-        foreach(KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode))){
-            if(Input.GetKey(keyCode)) {
-                OnKeystrokeDetected?.Invoke(keyCode);
+        /// <summary>
+        /// The rebindKeyCommand that created this object
+        /// </summary>
+        public RebindKeyCommand rebindKeyCommand { get; set; }
+        /// <summary>
+        /// an event raised when a keycode is detected
+        /// </summary>
+        public event Action<KeyCode> OnKeystrokeDetected;
+        /// <summary>
+        /// loops through the possible inputs and raises the OnKeystrokeDetected event with it as an argument if it is currently down
+        /// </summary>
+        void Update()
+        {
+            foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
+            {
+                if (Input.GetKey(keyCode))
+                {
+                    OnKeystrokeDetected?.Invoke(keyCode);
+                }
+            }
+        }
+        /// <summary>
+        /// Cancels the RebindKeyCommand if this object is destroyed before it is finished
+        /// </summary>
+        private void OnDestroy() {
+            if(!rebindKeyCommand.CommandTask.IsCompleted) {
+                RebindKeyManager.Instance.CancelRebindCommand(rebindKeyCommand);
             }
         }
     }

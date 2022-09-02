@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SlowProjectile
   m_EditorClassIdentifier: 
   visuals: {fileID: 7729906225518722738, guid: 562399027b428364c90202b74086b912, type: 3}
-  speed: 7
+  speed: 60

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: RandomProj
   m_EditorClassIdentifier: 
   visuals: {fileID: 1432526883082081879, guid: afc4b74d58f060a46a50658178a5cc4d, type: 3}
-  speed: 10
+  speed: 250

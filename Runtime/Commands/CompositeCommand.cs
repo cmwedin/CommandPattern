@@ -43,7 +43,11 @@ namespace SadSapphicGames.CommandPattern {
             ICommand prevChild;
             ExecuteCode executeCode = internalStream.TryExecuteNext(out prevChild);
             while (executeCode != ExecuteCode.QueueEmpty) {
-                if (executeCode == ExecuteCode.Failure) { //? One of the children failed 
+                if (
+                    executeCode == ExecuteCode.Failure 
+                    || executeCode == ExecuteCode.CompositeFailure 
+                    || executeCode == ExecuteCode.AlreadyRunning
+                ) { //? One of the children failed 
                     var reversibleCommands =
                         from com in internalStream.GetCommandHistory()
                         where com is IUndoable

@@ -1650,7 +1650,7 @@ MonoBehaviour:
   m_MinValue: 0.1
   m_MaxValue: 2
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 1.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2005,7 +2005,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boundingBox: {fileID: 1560027585}
-  baseSpeed: 10
+  baseSpeed: 150
   sprintFactor: 1.5
   projMaxLifespan: 30
 --- !u!1 &124777645
@@ -2288,23 +2288,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5fbb26c83e9fb34dbf9b00f116092c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeStep: 10
   bar1: {fileID: 1527112458}
   startBar1: {fileID: 362947436}
   cancelBar1: {fileID: 901166528}
-  runtimeBar1: 1
   bar2: {fileID: 275771500}
   startBar2: {fileID: 1778722764}
   cancelBar2: {fileID: 389965162}
-  runtimeBar2: 2
   bar3: {fileID: 349667264}
   startBar3: {fileID: 1333006835}
   cancelBar3: {fileID: 180821899}
-  runtimeBar3: 3
   bar4: {fileID: 1874973628}
   startBar4: {fileID: 151667834}
   cancelBar4: {fileID: 408544915}
-  runtimeBar4: 4
   startAll: {fileID: 1608079846}
   cancelAll: {fileID: 959304900}
 --- !u!114 &125989377
@@ -18215,7 +18210,7 @@ MonoBehaviour:
   m_MinValue: 1
   m_MaxValue: 360
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 45
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
