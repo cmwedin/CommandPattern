@@ -51,7 +51,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 CancellationToken.ThrowIfCancellationRequested();
             }
             waitProgress.Report(1);
-            Debug.Log("Wait done");
+            Debug.Log($"{millisecondsToWait} ms wait done");
         }
     }
 }
