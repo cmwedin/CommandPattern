@@ -15,7 +15,7 @@ namespace SadSapphicGames.CommandPattern
             var subCommandsEnum = subCommands.GetEnumerator();
             while(subCommandsEnum.MoveNext()) {
                 if (subCommandsEnum.Current is IFailable) {
-                    throw new System.ArgumentException("A simple composite command can not contain failable commands");
+                    throw new System.ArgumentException("A simple composite command cannot contain IFailable commands");
                 } else {
                     AddChild(subCommandsEnum.Current);
                 }

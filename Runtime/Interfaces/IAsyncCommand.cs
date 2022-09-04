@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace SadSapphicGames.CommandPattern
 {
     /// <summary>
-    /// This Interface of the AsyncCommand abstract class, It is strongly recommended you use that class rather than implement this yourself unless you are very familiar with asynchronous programming  
+    /// This Interface of the AsyncCommand abstract class, It is strongly recommended you use the AsyncCommand class rather than implement this yourself unless you are very familiar with asynchronous programming  
     /// </summary>
     public interface IAsyncCommand : ICommand
     {
