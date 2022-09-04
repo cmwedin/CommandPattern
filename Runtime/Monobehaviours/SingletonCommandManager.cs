@@ -8,8 +8,9 @@ using UnityEngine;
 
 namespace SadSapphicGames.CommandPattern {
     /// <summary>
-    /// A singleton manager for a single-stream, out of the box implementation of the Command pattern. For more complicated implementations create your own CommandStream wrappers. 
-    /// Does not drop Commands from its CommandHistory. Executes the next command in the CommandStream every frame.
+    /// A singleton manager for a single-stream, out of the box implementation of the Command pattern. 
+    /// Once you understand how the package works it is highly recommended  create your own CommandStream wrapper tailored to the needs of your project. 
+    /// Executes the next command in the CommandStream every frame.
     /// </summary>
     public class SingletonCommandManager : MonoBehaviour
     {
@@ -22,7 +23,13 @@ namespace SadSapphicGames.CommandPattern {
         /// </summary>
         [SerializeField, Tooltip("The value that will be used in the internal CommandStream's constructor for its history depth, set to negative to record all history")]
         public int maximumHistoryDepth = -1;
+        /// <summary>
+        /// The internal CommandStream this object wraps
+        /// </summary>
         private CommandStream commandStream;
+        /// <summary>
+        /// Can be used to stop the manager from executing commands
+        /// </summary>
         private bool freezeCommandExecution = false;
         /// <summary>
         /// Turns command execution off if its on and on if its off
@@ -32,7 +39,7 @@ namespace SadSapphicGames.CommandPattern {
             freezeCommandExecution = !freezeCommandExecution;
         }
         /// <summary>
-        /// Turns command execution off or on
+        /// Turns command execution on or off
         /// </summary>
         /// <param name="onoff">if false stops the execution of commands, if true enables it</param>
         public void ToggleCommandExecution(bool onoff)
@@ -52,6 +59,20 @@ namespace SadSapphicGames.CommandPattern {
         /// <returns>A ReadOnlyCollection of uncompleted tasks from executed AsyncCommands </returns>
         public ReadOnlyCollection<Task> GetRunningCommandTasks() {
             return commandStream.GetRunningCommandTasks();
+        }
+        /// <summary>
+        /// Cancels an AsyncCommand's running task through a reference to the task
+        /// </summary>
+        /// <param name="taskToCancel">the task of an AsyncCommand to cancel</param>
+        public void CancelRunningCommandTask(Task taskToCancel) {
+            commandStream.CancelRunningCommandTask(taskToCancel);
+        }
+        /// <summary>
+        /// Cancels an AsyncCommand's running task through a reference to the command
+        /// </summary>
+        /// <param name="taskToCancel">the AsyncCommand who's task should be canceled </param>
+        public void CancelRunningCommandTask(IAsyncCommand asyncCommand) {
+            commandStream.CancelRunningCommandTask(asyncCommand);
         }
         /// <summary>
         /// Empties the history of the internal CommandStream and replaces it with an empty one.
@@ -115,7 +136,9 @@ namespace SadSapphicGames.CommandPattern {
         public void ForceQueueUndoCommand(IUndoable commandToUndo) {
             commandStream.ForceQueueUndoCommand(commandToUndo);
         }
-
+        /// <summary>
+        /// sets the singleton instance of this object
+        /// </summary>
         private void Awake() {
             if(Instance != null && Instance != this) {
                 Destroy(this);
@@ -123,7 +146,9 @@ namespace SadSapphicGames.CommandPattern {
                 Instance = this;
             }
         }
-        // Start is called before the first frame update
+        /// <summary>
+        /// Constructs the objects internal CommandStream
+        /// </summary>
         void Start() {
             if (maximumHistoryDepth >= 0) {
                 commandStream = new CommandStream(maximumHistoryDepth);
@@ -132,9 +157,11 @@ namespace SadSapphicGames.CommandPattern {
             }
         }
 
-        // Update is called once per frame
+        /// <summary>
+        /// Executes the next command in queue if it isn't empty and command execution isn't frozen
+        /// </summary>
         void Update() {
-            if (!freezeCommandExecution) {
+            if (!freezeCommandExecution && !QueueEmpty) {
                 commandStream?.TryExecuteNext();
             }
         }

@@ -25,6 +25,9 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         public Task CommandTask { get => commandTask; private set => commandTask = value; }
 
+        /// <summary>
+        /// The backing field of the CancellationToken and CancellationTokenSource properties
+        /// </summary>
         private CancellationTokenSource cancellationTokenSource;
 
         /// <summary>

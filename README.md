@@ -2,11 +2,31 @@
 This package contains a collection of classes and interfaces to allow for quick implementation of the command pattern across projects. An out-of-the-box implementation is provided through the [SingletonCommandManager](Runtime/Monobehaviours/SingletonCommandManager.cs) component, for more information see [Simple Implementation](#simple-implementation).
 
 ## Installation
+### Through GitHub (Recommended)
 To install this package in your Unity project, select the "window/Package Manager" entry in the Unity Inspector toolbar. Then, select the "+" icon in the upper left corner of the opened window, and select "Add package from git url." Paste the following:
 
     https://github.com/cmwedin/CommandPattern.git
 
-Once you see this package show up in the Package Manager window, it has been successfully installed
+Once you see this package show up in the Package Manager window, it has been successfully installed. 
+
+You can automatically update the package by clicking the "update," button in the bottom right corner of the package manager window. This will retrieve any changes committed to the packages main branch on this repository since installation / your last update.
+
+#### Advanced installation (Not Recommended) 
+You can install the experimental version of this package instead by adding #Development-Branch to the end of the Github url above. This will make your installation use the most up to date version possible, even before changes are merged onto the main branch. 
+
+### Through Itch.io
+**This package will be available on Itch.io after 1.0.0 is released in the coming days, this section is currently a placeholder**
+
+Download the this package's archive from its Itch.io page [here](https://github.com/cmwedin/CommandPattern) **(link currently a placeholder)**. Once downloaded, extract the folder contained within to your desired installation location for the package. Note that deleting this folder will break your package installation.
+
+After you have downloaded and unzipped the package, open the Unity project you wish to add this package too. Open the package manager window, and select the "+" icon in the upper left corner. Then, select the "Add package from disk" option. Navigate to your installation location and select the "package.json" file. Once you see this package show up in the Package Manager window, it has been successfully installed.
+
+**Note that installing the package through this method will require you to update it manually**
+
+**The above process is a placeholder and may be changed before the release of version 1.0.0 and upload to Itch.io**
+
+### Installing the Package Demo
+This package includes a demo showcasing how to use the command pattern along with many scripts you may find helpful to reference when implementing your own commands. Once the package is installed, this demo can easily be added by opening the "Samples" dropdown, and clicking the "import" button next to the "Simple Demo" entry. Once this demo has been imported, you can open it by navigating to the newly created "Samples/CommandPattern/[Current Version]/SimpleDemo" folder and opening the "SimpleDemo.Unity" scene. You may need to enter play-mode and resize your game window for the scene's ui elements to display properly.
 
 ## Using this package
 Full documentation of this package can be found [here](https://cmwedin.github.io/CommandPatternDocumentation/annotated.html)

@@ -60,8 +60,14 @@ namespace SadSapphicGames.CommandPattern
         /// This event will be invoked if one of the tasks from an IAsyncCommand executed by this stream faults. Can be used to throw any exception's caused by tasks rather than storing them on the task object
         /// </summary>
         public event Action<Exception> OnTaskFaulted;
-
+        /// <summary>
+        /// What index in the commandHistory list is the oldest command stored in
+        /// </summary>
         private int historyStartIndex = 0;
+        /// <summary>
+        /// Converts command history into a list who's oldest entry is at index 0, a linear time operation if historyStartIndex is not 0
+        /// </summary>
+        /// <returns>A list of the executed commands starting with the oldest command </returns>
         private List<ICommand> UnwrapHistory() {
             List<ICommand> output = new List<ICommand>();
             int index = historyStartIndex;
@@ -78,7 +84,7 @@ namespace SadSapphicGames.CommandPattern
             return output;
         }
         /// <summary>
-        ///  Get the CommandStream's history of executed Commands.   
+        ///  Get the CommandStream's history of executed Commands, a linear time operation if HistoryCount has reached HistoryDepth   
         /// </summary>
         /// <returns>The history of executed commands, null if history is not recorded. </returns>
         public ReadOnlyCollection<ICommand> GetCommandHistory() {
@@ -136,7 +142,9 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         public bool QueueEmpty { get => commandQueue.Count == 0; }
 
-
+        /// <summary>
+        /// The maximum number of commands that will be recorded in the CommandStream's history
+        /// </summary>
         private float historyDepth = 0;
         /// <summary>
         /// this is the maximum number of commands that will be recorded in the CommandHistory
@@ -210,6 +218,11 @@ namespace SadSapphicGames.CommandPattern
             historyStartIndex = 0;
             return output;
         }
+        /// <summary>
+        /// Adds the argument to the commandHistory list, a constant time operation by virtue of moving the historyStartIndex once HistoryCount reaches HistoryDepth 
+        /// </summary>
+        /// <param name="command"> The command being recorded</param>
+        /// <exception cref="Exception"> Thrown if the HistoryCount manages to exceed the HistoryDepth, this should never happen though </exception>
         private void RecordCommand(ICommand command) {
             if(historyDepth == 0) return; //? we should never be here if this is true but just in case
             if (HistoryCount < HistoryDepth) {
@@ -311,8 +324,6 @@ namespace SadSapphicGames.CommandPattern
                     Debug.LogWarning($"task of Command {asAsync.ToString()} faulted with the following exception");
                     Debug.LogWarning(ex);
                 };
-
-                //TODO add event for async command failure 
                 return ExecuteCode.AwaitingCompletion;
             } else {
                 return ExecuteCode.Success;
