@@ -113,6 +113,22 @@ namespace SadSapphicGames.CommandPattern
             return runningCommandTasks.Keys.ToList().AsReadOnly(); 
         }
         /// <summary>
+        /// Gets the CancellationTokenSource of a running AsyncCommand's task
+        /// </summary>
+        /// <param name="task">The task to get the CTS of</param>
+        /// <returns>The CTS of task if it is running, null if it is not</returns>
+        public CancellationTokenSource GetRunningTaskCTS(Task task) {
+            try {
+                return runningCommandTasks[task];
+            } catch (KeyNotFoundException) {
+                Debug.Log($"The task {task.ToString()} is not running");
+                return null;
+            }
+        }
+        public CancellationTokenSource GetRunningTaskCTS(IAsyncCommand asyncCommand) {
+            return GetRunningTaskCTS(asyncCommand.CommandTask);
+        }
+        /// <summary>
         /// Cancels a task if that task is currently running
         /// </summary>
         /// <param name="task">The task to cancel</param>
@@ -312,14 +328,18 @@ namespace SadSapphicGames.CommandPattern
                 && !asAsync.CommandTask.IsCompleted
             ) {
                 Task asyncTask = asAsync.CommandTask;
-                runningCommandTasks.Add(asyncTask,asAsync.CancellationTokenSource);
-                asAsync.OnTaskCompleted += () => { runningCommandTasks.Remove(asyncTask); };
-                asAsync.OnTaskCanceled += () => { runningCommandTasks.Remove(asyncTask); };
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                asAsync.CancellationToken = cancellationTokenSource.Token;
+                runningCommandTasks.Add(asyncTask, cancellationTokenSource);
+                asAsync.OnAnyTaskEnd += () => {
+                    cancellationTokenSource.Dispose();
+                    asAsync.CancellationToken = CancellationToken.None;
+                    runningCommandTasks.Remove(asyncTask);
+                };
                 asAsync.OnTaskFaulted += (ex) => {
                     //? bubbles the exception up to the wrapper if it wishes to subscribe to this and throw
                     this.OnTaskFaulted?.Invoke(ex);
                     //? otherwise warns the user a fault occurred and stores the fault data somewhere they can access
-                    runningCommandTasks.Remove(asyncTask);
                     faultedCommandTasks.Add(asyncTask, ex);
                     Debug.LogWarning($"task of Command {asAsync.ToString()} faulted with the following exception");
                     Debug.LogWarning(ex);

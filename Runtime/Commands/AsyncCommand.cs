@@ -26,36 +26,24 @@ namespace SadSapphicGames.CommandPattern
         public Task CommandTask { get => commandTask; private set => commandTask = value; }
 
         /// <summary>
-        /// The backing field of the CancellationToken and CancellationTokenSource properties
-        /// </summary>
-        private CancellationTokenSource cancellationTokenSource;
-
-        /// <summary>
         /// Created the cancellation token of the async command and sets up its disposal once the task completes (wether that is from success, cancellation, or faulting)
         /// </summary>
         protected AsyncCommand() {
             OnTaskCompleted += () => {
-                cancellationTokenSource.Dispose();
                 OnAnyTaskEnd?.Invoke();
             };
             OnTaskCanceled += () => {
-                cancellationTokenSource.Dispose();
                 OnAnyTaskEnd?.Invoke();
 
             };
             OnTaskFaulted += (ex) => {
-                cancellationTokenSource.Dispose();
                 OnAnyTaskEnd?.Invoke();
             };
         }
         /// <summary>
-        /// This can be used to signal to CommandTask that it should be canceled, null until the execute method is invoked
-        /// </summary>
-        public CancellationTokenSource CancellationTokenSource { get => cancellationTokenSource; }
-        /// <summary>
         /// This can be used in ExecuteAsync to determine if the CommandTask has been canceled.
         /// </summary>
-        protected CancellationToken CancellationToken { get => CancellationTokenSource.Token; }
+        public CancellationToken CancellationToken { get; set; }
 
         /// <summary>
         /// This event is invoked when CommandTask is completed. I.E. - when we reach the end of ExecuteAsync(). Subscribe to it to preform an action at after the command has fully completed.
@@ -95,7 +83,7 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         public sealed override void Execute() {
             if(CommandTask != null && !CommandTask.IsCompleted) {throw new AlreadyRunningException(this);}
-            cancellationTokenSource = new CancellationTokenSource();
+            // cancellationTokenSource = new CancellationTokenSource();
             CommandTask = ExecuteAsync();
             if (CommandTask.Status == TaskStatus.Faulted) { throw CommandTask.Exception; }
             invokeCompletionEventTask = InvokeWhenTaskCompleted();

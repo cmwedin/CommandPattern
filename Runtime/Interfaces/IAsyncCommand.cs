@@ -16,7 +16,7 @@ namespace SadSapphicGames.CommandPattern
         /// <summary>
         /// This can be used to Cancel the task after it has been started.
         /// </summary>
-        public CancellationTokenSource CancellationTokenSource { get; }
+        public CancellationToken CancellationToken { get; set; }
 
         /// <summary>
         /// This event should be invoked when CommandTask is successfully completed.
