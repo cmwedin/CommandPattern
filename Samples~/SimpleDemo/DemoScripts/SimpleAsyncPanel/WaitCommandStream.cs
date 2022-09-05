@@ -55,7 +55,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         {
             if(commandStream.QueueCount > 0) {
                 var execCode = commandStream.TryExecuteNext();
-                Debug.Log($"TryExecuteNest returned with code {execCode}");
+                Debug.Log($"TryExecuteNext returned with code {execCode}");
             }
         }
     }

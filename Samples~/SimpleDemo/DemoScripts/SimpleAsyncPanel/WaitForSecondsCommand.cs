@@ -44,14 +44,17 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         /// <returns>The task for the completion of the async command after each await</returns>
         public override async Task ExecuteAsync() {
             Debug.Log($"starting {millisecondsToWait} ms wait");
-            waitProgress.Report(0);
+            // waitProgress.Report(0);
             for (int i = 0; i <= millisecondsToWait; i+=timeStep) {
-                await Task.Delay(timeStep);
                 waitProgress.Report((float)i / (float)millisecondsToWait);
-                CancellationToken.ThrowIfCancellationRequested();
+                if (CancellationToken.IsCancellationRequested) {
+                    Debug.Log($"{millisecondsToWait} ms wait cancelled after {i} milliseconds");
+                    CancellationToken.ThrowIfCancellationRequested();
+                }
+                await Task.Delay(timeStep);
             }
             waitProgress.Report(1);
-            Debug.Log("Wait done");
+            Debug.Log($"{millisecondsToWait} ms wait done");
         }
     }
 }
