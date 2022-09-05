@@ -83,7 +83,6 @@ namespace SadSapphicGames.CommandPattern
         /// </summary>
         public sealed override void Execute() {
             if(CommandTask != null && !CommandTask.IsCompleted) {throw new AlreadyRunningException(this);}
-            // cancellationTokenSource = new CancellationTokenSource();
             CommandTask = ExecuteAsync();
             if (CommandTask.Status == TaskStatus.Faulted) { throw CommandTask.Exception; }
             invokeCompletionEventTask = InvokeWhenTaskCompleted();
