@@ -9,7 +9,7 @@ namespace SadSapphicGames.CommandPattern
     /// </summary>
     public abstract class Command : ICommand {
         /// <summary>
-        /// Executes the command
+        /// Executes the command, do not invoke directly, instead use a CommandStream.
         /// </summary>
         public abstract void Execute();
     }

@@ -283,6 +283,14 @@ namespace SadSapphicGames.CommandPattern
         public void ForceQueueUndoCommand(IUndoable commandToUndo) {
             QueueCommand(commandToUndo.GetUndoCommand());
         }
+        /// <summary>
+        /// Examine the next command in the commandQueue with out executing it
+        /// </summary>
+        /// <param name="nextCommand">The next command in the queue, null if empty</param>
+        /// <returns>Wether there was a command in queue or not</returns>
+        public bool TryPeekNext(out ICommand nextCommand) {
+            return commandQueue.TryPeek(out nextCommand);
+        }
 
         /// <summary>
         /// Attempts to execute the next command in the queue, returns an enum indicating if it was able to or not or if the queue was empty or the command is async and awaiting completion.

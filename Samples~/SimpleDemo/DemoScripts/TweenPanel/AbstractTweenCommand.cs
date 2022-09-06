@@ -18,7 +18,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         /// <summary>
         /// the type of tween command that this command is
         /// </summary>
-        protected TweenType tweenType;
+        public TweenType tweenType { get; protected set; }
         /// <summary>
         /// The time that the tween command starts
         /// </summary>
@@ -49,7 +49,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         /// Starts the tween coroutine
         /// </summary>
         public override void Execute() {
-            TweenCommandStream.Instance.StartCoroutine(TweenCoroutine());
+            gameObject.GetComponent<MonoBehaviour>().StartCoroutine(TweenCoroutine());
             UnityEngine.Debug.Log($"{tweenType}-tween coroutine started");
 
         }
