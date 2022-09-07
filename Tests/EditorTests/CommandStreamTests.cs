@@ -177,5 +177,63 @@ namespace SadSapphicGames.CommandPattern.EditorTesting
                 );
             }
         }
+        [Test]
+        public void TryPeekNextTest() {
+            Command testCommand = new NullCommand();
+            CommandStream commandStream = new CommandStream();
+            commandStream.QueueCommand(testCommand);
+            Assert.IsTrue(commandStream.TryPeekNext(out var nextCommand));
+            Assert.AreEqual(expected: 1, actual: commandStream.QueueCount);
+            Assert.AreEqual(expected: testCommand, actual: nextCommand);
+        }
+        [Test]
+        public void RequeueNextCommandTest() {
+            Command testCommand1 = new NullCommand();
+            Command testCommand2 = new NullCommand();
+            CommandStream commandStream = new CommandStream();
+            commandStream.QueueCommand(testCommand1);
+            commandStream.QueueCommand(testCommand2);
+            Assert.AreEqual(expected: 2, actual: commandStream.QueueCount);
+            Assert.IsTrue(commandStream.TryPeekNext(out var nextCommand));
+            Assert.AreEqual(expected: testCommand1, actual: nextCommand);
+            
+            commandStream.RequeueNextCommand();
+            Assert.AreEqual(expected: 2, actual: commandStream.QueueCount);
+            Assert.IsTrue(commandStream.TryPeekNext(out nextCommand));
+            Assert.AreEqual(expected: testCommand2, actual: nextCommand);
+
+            commandStream.RequeueNextCommand();
+            Assert.AreEqual(expected: 2, actual: commandStream.QueueCount);
+            Assert.IsTrue(commandStream.TryPeekNext(out nextCommand));
+            Assert.AreEqual(expected: testCommand1, actual: nextCommand);
+        }
+        [Test]
+        public void SkipNextCommandTest() {
+            Command testCommand1 = new NullCommand();
+            Command testCommand2 = new NullCommand();
+            CommandStream commandStream = new CommandStream();
+            commandStream.QueueCommand(testCommand1);
+            commandStream.QueueCommand(testCommand2);
+            Assert.AreEqual(expected: 2, actual: commandStream.QueueCount);
+            Assert.IsTrue(commandStream.TryPeekNext(out var nextCommand));
+            Assert.AreEqual(expected: testCommand1, actual: nextCommand);
+            
+            commandStream.SkipNextCommand();
+            Assert.AreEqual(expected: 1, actual: commandStream.QueueCount);
+            Assert.IsTrue(commandStream.TryPeekNext(out nextCommand));
+            Assert.AreEqual(expected: testCommand2, actual: nextCommand);
+
+            commandStream.SkipNextCommand();
+            Assert.IsTrue(commandStream.QueueEmpty);
+        }
+        [Test]
+        public void ExecuteImmediateTest() {
+            Command testCommandSuccess = new NullCommand();
+            Command testCommandFailure = new AlwaysFailsCommand();
+            CommandStream commandStream = new CommandStream();
+            Assert.AreEqual(expected: ExecuteCode.Success ,actual: commandStream.TryExecuteImmediate(testCommandSuccess));
+            Assert.AreEqual(expected: ExecuteCode.Failure ,actual: commandStream.TryExecuteImmediate(testCommandFailure));
+            Assert.AreEqual(expected: 1, actual: commandStream.HistoryCount);
+        }
     }
 }
