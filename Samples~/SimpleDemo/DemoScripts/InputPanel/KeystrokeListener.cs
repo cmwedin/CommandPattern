@@ -19,15 +19,24 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         /// </summary>
         public event Action<KeyCode> OnKeystrokeDetected;
         /// <summary>
+        /// If this keycode is pressed the RebindCommand will be cancelled 
+        /// </summary>
+        private KeyCode cancelKeyCode = KeyCode.Escape;
+        /// <summary>
         /// loops through the possible inputs and raises the OnKeystrokeDetected event with it as an argument if it is currently down
         /// </summary>
         void Update()
         {
             foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
             {
-                if (Input.GetKey(keyCode))
-                {
-                    OnKeystrokeDetected?.Invoke(keyCode);
+                if (Input.GetKey(keyCode)) {
+                    if(keyCode == cancelKeyCode) {
+                        //? Destroying this components also cancels the command
+                        Destroy(gameObject);
+                    } else
+                    {
+                        OnKeystrokeDetected?.Invoke(keyCode);
+                    }
                 }
             }
         }
