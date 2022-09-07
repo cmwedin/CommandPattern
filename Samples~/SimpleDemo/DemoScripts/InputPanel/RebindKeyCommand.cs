@@ -81,7 +81,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 }
             };
             while(!done) {
-                await Task.Delay(1);
+                await Task.Yield();
                 CancellationToken.ThrowIfCancellationRequested();
             }
             Debug.Log("async rebind task completed");
