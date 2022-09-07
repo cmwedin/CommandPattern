@@ -257,16 +257,16 @@ namespace SadSapphicGames.CommandPattern
         /// <summary>
         /// Attempt to queue's the undo command of a Command object implementing IUndoable if that command exists in this CommandStream's history
         /// </summary>
-        /// <param name="commandToUndo">The IUndoable Command to try and queue the undo-Command of</param>
+        /// <param name="undoable">The IUndoable Command to try and queue the undo-Command of</param>
         /// <returns>Wether the undo command was queued</returns>
-        public bool TryQueueUndoCommand(IUndoable commandToUndo) {
+        public bool TryQueueUndoCommand(IUndoable undoable) {
             if(historyDepth == 0) {
-                Debug.LogWarning("This CommandStream does not record its history, undoing commands requires a command history");
+                Debug.LogWarning("This CommandStream does not record its history, use ForceQueueUndoCommand(IUndoable undoable) instead");
                 return false;
-            } if(commandHistory.Contains((ICommand)commandToUndo)) {
-                QueueCommand(commandToUndo.GetUndoCommand());
+            } if(commandHistory.Contains((ICommand)undoable)) {
+                QueueCommand(undoable.GetUndoCommand());
                 return true;
-            } else if(commandQueue.Contains((ICommand)commandToUndo)) {
+            } else if(commandQueue.Contains((ICommand)undoable)) {
                 Debug.LogWarning("The command you are trying to undo has not been executed yet but is in the queue");
             } else if(HistoryCount >= HistoryDepth) { //? should never be greater but better to catch all cases
                 Debug.LogWarning("The command you are trying to undo is not in the CommandStream's history, but it may have been dropped");
@@ -275,13 +275,14 @@ namespace SadSapphicGames.CommandPattern
             }
             return false;
         }
+
         /// <summary>
         /// Force the stream to queue's the undo command of a Command object implementing IUndoable regardless of whether the command is recorded in this CommandStream's history
         /// </summary>
         /// <remark>This is equivalent to passing the result of IUndoable.GetUndoCommand() into CommandStream.QueueCommand(Command command) directly</remark>
-        /// <param name="commandToUndo">The IUndoable Command to queue the undo-Command of</param>
-        public void ForceQueueUndoCommand(IUndoable commandToUndo) {
-            QueueCommand(commandToUndo.GetUndoCommand());
+        /// <param name="undoable">The IUndoable Command to queue the undo-Command of</param>
+        public void ForceQueueUndoCommand(IUndoable undoable) {
+            QueueCommand(undoable.GetUndoCommand());
         }
         /// <summary>
         /// Examine the next command in the commandQueue with out executing it
@@ -291,25 +292,35 @@ namespace SadSapphicGames.CommandPattern
         public bool TryPeekNext(out ICommand nextCommand) {
             return commandQueue.TryPeek(out nextCommand);
         }
-
         /// <summary>
-        /// Attempts to execute the next command in the queue, returns an enum indicating if it was able to or not or if the queue was empty or the command is async and awaiting completion.
+        /// Removes the next command in the CommandStream's queue, if it has one, and adds it back to the end of the queue.
         /// </summary>
-        /// <param name="topCommand"> The command that was next in the queue, null if the queue was empty</param>
-        /// <returns> An ExecuteCode enum value indicating what happened when attempting to execute the next command </returns>
-        public ExecuteCode TryExecuteNext(out ICommand topCommand) {
-            if(!commandQueue.TryDequeue(out topCommand)) {
-                return ExecuteCode.QueueEmpty;
+        public void RequeueNextCommand() {
+            if(commandQueue.TryDequeue(out var nextCommand)) {
+                commandQueue.Enqueue(nextCommand);
             }
+        }
+        /// <summary>
+        /// Removes the next command from the queue without executing it
+        /// </summary>
+        public void SkipNextCommand(){
+            commandQueue.TryDequeue(out var skippedCommand);
+        }
+        /// <summary>
+        /// private method that handles executing a command
+        /// </summary>
+        /// <param name="command">The command that will be executed</param>
+        /// <returns>The Execute code for the attempt to execute the argument </returns>
+        private ExecuteCode TryExecuteCommand(ICommand command){
             if(
-                topCommand is IFailable asFailable
+                command is IFailable asFailable
                 && asFailable.WouldFail()
             ) {
                 return ExecuteCode.Failure;
             }
 
             try {
-                topCommand.Execute();
+                command.Execute();
             } catch (IrreversibleCompositeFailureException ex) {
                 //? A composite failed halfway through execution and can't be reversed - let the wrapper attempt to handle it
                 throw ex;
@@ -327,12 +338,12 @@ namespace SadSapphicGames.CommandPattern
             }
             
             if(historyDepth > 0) {
-                RecordCommand(topCommand);
+                RecordCommand(command);
             }
 
             //? At this point we should have successfully executed the command 
             if(
-                topCommand is IAsyncCommand asAsync
+                command is IAsyncCommand asAsync
                 && !asAsync.CommandTask.IsCompleted
             ) {
                 Task asyncTask = asAsync.CommandTask;
@@ -355,7 +366,54 @@ namespace SadSapphicGames.CommandPattern
                 return ExecuteCode.AwaitingCompletion;
             } else {
                 return ExecuteCode.Success;
+            }   
+        }
+        /// <summary>
+        /// Attempts to execute the next command in the queue, returns an enum indicating if it was able to or not or if the queue was empty or the command is async and awaiting completion.
+        /// </summary>
+        /// <param name="topCommand"> The command that was next in the queue, null if the queue was empty</param>
+        /// <returns> An ExecuteCode enum value indicating what happened when attempting to execute the next command </returns>
+        public ExecuteCode TryExecuteNext(out ICommand topCommand) {
+            if(!commandQueue.TryDequeue(out topCommand)) {
+                return ExecuteCode.QueueEmpty;
             }
+            return TryExecuteCommand(topCommand);
+        }
+        /// <summary>
+        /// Bypass the command queue and immediately attempt to execute a command
+        /// </summary>
+        /// <param name="command">The command to immediately be executed</param>
+        /// <returns>The ExecuteCode for the attempt to execute the command</returns>
+        public ExecuteCode TryExecuteImmediate(ICommand command) {
+            return TryExecuteCommand(command);
+        }
+        /// <summary>
+        /// Bypass the command queue and immediately attempt to execute an IUndoable's undo command if the IUndoable is in the CommandStream's history
+        /// </summary>
+        /// <param name="undoable">the IUndoable to execute the undo command of</param>
+        /// <returns>The ExecuteCode of the attempt to execute the undo command of the IUndoable, Execute.Failure if the IUndoable was not in the CommandStream's history </returns>
+        public ExecuteCode TryUndoImmediate(IUndoable undoable) {
+            if(historyDepth == 0) {
+                Debug.LogWarning("This CommandStream does not record its history, use ForceTryUndoImmediate(IUndoable undoable) instead");
+                return ExecuteCode.Failure;
+            } if(commandHistory.Contains((ICommand)undoable)) {
+                return TryExecuteCommand(undoable.GetUndoCommand());
+            } else if(commandQueue.Contains((ICommand)undoable)) {
+                Debug.LogWarning("The command you are trying to undo has not been executed yet but is in the queue");
+            } else if(HistoryCount >= HistoryDepth) { //? should never be greater but better to catch all cases
+                Debug.LogWarning("The command you are trying to undo is not in the CommandStream's history, but it may have been dropped");
+            } else {
+                Debug.LogWarning("The command you are trying to undo has never been executed");
+            }
+            return ExecuteCode.Failure;
+        }
+        /// <summary>
+        /// Bypass the command queue and immediately attempt to execute an IUndoable's undo command, regardless of wether the IUndoable is in the CommandStream's history
+        /// </summary>
+        /// <param name="undoable">the IUndoable to execute the undo command of</param>
+        /// <returns>The ExecuteCode of the attempt to execute the undo command of the IUndoable</returns>
+        public ExecuteCode ForceTryUndoImmediate(IUndoable undoable) {
+            return TryExecuteCommand(undoable.GetUndoCommand());
         }
         /// <summary>
         /// Attempts to execute the next command in the queue, returns false if it is empty or the command is IFailable and would fail.
