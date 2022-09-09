@@ -27,10 +27,10 @@ After you have downloaded and unzipped the package, open the Unity project you w
 Download the .unitypackage file from this packages <a href="https://sadsapphic.itch.io/command-pattern" target="_blank">Itch.io page</a>. Once downloaded, open the Unity project you wish to add this package to. Select "Assets" from the Unity Editor's toolbar, an  from the "Import Package" menu select "Custom Package". In the window that pops up navigate to the .unitypackage file you downloaded and select it. The package will be added to your assets folder in the "/Packages/CommandPattern/" directory. 
 
 ### Updating the Package
-If you installed the package through git, you can automatically update it to its newest version by clicking the "update" button in the bottom right corner of its entry in the package manager window. If not, you will need to update it manually. In addition, there may be steps needed to migrate your code to the newer version of the package. If there are, these will be added to this section when the update has been released.
-#### Manual Update as a package
+If you installed the package through GitHub, you can automatically update it to its newest version by clicking the "update" button in the bottom right corner of its entry in the package manager window. If not, you will need to update it manually. In addition, there may be steps needed to migrate your code to the newer version of the package. If there are, these will be added to this section when the update has been released.
+#### Manual Updating as a package
 If you installed the package using the local package installation through the unity package manager to update it you will need to download the archive for the updated version from the packages Itch.io page. Once you've done this, remove the old package in the package manager, delete the old installation and extract the inner folder from the new archive. If you plan to install the updated package with the same path, you may be able to skip removing the old package, but it is recommended you do so regardless. Once you have completed this, add the updated version of the package through the same installation progress you followed above.
-#### Manual Update as an Asset
+#### Manual Updating as an Asset
 If you installed the package as an asset using the .unitypackage file, simply download the updated .unitypackage file, delete you old installation in your assets folder, and follow the installation process above using the new .unitypackage file.  
 
 ### Installing the Package Demo
