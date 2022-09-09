@@ -3,6 +3,7 @@ This package contains a collection of classes and interfaces to allow for quick 
 
 ## Installation
 ### Through GitHub (Recommended)
+#### Stable Installation
 To install this package in your Unity project, select the "window/Package Manager" entry in the Unity Inspector toolbar. Then, select the "+" icon in the upper left corner of the opened window, and select "Add package from git url." Paste the following:
 
     https://github.com/cmwedin/CommandPattern.git
@@ -11,19 +12,26 @@ Once you see this package show up in the Package Manager window, it has been suc
 
 You can automatically update the package by clicking the "update," button in the bottom right corner of the package manager window. This will retrieve any changes on main branch on this repository since installation or your last update.
 
-#### Advanced installation (Not Recommended) 
+#### Bleeding-Edge Installation
 You can install the experimental version of this package instead by adding #Development-Branch to the end of the Github url above. This will make your installation use the most up to date version possible, even before changes are merged onto the main branch. 
 
 ### Through Itch.io
 When installing this package through Itch.io you will need to update the package manually. There are two methods to download the package through Itch, you can either install it with the rest of your packages, leaving your asset folder less cluttered, but preventing modifications to the packages files; or you can install it as an asset, placing all of the scripts within your asset folder and allowing you to modify them. Modifications to this packages scripts are recommended only for user very confident in what they are doing.   
 
 #### Installing as a Package
-Download this package's archive from its [Itch.io page](https://sadsapphic.itch.io/command-pattern). Once downloaded, extract the folder contained within to your desired installation location. Note that deleting this folder will break your package installation, even after adding the package to a unity project.
+Download this package's archive from its <a href="https://sadsapphic.itch.io/command-pattern" target="_blank">Itch.io page</a>. Once downloaded, extract the "CommandPattern" folder contained within to your desired installation location. Note that deleting this folder will break your package installation, even after adding the package to a unity project.
 
 After you have downloaded and unzipped the package, open the Unity project you wish to add this package too. Open the package manager window, and select the "+" icon in the upper left corner. Then, select the "Add package from disk" option. Navigate to your installation location and select the "package.json" file. Once you see this package show up in the Package Manager window, it has been successfully installed.
 
 #### Installing as an Asset
-Download the .unitypackage file from this packages [Itch.io page](https://sadsapphic.itch.io/command-pattern). Once downloaded, open the Unity project you wish to add this package to. Select "Assets" from the Unity Editor's toolbar, an  from the "Import Package" menu select "Custom Package". In the window that pops up navigate to the .unitypackage file you downloaded and select it. The package will be added to your assets folder in the "/Packages/CommandPattern/" directory. 
+Download the .unitypackage file from this packages <a href="https://sadsapphic.itch.io/command-pattern" target="_blank">Itch.io page</a>. Once downloaded, open the Unity project you wish to add this package to. Select "Assets" from the Unity Editor's toolbar, an  from the "Import Package" menu select "Custom Package". In the window that pops up navigate to the .unitypackage file you downloaded and select it. The package will be added to your assets folder in the "/Packages/CommandPattern/" directory. 
+
+### Updating the Package
+If you installed the package through git, you can automatically update it to its newest version by clicking the "update" button in the bottom right corner of its entry in the package manager window. If not, you will need to update it manually. In addition, there may be steps needed to migrate your code to the newer version of the package. If there are, these will be added to this section when the update has been released.
+#### Manual Update as a package
+If you installed the package using the local package installation through the unity package manager to update it you will need to download the archive for the updated version from the packages Itch.io page. Once you've done this, remove the old package in the package manager, delete the old installation and extract the inner folder from the new archive. If you plan to install the updated package with the same path, you may be able to skip removing the old package, but it is recommended you do so regardless. Once you have completed this, add the updated version of the package through the same installation progress you followed above.
+#### Manual Update as an Asset
+If you installed the package as an asset using the .unitypackage file, simply download the updated .unitypackage file, delete you old installation in your assets folder, and follow the installation process above using the new .unitypackage file.  
 
 ### Installing the Package Demo
 This package includes a demo showcasing how to use the command pattern along with many scripts you may find helpful to reference when implementing your own commands. If you installed the package as an asset the demo will be included by default within the "Demos/SimpleDemo" directory. Once the package is installed, this demo can easily be added by opening the "Samples" dropdown, and clicking the "import" button next to the "Simple Demo" entry. Once this demo has been imported, you can open it by navigating to the newly created "Samples/CommandPattern/[Current Version]/SimpleDemo" folder and opening the "SimpleDemo.Unity" scene. You may need to enter play-mode and resize your game window for the scene's ui elements to display properly.
