@@ -15,18 +15,18 @@ You can automatically update the package by clicking the "update," button in the
 You can install the experimental version of this package instead by adding #Development-Branch to the end of the Github url above. This will make your installation use the most up to date version possible, even before changes are merged onto the main branch. 
 
 ### Through Itch.io
-**This package will be available on Itch.io after 1.0.0 is released in the coming days, this section is currently a placeholder**
+When installing this package through Itch.io you will need to update the package manually. There are two methods to download the package through Itch, you can either install it with the rest of your packages, leaving your asset folder less cluttered, but preventing modifications to the packages files; or you can install it as an asset, placing all of the scripts within your asset folder and allowing you to modify them. Modifications to this packages scripts are recommended only for user very confident in what they are doing.   
 
-Download this package's archive from its Itch.io page [here](https://github.com/cmwedin/CommandPattern) **(link currently a placeholder)**. Once downloaded, extract the folder contained within to your desired installation location for the package. Note that deleting this folder will break your package installation, even after adding the package to a unity project.
+#### Installing as a Package
+Download this package's archive from its [Itch.io page](https://sadsapphic.itch.io/command-pattern). Once downloaded, extract the folder contained within to your desired installation location. Note that deleting this folder will break your package installation, even after adding the package to a unity project.
 
 After you have downloaded and unzipped the package, open the Unity project you wish to add this package too. Open the package manager window, and select the "+" icon in the upper left corner. Then, select the "Add package from disk" option. Navigate to your installation location and select the "package.json" file. Once you see this package show up in the Package Manager window, it has been successfully installed.
 
-**Note that installing the package through this method will require you to update it manually**
-
-**The above process is a placeholder and may be changed before the release of version 1.0.0 and upload to Itch.io**
+#### Installing as an Asset
+Download the .unitypackage file from this packages [Itch.io page](https://sadsapphic.itch.io/command-pattern). Once downloaded, open the Unity project you wish to add this package to. Select "Assets" from the Unity Editor's toolbar, an  from the "Import Package" menu select "Custom Package". In the window that pops up navigate to the .unitypackage file you downloaded and select it. The package will be added to your assets folder in the "/Packages/CommandPattern/" directory. 
 
 ### Installing the Package Demo
-This package includes a demo showcasing how to use the command pattern along with many scripts you may find helpful to reference when implementing your own commands. Once the package is installed, this demo can easily be added by opening the "Samples" dropdown, and clicking the "import" button next to the "Simple Demo" entry. Once this demo has been imported, you can open it by navigating to the newly created "Samples/CommandPattern/[Current Version]/SimpleDemo" folder and opening the "SimpleDemo.Unity" scene. You may need to enter play-mode and resize your game window for the scene's ui elements to display properly.
+This package includes a demo showcasing how to use the command pattern along with many scripts you may find helpful to reference when implementing your own commands. If you installed the package as an asset the demo will be included by default within the "Demos/SimpleDemo" directory. Once the package is installed, this demo can easily be added by opening the "Samples" dropdown, and clicking the "import" button next to the "Simple Demo" entry. Once this demo has been imported, you can open it by navigating to the newly created "Samples/CommandPattern/[Current Version]/SimpleDemo" folder and opening the "SimpleDemo.Unity" scene. You may need to enter play-mode and resize your game window for the scene's ui elements to display properly.
 
 ## Using this package
 Full documentation of this package can be found [here](https://cmwedin.github.io/CommandPatternDocumentation/annotated.html)
