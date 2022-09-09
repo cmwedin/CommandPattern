@@ -3,6 +3,7 @@ This package contains a collection of classes and interfaces to allow for quick 
 
 ## Installation
 ### Through GitHub (Recommended)
+#### Stable Installation
 To install this package in your Unity project, select the "window/Package Manager" entry in the Unity Inspector toolbar. Then, select the "+" icon in the upper left corner of the opened window, and select "Add package from git url." Paste the following:
 
     https://github.com/cmwedin/CommandPattern.git
@@ -11,7 +12,7 @@ Once you see this package show up in the Package Manager window, it has been suc
 
 You can automatically update the package by clicking the "update," button in the bottom right corner of the package manager window. This will retrieve any changes on main branch on this repository since installation or your last update.
 
-#### Advanced installation (Not Recommended) 
+#### Bleeding-Edge Installation
 You can install the experimental version of this package instead by adding #Development-Branch to the end of the Github url above. This will make your installation use the most up to date version possible, even before changes are merged onto the main branch. 
 
 ### Through Itch.io
