@@ -17,29 +17,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         /// The width the projectile will bounce between
         /// </summary>
         [SerializeField] private float width;
-        /// <summary>
-        /// the y value at which the projectile is destroyed
-        /// </summary>
-        private float yMax;
-        /// <summary>
-        /// the minimum x value before the projectile reflects regardless of the width
-        /// </summary>
-        private float xMin;
-        /// <summary>
-        /// the maximum x value before the projectile reflects regardless of the width
-        /// </summary>
-        private float xMax;
-        /// <summary>
-        /// a Property to set the values of xMin, xMax, and yMax through a RectTransform 
-        /// </summary>
-        public override RectTransform BoundingBox { set {
-                Vector3[] corners = new Vector3[4];
-                value.GetWorldCorners(corners);
-                yMax = corners[1].y;
-                xMax = corners[2].x;
-                xMin = corners[0].x;
-            }}
-        
+
         /// <summary>
         ///  Moves the projectile in a line the specified angle above Vector3.right
         ///  Until its x value reaches either xMax, or Width/2 greater than its starting value
@@ -53,20 +31,21 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         /// The same as the previous direction unless this was its first update or a reflection occurred
         /// </param>
         /// <returns> The new position of the projectile </returns>
-        public override Vector3 UpdatePosition(Vector3 currentPos, Vector3 origin, Vector3 prevDirection, out Vector3 nextDirection) {
+        public override Vector3 UpdatePosition(Vector3 currentPos, Vector3 origin, RectTransform rectBounds,Vector3 prevDirection, out Vector3 nextDirection) {
             if (prevDirection == Vector3.zero) { prevDirection = Quaternion.AngleAxis(angle, Vector3.forward) * Vector3.right; }
+            ProjBounds bounds = new ProjBounds(rectBounds);
             bool changeDirection = false;
             nextDirection = prevDirection;
             Vector3 targetPos = currentPos + prevDirection * speed * Time.fixedDeltaTime;
-            if (targetPos.y > yMax) { return Vector3.zero; }
+            if (targetPos.y > bounds.yMax) { return Vector3.zero; }
             if (prevDirection.x > 0 ) { //? moving right
-                if(targetPos.x <= xMax  && targetPos.x <= origin.x + width / 2) {
+                if(targetPos.x <= bounds.xMax  && targetPos.x <= origin.x + width / 2) {
                     return targetPos;
                 } else {
                     changeDirection = true;
                 }
             } else { //? moving left
-                if(targetPos.x >= xMin && targetPos.x >= origin.x - width / 2 ) {
+                if(targetPos.x >= bounds.xMin && targetPos.x >= origin.x - width / 2 ) {
                     return targetPos;
                 } else {
                     changeDirection = true;
