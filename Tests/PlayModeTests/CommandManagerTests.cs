@@ -19,7 +19,7 @@ namespace SadSapphicGames.CommandPattern.RuntimeTesting
             managerObject.AddComponent<SingletonCommandManager>();
         }
         private void PerTestCleanup() {
-            CommandManagerInstance.DropCommandHistory();
+            CommandManagerInstance.DropHistory();
         }
         // A Test behaves as an ordinary method
         [Test]

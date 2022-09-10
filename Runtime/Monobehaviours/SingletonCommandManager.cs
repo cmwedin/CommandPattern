@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -32,6 +34,10 @@ namespace SadSapphicGames.CommandPattern {
         /// </summary>
         private bool freezeCommandExecution = false;
         /// <summary>
+        /// Invoked when the inner CommandStream invokes its OnTaskFaulted event
+        /// </summary>
+        public event Action<Exception> OnTaskFaulted;
+        /// <summary>
         /// Turns command execution off if its on and on if its off
         /// </summary>
         public void ToggleCommandExecution()
@@ -61,6 +67,22 @@ namespace SadSapphicGames.CommandPattern {
             return commandStream.GetRunningCommandTasks();
         }
         /// <summary>
+        /// Gets the CancellationTokenSource of a running AsyncCommand's task
+        /// </summary>
+        /// <param name="task">The task to get the CTS of</param>
+        /// <returns>The CTS of task if it is running, null if it is not</returns>
+        public CancellationTokenSource GetRunningTaskCTS(Task task){
+            return commandStream.GetRunningTaskCTS(task);
+        }
+        /// <summary>
+        /// Gets the CancellationTokenSource of a running AsyncCommand's task
+        /// </summary>
+        /// <param name="task">The AsyncCommand to get the CTS of</param>
+        /// <returns>The CTS of task if it is running, null if it is not</returns>
+        public CancellationTokenSource GetRunningTaskCTS(IAsyncCommand asyncCommand){
+            return commandStream.GetRunningTaskCTS(asyncCommand);
+        }
+        /// <summary>
         /// Cancels an AsyncCommand's running task through a reference to the task
         /// </summary>
         /// <param name="taskToCancel">the task of an AsyncCommand to cancel</param>
@@ -75,13 +97,27 @@ namespace SadSapphicGames.CommandPattern {
             commandStream.CancelRunningCommandTask(asyncCommand);
         }
         /// <summary>
+        /// Get a dictionary of any faulted tasks and the exceptions that they threw
+        /// </summary>
+        /// <returns> A read only copy of the dictionary of faulted tasks and their exceptions </returns>
+        public ReadOnlyDictionary<Task, Exception> GetFaultedCommandTasks() {
+            return commandStream.GetFaultedCommandTasks();
+        }
+        /// <summary>
         /// Empties the history of the internal CommandStream and replaces it with an empty one.
         /// </summary>
         /// <returns> The old history of the internal CommandStream </returns>
-        public ReadOnlyCollection<ICommand> DropCommandHistory() {
+        public ReadOnlyCollection<ICommand> DropHistory() {
             return commandStream.DropHistory();
         }
-
+        /// <summary>
+        /// This will remove all commands from the CommandStream's queue and replace it with a new empty queue.
+        /// </summary>
+        /// <remark> This can be useful to rearrange the commands in a queue. Simple preform the needed changes on the returned list and re-queue it </remark>
+        /// <returns> The commands in the previous queue, in case this information is needed.</returns>
+        public List<ICommand> DropQueue() {
+            return commandStream.DropQueue();
+        }
         /// <summary>
         /// The number of Commands recorded by the CommandManager's CommandStream
         /// </summary>
@@ -137,6 +173,50 @@ namespace SadSapphicGames.CommandPattern {
             commandStream.ForceQueueUndoCommand(commandToUndo);
         }
         /// <summary>
+        /// Examine the next command in the CommandStream's commandQueue with out executing it
+        /// </summary>
+        /// <param name="nextCommand">The next command in the queue, null if empty</param>
+        /// <returns>Wether there was a command in queue or not</returns>
+        public bool TryPeekNext(out ICommand nextCommand) {
+            return commandStream.TryPeekNext(out nextCommand);
+        }
+        /// <summary>
+        /// Removes the next command in the CommandStream's queue, if it has one, and adds it back to the end of the queue.
+        /// </summary>
+        public void RequeueNextCommand() {
+            commandStream.RequeueNextCommand();
+        }
+        /// <summary>
+        /// Removes the next command from the CommandStream's queue without executing it
+        /// </summary>
+        public void SkipNextCommand(){
+            commandStream.SkipNextCommand();
+        }
+        /// <summary>
+        /// Bypass the CommandStream's queue and immediately attempt to execute a command
+        /// </summary>
+        /// <param name="command">The command to immediately be executed</param>
+        /// <returns>The ExecuteCode for the attempt to execute the command</returns>
+        public ExecuteCode TryExecuteImmediate(ICommand command) {
+            return commandStream.TryExecuteImmediate(command);
+        }
+        /// <summary>
+        /// Bypass the CommandStream's queue and immediately attempt to execute an IUndoable's undo command if the IUndoable is in the CommandStream's history
+        /// </summary>
+        /// <param name="undoable">the IUndoable to execute the undo command of</param>
+        /// <returns>The ExecuteCode of the attempt to execute the undo command of the IUndoable, Execute.Failure if the IUndoable was not in the CommandStream's history </returns>
+        public ExecuteCode TryUndoImmediate(IUndoable undoable) {
+            return commandStream.TryUndoImmediate(undoable);
+        }
+        /// <summary>
+        /// Bypass the command queue and immediately attempt to execute an IUndoable's undo command, regardless of wether the IUndoable is in the CommandStream's history
+        /// </summary>
+        /// <param name="undoable">the IUndoable to execute the undo command of</param>
+        /// <returns>The ExecuteCode of the attempt to execute the undo command of the IUndoable</returns>
+        public ExecuteCode ForceTryUndoImmediate(IUndoable undoable) {
+            return commandStream.ForceTryUndoImmediate(undoable);
+        }
+        /// <summary>
         /// sets the singleton instance of this object
         /// </summary>
         private void Awake() {
@@ -155,8 +235,8 @@ namespace SadSapphicGames.CommandPattern {
             } else {
                 commandStream = new CommandStream();
             }
+            commandStream.OnTaskFaulted += (ex) => OnTaskFaulted.Invoke(ex);
         }
-
         /// <summary>
         /// Executes the next command in queue if it isn't empty and command execution isn't frozen
         /// </summary>
