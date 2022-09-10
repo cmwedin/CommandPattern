@@ -51,7 +51,6 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
 
             this.OnAnyTaskEnd += () => {
                 if(keystrokeListener != null) {GameObject.Destroy(keystrokeListener.gameObject);}
-                InputCommandStream.Instance.activateDemoSwitch.isOn = prevDemoState;
                 InputCommandStream.Instance.activateDemoSwitch.gameObject.SetActive(true);
             };
         }

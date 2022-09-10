@@ -15,34 +15,6 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         private enum ReflectAxis {
             vertical,horizontal,both,none
         }
-        /// <summary>
-        /// the minimum y value the projectile can have before reflecting
-        /// </summary>
-        private float yMin;
-        /// <summary>
-        /// the y value at which the projectile is destroyed
-        /// </summary>
-        private float yMax;
-        /// <summary>
-        /// the minimum x value the projectile can have before reflecting
-        /// </summary>
-        private float xMin;
-        /// <summary>
-        /// the maximum x value the projectile can have before reflecting
-        /// </summary>
-        private float xMax;
-
-        /// <summary>
-        /// a property to set the x and y min and max values through a RectTransform
-        /// </summary>
-        public override RectTransform BoundingBox { set {
-                Vector3[] corners = new Vector3[4];
-                value.GetWorldCorners(corners);
-                yMax = corners[1].y;
-                yMin = corners[0].y;
-                xMax = corners[2].x;
-                xMin = corners[0].x;
-            }}
 
         /// <summary>
         /// Moves the projectile in a random direction until one of the reflecting bounds is reached, 
@@ -55,16 +27,17 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         /// The same as the previous direction unless this was its first update or a reflection occurred
         /// </param>
         /// <returns> The new position of the projectile </returns>
-        public override Vector3 UpdatePosition(Vector3 currentPos, Vector3 origin, Vector3 prevDirection, out Vector3 nextDirection) {
+        public override Vector3 UpdatePosition(Vector3 currentPos, Vector3 origin, RectTransform rectBounds,Vector3 prevDirection, out Vector3 nextDirection) {
             if (prevDirection == Vector3.zero) { prevDirection = Quaternion.AngleAxis(Random.Range(0, 360), Vector3.forward) * Vector3.right; }
+            ProjBounds bounds = new ProjBounds(rectBounds);
             nextDirection = prevDirection;
             ReflectAxis reflectDirection = ReflectAxis.none;
             Vector3 targetPos = currentPos + prevDirection * speed * Time.fixedDeltaTime;
-            if (targetPos.y > yMax) { return Vector3.zero; }
-            if(targetPos.x > xMax || targetPos.x < xMin) { //? Bounce of right wall
+            if (targetPos.y > bounds.yMax) { return Vector3.zero; }
+            if(targetPos.x > bounds.xMax || targetPos.x < bounds.xMin) { //? Bounce of right wall
                 reflectDirection = ReflectAxis.horizontal;
             } 
-            if(targetPos.y < yMin) {
+            if(targetPos.y < bounds.yMin) {
                 if(reflectDirection == ReflectAxis.horizontal) {
                     reflectDirection = ReflectAxis.both;
                 } else {

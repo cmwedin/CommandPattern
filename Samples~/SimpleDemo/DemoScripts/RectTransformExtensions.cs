@@ -23,5 +23,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
                 && vector.y >= corners[0].y
             );
         }
+        public static Vector3[] GetWorldCorners(this RectTransform rectTransform) {
+            Vector3[] output = new Vector3[4];
+            rectTransform.GetWorldCorners(output);
+            return output;
+        }
     }
 }

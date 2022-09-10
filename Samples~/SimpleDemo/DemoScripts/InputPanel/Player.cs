@@ -91,11 +91,6 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
                 ) {
                     inputCommandStream.QueueCommand(new SpawnProjectileCommand(this, altProjType,projMaxLifespan));
                 }
-
-                if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.Undo]))
-                {
-                    inputCommandStream.Undo();
-                }
             }
         }
         /// <summary>
@@ -110,6 +105,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo {
                     } else {
                         inputCommandStream.QueueCommand(new MovePlayerCommand(this, movementVector, baseSpeed));
                     }
+                }
+                if (Input.GetKey(inputCommandStream.InputKeybinds[InputType.Undo]))
+                {
+                    inputCommandStream.Undo();
                 }
             }
             
