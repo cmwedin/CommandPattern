@@ -8,7 +8,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
     public class SpawnProjectileCommand : Command
     {
         /// <summary>
-        /// The player that is spawning the projectile, used to set the bound of the projectile and parent it to the player BoundingBox
+        /// The player that is spawning the projectile, used to set the bounds of the projectile and parent it to the player's BoundingBox
         /// </summary>
         private Player player;
         /// <summary>
