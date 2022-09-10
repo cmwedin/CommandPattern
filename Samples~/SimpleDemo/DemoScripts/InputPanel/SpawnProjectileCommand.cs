@@ -8,7 +8,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
     public class SpawnProjectileCommand : Command
     {
         /// <summary>
-        /// The player that is spawning the projectile, used to set the bound of the projectile and parent it to the player BoundingBox
+        /// The player that is spawning the projectile, used to set the bounds of the projectile and parent it to the player's BoundingBox
         /// </summary>
         private Player player;
         /// <summary>
@@ -27,13 +27,6 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             this.player = player;
             this.data = data;
             this.Lifespan = Lifespan;
-                //? This is a bad but easy way to set the bound the projectile can move in, 
-                //? bad because the projSO is shared by all projectile of that type and the data persists when leaving play mode (meaning most of the time these values have already been set)
-                //? however this isn't a demo for using SO's to store the data for the behaviour of components so this dirty solution works
-                    //? That said I wanted to mention this so people don't copy it
-                //? A better implementation would be to use this as an argument in the ProjSO UpdatePosition method so different projectiles could use different bounding boxes
-            data.BoundingBox = player.boundingBox;
-
         }
         /// <summary>
         /// Executes the command
@@ -43,6 +36,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             Projectile proj = projGO.AddComponent<Projectile>();
             proj.Origin = projGO.transform.position = player.transform.position;
             proj.Lifespan = Lifespan;
+            proj.rectBounds = player.boundingBox;
             proj.LoadData(data);
             proj.Activate();
         }

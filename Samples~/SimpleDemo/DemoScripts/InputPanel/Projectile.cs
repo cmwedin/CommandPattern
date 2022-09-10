@@ -18,6 +18,10 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
         /// </summary>
         private ProjSO data;
         /// <summary>
+        /// The RectTransform the projectile can move within
+        /// </summary>
+        public RectTransform rectBounds { get; set; }
+        /// <summary>
         /// The starting position of the projectile, relevant for some projectile types
         /// </summary>
         public Vector3 Origin { get; set; }
@@ -55,7 +59,7 @@ namespace SadSapphicGames.CommandPattern.SimpleDemo
             {
                 if (data == null) { Destroy(gameObject); }
                 Destroy(gameObject, Lifespan);
-                Vector3 target = data.UpdatePosition(transform.position, Origin, prevDirection, out prevDirection);
+                Vector3 target = data.UpdatePosition(transform.position, Origin, rectBounds,prevDirection, out prevDirection);
                 if (target == Vector3.zero)
                 {
                     Destroy(gameObject);
