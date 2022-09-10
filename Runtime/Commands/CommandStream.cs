@@ -125,6 +125,11 @@ namespace SadSapphicGames.CommandPattern
                 return null;
             }
         }
+        /// <summary>
+        /// Gets the CancellationTokenSource of a running AsyncCommand's task
+        /// </summary>
+        /// <param name="task">The AsyncCommand to get the CTS of</param>
+        /// <returns>The CTS of task if it is running, null if it is not</returns>
         public CancellationTokenSource GetRunningTaskCTS(IAsyncCommand asyncCommand) {
             return GetRunningTaskCTS(asyncCommand.CommandTask);
         }
