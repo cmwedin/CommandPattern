@@ -1,5 +1,5 @@
 {
-    "name": "EditorTests",
+    "name": "com.sadsapphicgames.commandpattern.editortests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
